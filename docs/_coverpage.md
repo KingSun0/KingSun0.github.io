@@ -1,4 +1,4 @@
-<img width="180px" style="border-radius: 50%" bor src="./docs/images/996station.png">
+<img width="180px" style="border-radius: 50%" bor src="./images/996station.png">
 
 # 蘑菇博客
 
