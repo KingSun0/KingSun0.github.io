@@ -7,6 +7,6 @@
 [![star](https://gitee.com/moxi159753/mogu_blog_v2/badge/star.svg?theme=dark)](https://gitee.com/moxi159753/mogu_blog_v2/stargazers)
 [![fork](https://gitee.com/moxi159753/mogu_blog_v2/badge/fork.svg?theme=dark)](https://gitee.com/moxi159753/mogu_blog_v2/members)
 
-[Gitee](<https://gitee.com/moxi159753/mogu_blog_v2>)
-[Github](<https://github.com/moxi624/mogu_blog_v2>)
+[996station](<https://www.996station.com>)
+[Github](<https://github.com/KingSun0>)
 [开始阅读](README.md)
