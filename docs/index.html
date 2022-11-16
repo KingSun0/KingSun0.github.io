@@ -30,6 +30,7 @@
     loadNavbar: true,
     // 封面支持，默认加载的是项目根目录下的_coverpage.md文件
     coverpage: true,
+    onlyCover: true, // 配置了封面后，封面和首页是同时出现的，封面在上面，首页在下面。通过设置onlyCover参数，可以让docsify网站首页只显示封面
     // 最大支持渲染的标题层级
     maxLevel: 5,
     // 自定义侧边栏后默认不会再生成目录，设置生成目录的最大层级（建议配置为2-4）
@@ -42,14 +43,11 @@
   // 搜索配置(url：https://docsify.js.org/#/zh-cn/plugins?id=%e5%85%a8%e6%96%87%e6%90%9c%e7%b4%a2-search)
   window.$docsify = {
     search: {
-      loadSidebar: true,
       subMaxLevel: 3,
-      loadNavbar: true,
 
       maxAge: 10,// 过期时间，单位毫秒，默认一天
       paths: auto,// 注意：仅适用于 paths: 'auto' 模式
-      coverpage: true, // docsify默认是没有封面的，默认有个首页./README.md。 通过设置coverpage参数，可以开启渲染封面的功能。
-      onlyCover: true, // 配置了封面后，封面和首页是同时出现的，封面在上面，首页在下面。通过设置onlyCover参数，可以让docsify网站首页只显示封面
+
       // placeholder: '搜索',
       // 支持本地化
       placeholder: {
