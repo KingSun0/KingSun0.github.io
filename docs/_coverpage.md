@@ -1,4 +1,4 @@
-<img width="180px" style="border-radius: 50%" bor src="https://avatars.githubusercontent.com/u/39549013?s=96&v=4">
+<img width="180px" style="border-radius: 50%" bor src="./docs/images/gitee/996station.png">
 
 # 蘑菇博客
 
