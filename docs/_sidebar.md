@@ -43,7 +43,7 @@
           - [测试工具](工具/测试工具.md)
           - [参考应用](工具/参考应用.md)
 - **风控指南**
-    - [项目介绍](doc/文档/项目介绍.md)
+    - [项目介绍](https://github.com/WalterInSH/risk-management-note/blob/master/README.md)
     - [技术选型](doc/文档/技术选型.md)
 - **网络安全指南**
     - [项目介绍](doc/文档/项目介绍.md)
