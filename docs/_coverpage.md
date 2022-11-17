@@ -1,5 +1,5 @@
 [//]: # (<img width="180px" style="border-radius: 50%" bor src="https://github.com/KingSun0/KingSun0.github.io/tree/main/docs/images/996station.png">)
-<img width="180px" style="border-radius: 50%" bor src="./images/996station.png">
+<img width="180px" style="border-radius: 50%" bor src="移动安全指南/images/996station.png">
 
 # 程序员开发指南
 
