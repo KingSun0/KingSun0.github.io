@@ -41,6 +41,9 @@
     subMaxLevel: 4,
     // 小屏设备下合并导航栏到侧边栏
     mergeNavbar: true,
+    // 谷歌统计 - Google Analytics,需要配置 track id 才能使用。
+    ga: 'G-FPBK3DX4Z2'
+
   }
 </script>
 <script>
@@ -62,9 +65,45 @@
       depth: 4,
       hideOtherSidebarContent: false,
       namespace: 'Docsify-Guide',
-    }
+    },
+    count:{
+      countable:true,
+      fontsize:'0.9em',
+      color:'rgb(90,90,90)',
+      language:'chinese'
+    },
+    // 分页导航插件
+    pagination: {
+      previousText: '上一卷',
+      nextText: '下一卷',
+      crossChapter: true,
+      crossChapterText: true
+    },
+    // 文本高亮
+    'flexible-alerts': {
+      style: 'flat',
+      note: {
+        label: "信息"
+      },
+      tip: {
+        label: "提示"
+      },
+      warning: {
+        label: "注意"
+      },
+      attention: {
+        label: "切记"
+      }
+    },
+
+
   }
 </script>
+
+<!--谷歌统计-->
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/ga.min.js"></script>
+
 <!-- docsify的js依赖 -->
 <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
 <!-- emoji表情支持 -->
@@ -79,8 +118,22 @@
 <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-php.min.js"></script>
 
+<!--字数统计插件-->
+<script src="//unpkg.com/docsify-count/dist/countable.js"></script>
+
 
 <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+<!-- 分页导航 -->
+<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+<!-- 文本高亮 -->
+<script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
+
+<!--外链脚本 - External Script-->
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/external-script.min.js"></script>
+
+<!--图片缩放 - Zoom image-->
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+
 
 </body>
 
