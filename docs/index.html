@@ -117,12 +117,13 @@
 <script>
   const gitalk = new Gitalk({
     clientID: 'Iv1.f6b89af76e5b07e4',
-    clientSecret: '97818bc74bcba19fd6a7985498ddc9e6036970f1',
-    repo: 'guide996stationcomment', // 存放评论的仓库
-    owner: '@KingSun0', // 仓库的创建者
-    admin: ['XXXXX'], // 如果仓库有多个人可以操作，那么在这里以数组形式写出
+    clientSecret: '4b10f49ca50da24d65a9a35e3274bc0b98f1b887',
+    repo: 'KingSun0.github.io', // 存放评论的仓库
+    owner: 'KingSun0', // 仓库的创建者
+    admin: ['KingSun0'], // 如果仓库有多个人可以操作，那么在这里以数组形式写出
     id: location.pathname, // 用于标记评论是哪个页面的
   })
+  gitalk.render('gitalk-container');    // 渲染Gitalk评论组件
 </script>
 
 <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7085514053155233"-->
