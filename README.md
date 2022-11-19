@@ -1,14 +1,14 @@
 # 程序开发指南
-## 本指南现已提供移动安全指南、风控指南
-## 移动安全指南-owasp MASTG中文译文，后期会对内容进行进行大幅更新，和本土优化
-## 风控指南-搬运的是risk-management-note，后期会对内容进行进行大幅更新，和本土优化
-- **指南介绍**
+### 本指南现已提供移动安全指南、风控指南
+### 移动安全指南-owasp MASTG中文译文，后期会对内容进行进行大幅更新，和本土优化
+### 风控指南-搬运的是risk-management-note，后期会对内容进行进行大幅更新，和本土优化
+## 指南介绍
 - 同时也欢迎您的参与
 - 开源文档github.io[程序员开发指南 Developer Guide for Programmers](https://guide.996station.com/#/)
 - 更多更好的内容，请访问[996station技术栈](https://www.996station.com)
 
 
-- **移动安全指南**
+## 移动安全指南
     - [TODO项目介绍](doc/文档/项目介绍.md)
     - [TODO技术选型](doc/文档/技术选型.md)
 
