@@ -117,7 +117,7 @@ if status == noErr {
 }
 ```
 
-#### 目标-C[¶](https://mas.owasp.org/MASTG/iOS/0x06f-Testing-Local-Authentication/#objective-c)
+#### Objective-C[¶](https://mas.owasp.org/MASTG/iOS/0x06f-Testing-Local-Authentication/#objective-c)
 
 ```
 // 1. Create the AccessControl object that will represent authentication settings
@@ -198,7 +198,7 @@ otool -L <AppName>.app/<AppName>
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06f-Testing-Local-Authentication/#dynamic-analysis)
 
-[Objection Biometrics Bypass](https://github.com/sensepost/objection/wiki/Understanding-the-iOS-Biometrics-Bypass)可用于绕过 LocalAuthentication。Objection 使用 Frida 来检测该`evaluatePolicy`函数，以便`True`即使未成功执行身份验证也能返回。使用该`ios ui biometrics_bypass`命令绕过不安全的生物认证。异议将登记一份工作，这将取代`evaluatePolicy`结果。它适用于 Swift 和 Objective-C 实现。
+[Objection Biometrics Bypass](https://github.com/sensepost/objection/wiki/Understanding-the-iOS-Biometrics-Bypass)可用于绕过 LocalAuthentication。Objection 使用 Frida 来检测该`evaluatePolicy`函数，以便`True`即使未成功执行身份验证也能返回。使用该`ios ui biometrics_bypass`命令绕过不安全的生物认证。objection将登记一份工作，这将取代`evaluatePolicy`结果。它适用于 Swift 和 Objective-C 实现。
 
 ```
 ...itudehacks.DVIAswiftv2.develop on (iPhone: 13.2.3) [usb] # ios ui biometrics_bypass

@@ -53,7 +53,7 @@
 
 检查越狱机制的另一种方法是尝试写入应用程序沙箱之外的位置。您可以通过让应用程序尝试在例如`/private directory`. 如果文件创建成功，则设备已经越狱。
 
-**迅速：**
+**Swift:**
 
 ```
 do {
@@ -66,7 +66,7 @@ do {
 }
 ```
 
-**目标-C：**
+**Objective-C：**
 
 ```
 NSError *error;
@@ -86,7 +86,7 @@ if(error==nil){
 
 您可以通过尝试打开 Cydia URL 来检查协议处理程序。[Cydia](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#cydia)应用程序商店，几乎每个越狱工具都默认安装，安装 cydia:// 协议处理程序。
 
-**迅速：**
+**Swift:**
 
 ```
 if let url = URL(string: "cydia://package/com.example.package"), UIApplication.shared.canOpenURL(url) {
@@ -94,7 +94,7 @@ if let url = URL(string: "cydia://package/com.example.package"), UIApplication.s
 }
 ```
 
-**目标-C：**
+**Objective-C：**
 
 ```
 if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cydia://package/com.example.package"]]){
@@ -132,7 +132,7 @@ cy# a=choose(JailbreakDetectionVC)
 []
 ```
 
-哎呀！返回值是一个空数组。这意味着在运行时中没有注册此类的实例。事实上，我们还没有点击第二个“越狱测试”按钮，它初始化了这个类：
+哎呀！返回值是一个空数组。这意味着在Runtime(运行时)中没有注册此类的实例。事实上，我们还没有点击第二个“越狱测试”按钮，它初始化了这个类：
 
 ```
 cy# a=choose(JailbreakDetectionVC)
@@ -155,7 +155,7 @@ false
 
 在这种情况下，我们已经绕过了应用程序的越狱检测！
 
-现在，假设应用程序在检测到设备已越狱后立即关闭。您没有时间启动 Cycript 并替换函数实现。相反，您必须使用 CydiaSubstrate，使用适当的挂钩函数（如`MSHookMessageEx`），然后编译调整。关于如何做到这一点有[很好的资源；](https://manualzz.com/doc/26490749/jailbreak-root-detection-evasion-study-on-ios-and-android)但是，通过使用 Frida，我们可以更轻松地执行早期检测，并且可以利用从之前的测试中收集到的技能。
+现在，假设应用程序在检测到设备已越狱后立即关闭。您没有时间启动 Cycript 并替换函数实现。相反，您必须使用 CydiaSubstrate，使用适当的Hook函数（如`MSHookMessageEx`），然后编译调整。关于如何做到这一点有[很好的资源；](https://manualzz.com/doc/26490749/jailbreak-root-detection-evasion-study-on-ios-and-android)但是，通过使用 Frida，我们可以更轻松地执行早期检测，并且可以利用从之前的测试中收集到的技能。
 
 我们将用来绕过越狱检测的 Frida 的一项功能是所谓的早期检测，即我们将在启动时替换功能实现。
 
@@ -168,7 +168,7 @@ false
 frida-trace -U -f /Applications/DamnVulnerableIOSApp.app/DamnVulnerableIOSApp  -m "-[JailbreakDetectionVC isJailbroken]"
 ```
 
-这将启动 DamnVulnerableIOSApp，跟踪对 的调用，并使用和回调函数`-[JailbreakDetectionVC isJailbroken]`创建一个 JavaScript 挂钩。现在，替换返回值 via是微不足道的，如以下示例所示：`onEnter``onLeave``value.replace`
+这将启动 DamnVulnerableIOSApp，跟踪对 的调用，并使用和回调函数`-[JailbreakDetectionVC isJailbroken]`创建一个 JavaScript Hook。现在，替换返回值 via是微不足道的，如以下示例所示：`onEnter``onLeave``value.replace`
 
 ```
     onLeave: function (log, retval, state) {
@@ -199,7 +199,7 @@ Changing the return value to:0x0
 
 绕过依赖于文件系统检查的越狱检测机制的另一种方法是[反对](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)。[您可以在jailbreak.ts 脚本](https://github.com/sensepost/objection/blob/master/agent/src/ios/jailbreak.ts)中找到越狱绕过的实现。
 
-请参阅下面用于挂接 Objective-C 方法和本机函数的 Python 脚本：
+请参阅下面用于挂接 Objective-C 方法和Native函数的 Python 脚本：
 
 ```
 import frida
@@ -299,7 +299,7 @@ sys.stdin.read()
 
 有几种适用于 iOS 的反调试技术可以归类为预防性或反应性；下面讨论其中的一些。作为第一道防线，您可以使用预防技术来阻止调试器连接到应用程序。此外，您还可以应用反应性技术，允许应用程序检测调试器的存在并有机会偏离正常行为。当在整个应用程序中正确分布时，这些技术可作为辅助或支持措施来提高整体弹性。
 
-处理高度敏感数据的应用程序的应用程序开发人员应该意识到，防止调试几乎是不可能的。如果应用程序是公开可用的，它可以在攻击者完全控制的不受信任的设备上运行。一个非常坚定的攻击者最终会通过修补应用程序二进制文件或使用 Frida 等工具在运行时动态修改应用程序的行为来设法绕过应用程序的所有反调试控制。
+处理高度敏感数据的应用程序的应用程序开发人员应该意识到，防止调试几乎是不可能的。如果应用程序是公开可用的，它可以在攻击者完全控制的不受信任的设备上运行。一个非常坚定的攻击者最终会通过修补应用程序二进制文件或使用 Frida 等工具在Runtime(运行时)动态修改应用程序的行为来设法绕过应用程序的所有反调试控制。
 
 根据 Apple 的说法，您应该“[将上述代码的使用限制在程序的调试版本中](https://developer.apple.com/library/archive/qa/qa1361/_index.html)”。然而，研究表明，[许多 App Store 应用程序通常包含这些检查](https://seredynski.com/articles/a-security-review-of-1300-appstore-applications.html)。
 
@@ -395,7 +395,7 @@ static bool AmIBeingDebugged(void)
 
 ### 使用 getppid[¶](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/#using-getppid)
 
-iOS 上的应用程序可以通过检查其父 PID 来检测它们是否已被调试器启动。通常，一个应用程序是由[launchd](http://newosxbook.com/articles/Ch07.pdf)进程启动的，它是第一个运行在*用户模式下*的进程， PID=1。然而，如果调试器启动了一个应用程序，我们可以观察到它`getppid`返回一个不同于 1 的 PID。这种检测技术可以在本机代码中实现（通过系统调用），使用 Objective-C 或 Swift，如下所示：
+iOS 上的应用程序可以通过检查其父 PID 来检测它们是否已被调试器启动。通常，一个应用程序是由[launchd](http://newosxbook.com/articles/Ch07.pdf)进程启动的，它是第一个运行在*用户模式下*的进程， PID=1。然而，如果调试器启动了一个应用程序，我们可以观察到它`getppid`返回一个不同于 1 的 PID。这种检测技术可以在Native代码中实现（通过系统调用），使用 Objective-C 或 Swift，如下所示：
 
 ```
 func AmIBeingDebugged() -> Bool {
@@ -403,7 +403,7 @@ func AmIBeingDebugged() -> Bool {
 }
 ```
 
-与其他技术类似，这也有一个简单的绕过（例如，通过修补二进制文件或使用 Frida 挂钩）。
+与其他技术类似，这也有一个简单的绕过（例如，通过修补二进制文件或使用 Frida Hook）。
 
 ## 文件完整性检查（MSTG-RESILIENCE-3 和 MSTG-RESILIENCE-11）[¶](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/#file-integrity-checks-mstg-resilience-3-and-mstg-resilience-11)
 
@@ -411,7 +411,7 @@ func AmIBeingDebugged() -> Bool {
 
 有两个与文件完整性相关的主题：
 
-1. *应用程序源代码完整性检查：*在“ [iOS 上的篡改和逆向工程](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#debugging)”一章中，我们讨论了 iOS IPA 应用程序签名检查。我们还看到坚定的逆向工程师可以通过使用开发人员或企业证书重新打包和重新签署应用程序来绕过此检查。使这更难的一种方法是添加一个自定义检查，以确定签名在运行时是否仍然匹配。
+1. *应用程序源代码完整性检查：*在“ [iOS 上的篡改和逆向工程](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#debugging)”一章中，我们讨论了 iOS IPA 应用程序签名检查。我们还看到坚定的逆向工程师可以通过使用开发人员或企业证书重新打包和重新签署应用程序来绕过此检查。使这更难的一种方法是添加一个自定义检查，以确定签名在Runtime(运行时)是否仍然匹配。
 2. *文件存储完整性检查：*`UserDefaults`当文件被应用程序、Keychain、 / 、SQLite 数据库或 Realm 数据库中的键值对存储时，`NSUserDefaults`应保护其完整性。
 
 #### 示例实现 - 应用程序源代码[¶](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/#sample-implementation-application-source-code)
@@ -518,7 +518,7 @@ int xyz(char *dst) {
 
 1. 修补反调试功能并通过用 NOP 指令覆盖相关代码来禁用不需要的行为。
 2. 修补任何用于评估代码完整性的存储散列。
-3. 使用 Frida 挂钩文件系统 API 并返回原始文件的句柄而不是修改后的文件。
+3. 使用 Frida Hook文件系统 API 并返回原始文件的句柄而不是修改后的文件。
 
 ##### 当您试图绕过存储完整性检查时[¶](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/#when-youre-trying-to-bypass-the-storage-integrity-checks)
 
@@ -531,7 +531,7 @@ int xyz(char *dst) {
 
 以未修改的状态在设备上运行应用程序，并确保一切正常。然后使用 optool 将补丁应用到可执行文件，按照“基本安全测试”一章中的描述重新签署应用程序，然后运行它。该应用程序应检测到修改并以某种方式做出响应。至少，应用程序应该提醒用户和/或终止应用程序。绕过防御并回答以下问题：
 
-- 是否可以轻松绕过这些机制（例如，通过挂钩单个 API 函数）？
+- 是否可以轻松绕过这些机制（例如，通过Hook单个 API 函数）？
 - 通过静态和动态分析识别反调试代码有多难？
 - 您是否需要编写自定义代码来禁用防御？你需要多少时间？
 - 您如何评估绕过这些机制的难度？
@@ -553,7 +553,7 @@ int xyz(char *dst) {
 
 ### 检测方法[¶](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/#detection-methods)
 
-您可以通过查找关联的应用程序包、文件、进程或其他特定于工具的修改和工件来检测以未修改形式安装的流行逆向工程工具。在以下示例中，我们将讨论检测 Frida 检测框架的不同方法，该框架在本指南和现实世界中得到广泛使用。其他工具，如Cydia Substrate或Cycript，也可以类似检测。请注意，注入、挂钩和 DBI（动态二进制检测）工具通常可以通过运行时完整性检查隐式检测到，这将在下面讨论。
+您可以通过查找关联的应用程序包、文件、进程或其他特定于工具的修改和工件来检测以未修改形式安装的流行逆向工程工具。在以下示例中，我们将讨论检测 Frida 检测框架的不同方法，该框架在本指南和现实世界中得到广泛使用。其他工具，如Cydia Substrate或Cycript，也可以类似检测。请注意，注入、Hook和 DBI（动态二进制检测）工具通常可以通过Runtime(运行时)完整性检查隐式检测到，这将在下面讨论。
 
 例如，Frida 在越狱设备上以默认配置（注入模式）以 frida-server 的名称运行。当您显式附加到目标应用程序时（例如，通过 frida-trace 或 Frida CLI），Frida 会在应用程序的内存中注入一个 frida-agent。因此，您可能希望在附加到应用程序之后（而不是之前）找到它。`proc`在 Android 上，验证这一点非常简单，因为您可以简单地在目录 ( `/proc/<pid>/maps`)中进程 ID 的内存映射中查找字符串“frida” 。但是，在 iOS 上该`proc`目录不可用，但您可以使用函数列出应用程序中加载的动态库`_dyld_image_count`。
 
@@ -608,7 +608,7 @@ drwxr-xr-x 11 _installd _installd  352 Nov 19 06:08 ../
 
 接下来，绕过逆向工程工具的检测并回答以下问题：
 
-- 是否可以轻松绕过这些机制（例如，通过挂钩单个 API 函数）？
+- 是否可以轻松绕过这些机制（例如，通过Hook单个 API 函数）？
 - 通过静态和动态分析识别反逆向工程代码有多难？
 - 您是否需要编写自定义代码来禁用防御？你需要多少时间？
 - 您如何评估绕过这些机制的难度？
@@ -616,7 +616,7 @@ drwxr-xr-x 11 _installd _installd  352 Nov 19 06:08 ../
 绕过逆向工程工具的检测时，应遵循以下步骤：
 
 1. 修补反逆向工程功能。通过使用 radare2/Cutter 或 Ghidra 修补二进制文件来禁用不需要的行为。
-2. 使用 Frida 或 Cydia Substrate 在 Objective-C/Swift 或本机层上挂接文件系统 API。返回原始文件的句柄，而不是修改后的文件。
+2. 使用 Frida 或 Cydia Substrate 在 Objective-C/Swift 或Native层上挂接文件系统 API。返回原始文件的句柄，而不是修改后的文件。
 
 有关修补和代码注入的示例，请参阅“ [iOS 上](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/)的篡改和逆向工程”一章。
 
@@ -688,7 +688,7 @@ mov        rbp, rsp
 
 ### 字符串加密[¶](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/#string-encryption)
 
-应用程序通常使用硬编码密钥、许可证、令牌和端点 URL 进行编译。默认情况下，所有这些都以明文形式存储在应用程序二进制文件的数据部分中。此技术加密这些值并将代码存根注入程序，程序将在程序使用数据之前对其进行解密。
+应用程序通常使用硬编码密钥、Licenses（许可证）、令牌和端点 URL 进行编译。默认情况下，所有这些都以明文形式存储在应用程序二进制文件的数据部分中。此技术加密这些值并将代码存根注入程序，程序将在程序使用数据之前对其进行解密。
 
 ### 推荐工具[¶](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/#recommended-tools)
 

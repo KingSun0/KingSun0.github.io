@@ -304,7 +304,7 @@ ATS 实施扩展安全检查，以补充传输层安全 (TLS) 协议规定的默
 
 按照[“测试端点识别验证 > 动态分析 > 服务器证书验证”](https://mas.owasp.org/MASTG/iOS/0x06g-Testing-Network-Communication/#server-certificate-validation)中的说明进行操作。如果这样做不会导致流量被代理，则可能意味着实际上已实施证书固定并且所有安全措施都已到位。所有域都会发生同样的情况吗？
 
-作为快速冒烟测试，您可以尝试使用[异议](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)绕过证书固定，如[“绕过证书固定”](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#bypassing-certificate-pinning)中所述。被异议挂钩的固定相关 API 应该出现在异议的输出中。
+作为快速冒烟测试，您可以尝试使用[objection](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)绕过证书固定，如[“绕过证书固定”](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#bypassing-certificate-pinning)中所述。被objectionHook的固定相关 API 应该出现在objection的输出中。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06b/ios_ssl_pinning_bypass.png)
 

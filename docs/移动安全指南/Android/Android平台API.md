@@ -35,7 +35,7 @@ Android 权限根据它们提供的保护级别分为四个不同的类别：
 
 - 该`READ_PHONE_NUMBERS`权限授予对存储在设备中的电话号码的读取权限。
 
-- **授予危险权限时的限制**：危险权限分为权限组（例如`STORAGE`组包含`READ_EXTERNAL_STORAGE`和`WRITE_EXTERNAL_STORAGE`）。在 Android 8.0（API 级别 26）之前，为了同时获得该组的所有权限，请求该组的一个权限就足够了。这[从 Android 8.0（API 级别 26）开始](https://developer.android.com/about/versions/oreo/android-8.0-changes#rmp)发生了变化：每当应用程序在运行时请求权限时，系统将专门授予该特定权限。但是，请注意，**该权限组中的所有后续权限请求都将自动授予**，而不会向用户显示权限对话框。请参阅 Android 开发人员文档中的示例：
+- **授予危险权限时的限制**：危险权限分为权限组（例如`STORAGE`组包含`READ_EXTERNAL_STORAGE`和`WRITE_EXTERNAL_STORAGE`）。在 Android 8.0（API 级别 26）之前，为了同时获得该组的所有权限，请求该组的一个权限就足够了。这[从 Android 8.0（API 级别 26）开始](https://developer.android.com/about/versions/oreo/android-8.0-changes#rmp)发生了变化：每当应用程序在Runtime(运行时)请求权限时，系统将专门授予该特定权限。但是，请注意，**该权限组中的所有后续权限请求都将自动授予**，而不会向用户显示权限对话框。请参阅 Android 开发人员文档中的示例：
 
   > 假设某个应用在其清单中列出了 READ_EXTERNAL_STORAGE 和 WRITE_EXTERNAL_STORAGE。该应用程序请求 READ_EXTERNAL_STORAGE 并且用户授予它。如果应用程序的目标 API 级别为 25 或更低，系统也会同时授予 WRITE_EXTERNAL_STORAGE，因为它属于同一个 STORAGE 权限组并且也在清单中注册。如果应用程序针对 Android 8.0（API 级别 26），系统此时仅授予 READ_EXTERNAL_STORAGE；但是，如果应用稍后请求 WRITE_EXTERNAL_STORAGE，系统会立即授予该权限，而不会提示用户。
 
@@ -46,7 +46,7 @@ Android 权限根据它们提供的保护级别分为四个不同的类别：
 以下[更改](https://developer.android.com/about/versions/pie/android-9.0-changes-all)会影响在 Android 9 上运行的所有应用，甚至会影响那些针对 API 级别低于 28 的应用。
 
 - **对通话记录的限制访问**：`READ_CALL_LOG`、`WRITE_CALL_LOG`和`PROCESS_OUTGOING_CALLS`（危险）权限已移至`PHONE`新`CALL_LOG`权限组。这意味着能够拨打电话（例如，通过`PHONE`授予组的权限）不足以访问通话记录。
-- **限制访问电话号码**`READ_CALL_LOG`：在 Android 9（API 级别 28）上运行时，想要读取电话号码的应用需要获得许可。
+- **限制访问电话号码**`READ_CALL_LOG`：在 Android 9（API 级别 28）上Runtime(运行时)，想要读取电话号码的应用需要获得许可。
 - **限制访问 Wi-Fi 位置和连接信息**：无法检索 SSID 和 BSSID 值（例如通过[`WifiManager.getConnectionInfo`](https://developer.android.com/reference/android/net/wifi/WifiManager#getConnectionInfo())，除非满足以下*所有*条件：
 - 或`ACCESS_FINE_LOCATION`许可`ACCESS_COARSE_LOCATION`。
 - `ACCESS_WIFI_STATE`许可。
@@ -83,17 +83,17 @@ android:permission`通过清单中标记内的属性应用的权限`<service>`�
 
 请注意，接收者和广播者都可能需要许可。发生这种情况时，两个权限检查都必须通过才能将意图传递给关联的目标。有关详细信息，请参阅Android 开发人员文档中的“[使用权限限制广播”部分。](https://developer.android.com/guide/components/broadcasts#restrict-broadcasts-permissions)
 
-### 内容提供者许可执行[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#content-provider-permission-enforcement)
+### Content Provider(内容提供者)许可执行[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#content-provider-permission-enforcement)
 
-`android:permission`通过标记内的属性应用的权限`<provider>`限制对 ContentProvider 中数据的访问。内容提供者有一个重要的附加安全设施，称为 URI 权限，接下来将对其进行描述。与其他组件不同，ContentProvider 有两个可以设置的单独权限属性，`android:readPermission`限制谁可以从提供者读取，以及`android:writePermission`限制谁可以写入它。如果 ContentProvider 受读写权限保护，则仅持有写入权限不会同时授予读取权限。
+`android:permission`通过标记内的属性应用的权限`<provider>`限制对 ContentProvider 中数据的访问。Content Provider(内容提供者)有一个重要的附加安全设施，称为 URI 权限，接下来将对其进行描述。与其他组件不同，ContentProvider 有两个可以设置的单独权限属性，`android:readPermission`限制谁可以从提供者读取，以及`android:writePermission`限制谁可以写入它。如果 ContentProvider 受读写权限保护，则仅持有写入权限不会同时授予读取权限。
 
 当您第一次检索提供程序时以及使用 ContentProvider 执行操作时会检查权限。使用`ContentResolver.query`需要持有读权限；使用`ContentResolver.insert`, `ContentResolver.update`,`ContentResolver.delete`需要写权限。`SecurityException`如果在所有这些情况下都未持有适当的权限，则将从调用中抛出A。
 
-### 内容提供商 URI 权限[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#content-provider-uri-permissions)
+### Content Provider(内容提供者) URI 权限[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#content-provider-uri-permissions)
 
-与内容提供者一起使用时，标准权限系统是不够的。例如，内容提供者可能希望将权限限制为 READ 权限以保护自己，同时使用自定义 URI 来检索信息。应用程序应该只拥有该特定 URI 的权限。
+与Content Provider(内容提供者)一起使用时，标准权限系统是不够的。例如，Content Provider(内容提供者)可能希望将权限限制为 READ 权限以保护自己，同时使用自定义 URI 来检索信息。应用程序应该只拥有该特定 URI 的权限。
 
-解决方案是每个 URI 权限。当启动活动或从活动返回结果时，该方法可以设置`Intent.FLAG_GRANT_READ_URI_PERMISSION`和/或`Intent.FLAG_GRANT_WRITE_URI_PERMISSION`。这会授予特定 URI 的活动权限，而不管它是否有权访问来自内容提供者的数据。
+解决方案是每个 URI 权限。当启动活动或从活动返回结果时，该方法可以设置`Intent.FLAG_GRANT_READ_URI_PERMISSION`和/或`Intent.FLAG_GRANT_WRITE_URI_PERMISSION`。这会授予特定 URI 的活动权限，而不管它是否有权访问来自Content Provider(内容提供者)的数据。
 
 这允许一个通用的能力样式模型，其中用户交互驱动特别授予细粒度的权限。这可能是将应用程序所需的权限减少到仅与其行为直接相关的权限的关键工具。如果没有此模型，恶意用户可能会通过未受保护的 URI 访问其他成员的电子邮件附件或收集联系人列表以供将来使用。在清单中，[`android:grantUriPermissions`](https://developer.android.com/guide/topics/manifest/provider-element#gprmsn)属性或节点有助于限制 URI。
 
@@ -128,7 +128,7 @@ Android 允许应用程序将其服务/组件公开给其他应用程序。应�
 </activity>
 ```
 
-创建权限后，应用程序可以通过文件中的标记`START_MAIN_ACTIVITY`请求它。任何授予自定义权限的应用程序都可以启动. 请注意必须在 之前声明，否则在运行时会发生异常。请参阅下面基于[权限概述](https://developer.android.com/guide/topics/permissions/overview)和[manifest-intro](https://developer.android.com/guide/topics/manifest/manifest-intro#filestruct)的示例。`uses-permission``AndroidManifest.xml``START_MAIN_ACTIVITY``TEST_ACTIVITY``<uses-permission android:name="myapp.permission.START_MAIN_ACTIVITY" />``<application>`
+创建权限后，应用程序可以通过文件中的标记`START_MAIN_ACTIVITY`请求它。任何授予自定义权限的应用程序都可以启动. 请注意必须在 之前声明，否则在Runtime(运行时)会发生异常。请参阅下面基于[权限概述](https://developer.android.com/guide/topics/permissions/overview)和[manifest-intro](https://developer.android.com/guide/topics/manifest/manifest-intro#filestruct)的示例。`uses-permission``AndroidManifest.xml``START_MAIN_ACTIVITY``TEST_ACTIVITY``<uses-permission android:name="myapp.permission.START_MAIN_ACTIVITY" />``<application>`
 
 ```
 <manifest>
@@ -144,7 +144,7 @@ Android 允许应用程序将其服务/组件公开给其他应用程序。应�
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#static-analysis)
 
-#### 安卓权限[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-permissions)
+#### Android权限[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-permissions)
 
 检查权限以确保应用确实需要它们并删除不必要的权限。例如，`INTERNET`AndroidManifest.xml 文件中的权限是 Activity 将网页加载到 WebView 所必需的。由于用户可以撤销应用程序使用危险权限的权利，因此开发人员应在每次执行需要该权限的操作时检查应用程序是否具有适当的权限。
 
@@ -211,7 +211,7 @@ WRITE_EXTERNAL_STORAGE
 
 #### 自定义权限[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#custom-permissions_1)
 
-除了通过应用程序清单文件强制执行自定义权限外，您还可以通过编程方式检查权限。但是，不建议这样做，因为它更容易出错，并且可以更容易地通过运行时检测等方式绕过。建议`ContextCompat.checkSelfPermission`调用该方法来检查活动是否具有指定权限。每当您看到类似以下代码段的代码时，请确保在清单文件中强制执行相同的权限。
+除了通过应用程序清单文件强制执行自定义权限外，您还可以通过编程方式检查权限。但是，不建议这样做，因为它更容易出错，并且可以更容易地通过Runtime(运行时)检测等方式绕过。建议`ContextCompat.checkSelfPermission`调用该方法来检查活动是否具有指定权限。每当您看到类似以下代码段的代码时，请确保在清单文件中强制执行相同的权限。
 
 ```
 private static final String TAG = "LOG";
@@ -232,7 +232,7 @@ if (ContextCompat.checkSelfPermission(secureActivity.this, Manifest.READ_INCOMIN
 
 ### 请求权限[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#requesting-permissions)
 
-如果您的应用程序具有需要在运行时请求的权限，则应用程序必须调用该`requestPermissions`方法才能获得它们。该应用程序将所需的权限和您指定的整数请求代码异步传递给用户，一旦用户选择接受或拒绝同一线程中的请求，就会返回。返回响应后，相同的请求代码将传递给应用程序的回调方法。
+如果您的应用程序具有需要在Runtime(运行时)请求的权限，则应用程序必须调用该`requestPermissions`方法才能获得它们。该应用程序将所需的权限和您指定的整数请求代码异步传递给用户，一旦用户选择接受或拒绝同一线程中的请求，就会返回。返回响应后，相同的请求代码将传递给应用程序的回调方法。
 
 ```
 private static final String TAG = "LOG";
@@ -324,7 +324,7 @@ install permissions:
 
 - **声明的权限**：所有*自定义*权限的列表。
 - **请求和安装权限**：所有安装时权限的列表，包括*普通*权限和*签名*权限。
-- **运行时权限**：所有*危险*权限的列表。
+- **Runtime(运行时)权限**：所有*危险*权限的列表。
 
 在进行动态分析时：
 
@@ -356,7 +356,7 @@ Android 应用程序可以通过深层链接（这是 Intents 的一部分）公
 
 下面显示了一个易受攻击的 IPC 机制的示例。
 
-您可以使用*ContentProvider*访问数据库信息，并且可以探测服务以查看它们是否返回数据。如果数据未正确验证，内容提供者可能会在其他应用程序与其交互时容易发生 SQL 注入。请参阅以下易受攻击的*ContentProvider*实现。
+您可以使用*ContentProvider*访问数据库信息，并且可以探测服务以查看它们是否返回数据。如果数据未正确验证，Content Provider(内容提供者)可能会在其他应用程序与其交互时容易发生 SQL 注入。请参阅以下易受攻击的*ContentProvider*实现。
 
 ```
 <provider
@@ -365,7 +365,7 @@ Android 应用程序可以通过深层链接（这是 Intents 的一部分）公
 </provider>
 ```
 
-上面定义了一个内容提供者，它`AndroidManifest.xml`被导出并因此可用于所有其他应用程序。应该检查类中的`query`函数。`OMTG_CODING_003_SQL_Injection_Content_Provider_Implementation.java`
+上面定义了一个Content Provider(内容提供者)，它`AndroidManifest.xml`被导出并因此可用于所有其他应用程序。应该检查类中的`query`函数。`OMTG_CODING_003_SQL_Injection_Content_Provider_Implementation.java`
 
 ```
 @Override
@@ -424,7 +424,7 @@ public boolean isAlphaNumeric(String s){
 
 测试人员应使用字符串手动测试输入字段`OR 1=1--`，例如，是否已识别出本地 SQL 注入漏洞。
 
-在获得 root 权限的设备上，命令内容可用于从内容提供商处查询数据。以下命令查询上述易受攻击的函数。
+在获得 root 权限的设备上，命令内容可用于从Content Provider(内容提供者)处查询数据。以下命令查询上述易受攻击的函数。
 
 ```
 # content query --uri content://sg.vp.owasp_mobile.provider.College/students
@@ -543,7 +543,7 @@ WebView 是 Android 的嵌入式组件，允许您的应用程序在您的应用
 
 您可以使用[SafetyNet 库](https://developer.android.com/training/safetynet/safebrowsing)独立于 WebView 使用 SafeBrowsing API ，该库实现了安全浏览网络协议 v4 的客户端。SafetyNet 允许您分析您的应用程序应该加载的所有 URL。您可以检查具有不同方案（例如 http、文件）的 URL，因为 SafeBrowsing 不了解 URL 方案`TYPE_POTENTIALLY_HARMFUL_APPLICATION`以及`TYPE_SOCIAL_ENGINEERING`威胁类型。
 
-#### 病毒总 API[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#virus-total-api)
+#### Virus Total API[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#virus-total-api)
 
 Virus Total 提供了一个 API，用于分析已知威胁的 URL 和本地文件。API 参考在[Virus Total 开发者页面](https://developers.virustotal.com/reference#getting-started)上可用。
 
@@ -577,7 +577,7 @@ Virus Total 提供了一个 API，用于分析已知威胁的 URL 和本地文�
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#dynamic-analysis_2)
 
-动态测试深度链接的一种便捷方法是使用 Frida 或 frida-trace 并在使用应用程序并单击 WebView 中的链接时挂接`shouldOverrideUrlLoading`,方法。`shouldInterceptRequest`确保还挂钩其他相关[`Uri`](https://developer.android.com/reference/android/net/Uri)方法，例如`getHost`，`getScheme`或`getPath`通常用于检查请求并匹配已知模式或拒绝列表的方法。
+动态测试深度链接的一种便捷方法是使用 Frida 或 frida-trace 并在使用应用程序并单击 WebView 中的链接时挂接`shouldOverrideUrlLoading`,方法。`shouldInterceptRequest`确保还Hook其他相关[`Uri`](https://developer.android.com/reference/android/net/Uri)方法，例如`getHost`，`getScheme`或`getPath`通常用于检查请求并匹配已知模式或拒绝列表的方法。
 
 ## 测试深层链接 (MSTG-PLATFORM-3)[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#testing-deep-links-mstg-platform-3)
 
@@ -598,7 +598,7 @@ Android 支持两种类型的深层链接：
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05h/app-disambiguation.png)
 
-#### 安卓应用链接[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-app-links)
+#### Android应用链接[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-app-links)
 
 为了解决深度链接冲突问题，Android 6.0（API 级别 23）引入了[**Android App Links**](https://developer.android.com/training/app-links)，这是基于开发者明确注册的网站 URL[验证的深度链接。](https://developer.android.com/training/app-links/verify-site-associations)单击应用程序链接将立即打开已安装的应用程序。
 
@@ -679,7 +679,7 @@ Android 支持两种类型的深层链接：
 adb shell dumpsys package com.example.package
 ```
 
-**使用安卓“App Link Verification”测试仪：**
+**使用Android“App Link Verification”测试仪：**
 
 使用[Android“App Link Verification”Tester](https://github.com/inesmartins/Android-App-Link-Verification-Tester)脚本列出所有深层链接 ( `list-all`) 或仅列出应用程序链接 ( `list-applinks`)：
 
@@ -825,7 +825,7 @@ deeplinkdemo://load.html?attacker_controlled=<svg onload=alert(1)>
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#dynamic-analysis_3)
 
-在这里，您将使用来自静态分析的深层链接列表来迭代和确定每个处理程序方法和处理的数据（如果有）。您将首先启动[Frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#frida)挂钩，然后开始调用深层链接。
+在这里，您将使用来自静态分析的深层链接列表来迭代和确定每个处理程序方法和处理的数据（如果有）。您将首先启动[Frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#frida)Hook，然后开始调用深层链接。
 
 以下示例假定目标应用程序接受此深层链接：`deeplinkdemo://load.html`。但是，我们还不知道相应的处理程序方法，也不知道它可能接受的参数。
 
@@ -879,7 +879,7 @@ com.android.internal.os.ZygoteInit.main(ZygoteInit.java)
 - 班级：`com.mstg.deeplinkdemo.WebViewActivity`
 - 方法：`onCreate`
 
-> 有时您甚至可以利用您知道与目标应用程序交互的其他应用程序。您可以对应用程序进行反向工程（例如，提取所有字符串并过滤那些包含目标深层链接的字符串，`deeplinkdemo:///load.html`在之前的案例中），或者将它们用作触发器，同时如前所述挂钩应用程序。
+> 有时您甚至可以利用您知道与目标应用程序交互的其他应用程序。您可以对应用程序进行反向工程（例如，提取所有字符串并过滤那些包含目标深层链接的字符串，`deeplinkdemo:///load.html`在之前的案例中），或者将它们用作触发器，同时如前所述Hook应用程序。
 
 ## 通过 IPC 测试敏感功能暴露 (MSTG-PLATFORM-4)[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#testing-for-sensitive-functionality-exposure-through-ipc-mstg-platform-4)
 
@@ -894,7 +894,7 @@ com.android.internal.os.ZygoteInit.main(ZygoteInit.java)
 - [绑定服务](https://developer.android.com/guide/components/bound-services.html)
 - [AIDL](https://developer.android.com/guide/components/aidl.html)
 - [意图](https://developer.android.com/reference/android/content/Intent.html)
-- [内容提供商](https://developer.android.com/reference/android/content/ContentProvider.html)
+- [Content Provider(内容提供者)](https://developer.android.com/reference/android/content/ContentProvider.html)
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#static-analysis_4)
 
@@ -909,14 +909,14 @@ com.android.internal.os.ZygoteInit.main(ZygoteInit.java)
 
 请记住，使用权限标记 ( `android:permission`) 还会限制其他应用程序对组件的访问。如果您的 IPC 旨在供其他应用程序访问，您可以对`<permission>`元素应用安全策略并设置适当的`android:protectionLevel`. 在服务声明中使用时，其他应用程序必须在自己的清单中`android:permission`声明相应的元素以启动、停止或绑定到服务。`<uses-permission>`
 
-关于内容提供者的更多信息，请参考“测试数据存储”章节中的测试用例“测试存储的敏感数据是否通过IPC机制暴露”。
+关于Content Provider(内容提供者)的更多信息，请参考“测试数据存储”章节中的测试用例“测试存储的敏感数据是否通过IPC机制暴露”。
 
-一旦确定了 IPC 机制列表，请查看源代码以查看在使用这些机制时是否泄露了敏感数据。例如，内容提供者可用于访问数据库信息，服务可被探测以查看它们是否返回数据。如果探测或嗅探，广播接收器可能会泄露敏感信息。
+一旦确定了 IPC 机制列表，请查看源代码以查看在使用这些机制时是否泄露了敏感数据。例如，Content Provider(内容提供者)可用于访问数据库信息，服务可被探测以查看它们是否返回数据。如果探测或嗅探，广播接收器可能会泄露敏感信息。
 
 在下文中，我们使用两个示例应用程序并给出识别易受攻击的 IPC 组件的示例：
 
-- [“筛”](https://github.com/mwrlabs/drozer/releases/download/2.3.4/sieve.apk)
-- [“安卓不安全银行”](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#insecurebankv2)
+- [“Sieve”](https://github.com/mwrlabs/drozer/releases/download/2.3.4/sieve.apk)
+- [“Android不安全银行”](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#insecurebankv2)
 
 ### 活动[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#activities)
 
@@ -1051,9 +1051,9 @@ BroadcastReceivers 应该使用该`android:permission`属性；否则，其他�
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05h/MobSF_Show_Components.png)
 
-#### 内容提供商[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#content-providers)
+#### Content Provider(内容提供者)[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#content-providers)
 
-“Sieve”应用程序实现了一个易受攻击的内容提供程序。要列出 Sieve 应用程序导出的内容提供者，请执行以下命令：
+“Sieve”应用程序实现了一个易受攻击的内容提供程序。要列出 Sieve 应用程序导出的Content Provider(内容提供者)，请执行以下命令：
 
 ```
 $ adb shell dumpsys package com.mwr.example.sieve | grep -Po "Provider{[\w\d\s\./]+}" | sort -u
@@ -1063,10 +1063,10 @@ Provider{64f10ea com.mwr.example.sieve/.DBContentProvider}
 
 一旦确定，您可以使用[jadx](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#jadx)对应用程序进行逆向工程并分析导出的内容提供程序的源代码以识别潜在的漏洞。
 
-要识别内容提供者的相应类别，请使用以下信息：
+要识别Content Provider(内容提供者)的相应类别，请使用以下信息：
 
 - 包裹名称：`com.mwr.example.sieve`.
-- 内容提供者类名：`DBContentProvider`.
+- Content Provider(内容提供者)类名：`DBContentProvider`.
 
 在分析类`com.mwr.example.sieve.DBContentProvider`时，您会看到它包含几个 URI：
 
@@ -1080,7 +1080,7 @@ public class DBContentProvider extends ContentProvider {
 }
 ```
 
-使用以下命令使用识别的 URI 调用内容提供者：
+使用以下命令使用识别的 URI 调用Content Provider(内容提供者)：
 
 ```
 $ adb shell content query --uri content://com.mwr.example.sieve.DBContentProvider/Keys/
@@ -1351,7 +1351,7 @@ Intent { act=theBroadcast flg=0x400010 (has extras) }
 
 ### 概述[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#overview_6)
 
-JavaScript 可以通过反射、存储或基于 DOM 的跨站点脚本 (XSS) 注入 Web 应用程序。移动应用程序在沙盒环境中执行，在本机实现时不存在此漏洞。然而，WebViews 可能是本地应用程序的一部分，以允许查看网页。每个应用程序都有自己的 WebView 缓存，不会与本机浏览器或其他应用程序共享。在 Android 上，WebViews 使用 WebKit 渲染引擎来显示网页，但页面被精简到最少的功能，例如，页面没有地址栏。如果 WebView 实现过于松散并允许使用 JavaScript，则 JavaScript 可用于攻击应用程序并获取对其数据的访问权限。
+JavaScript 可以通过反射、存储或基于 DOM 的跨站点脚本 (XSS) 注入 Web 应用程序。移动应用程序在沙盒环境中执行，在Native实现时不存在此漏洞。然而，WebViews 可能是本地应用程序的一部分，以允许查看网页。每个应用程序都有自己的 WebView 缓存，不会与Native浏览器或其他应用程序共享。在 Android 上，WebViews 使用 WebKit 渲染引擎来显示网页，但页面被精简到最少的功能，例如，页面没有地址栏。如果 WebView 实现过于松散并允许使用 JavaScript，则 JavaScript 可用于攻击应用程序并获取对其数据的访问权限。
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#static-analysis_5)
 
@@ -1460,7 +1460,7 @@ webView.getSettings().setAllowContentAccess(false);
 
 ### 概述[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#overview_8)
 
-Android 为在 WebView 中执行的 JavaScript 提供了一种调用和使用 Android 应用程序（注释为`@JavascriptInterface`）的原生功能的[`addJavascriptInterface`](https://developer.android.com/reference/android/webkit/WebView.html#addJavascriptInterface(java.lang.Object, java.lang.String))方法。这称为*WebView JavaScript 桥*或*本机桥*。
+Android 为在 WebView 中执行的 JavaScript 提供了一种调用和使用 Android 应用程序（注释为`@JavascriptInterface`）的原生功能的[`addJavascriptInterface`](https://developer.android.com/reference/android/webkit/WebView.html#addJavascriptInterface(java.lang.Object, java.lang.String))方法。这称为*WebView JavaScript 桥*或*Native桥*。
 
 请注意，**当您使用 时`addJavascriptInterface`，您是在明确授予该 WebView 中加载的所有页面访问已注册的 JavaScript 接口对象的权限**。这意味着，如果用户在您的应用程序或域之外导航，所有其他外部页面也将可以访问那些 JavaScript 接口对象，如果通过这些接口暴露任何敏感数据，这可能会带来潜在的安全风险。
 
@@ -1583,7 +1583,7 @@ String json = gson.toJson(obj);
 
 #### XML[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#xml)
 
-有多种方法可以将对象的内容序列化为 XML 并返回。Android 自带的`XmlPullParser`接口允许易于维护的 XML 解析。Android 中有两种实现：`KXmlParser`和`ExpatPullParser`. [Android 开发人员指南](https://developer.android.com/training/basics/network-ops/xml#java)提供了有关如何使用它们的精彩文章。接下来，还有各种替代方案，例如`SAX`Java 运行时附带的解析器。有关更多信息，请参阅[来自 ibm.com 的博文](https://www.ibm.com/developerworks/opensource/library/x-android/index.html)。与 JSON 类似，XML 存在主要基于字符串工作的问题，这意味着字符串类型的秘密将更难从内存中删除。XML 数据可以存储在任何地方（数据库、文件），但需要额外的保护以防秘密或不应更改的信息。见章节“[Android 上的数据存储](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/)”以获取更多详细信息。如前所述：XML 中的真正危险在于[XML 外部实体 (XXE)](https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing)攻击，因为它可能允许读取仍可在应用程序中访问的外部数据源。
+有多种方法可以将对象的内容序列化为 XML 并返回。Android 自带的`XmlPullParser`接口允许易于维护的 XML 解析。Android 中有两种实现：`KXmlParser`和`ExpatPullParser`. [Android 开发人员指南](https://developer.android.com/training/basics/network-ops/xml#java)提供了有关如何使用它们的精彩文章。接下来，还有各种替代方案，例如`SAX`Java Runtime(运行时)附带的解析器。有关更多信息，请参阅[来自 ibm.com 的博文](https://www.ibm.com/developerworks/opensource/library/x-android/index.html)。与 JSON 类似，XML 存在主要基于字符串工作的问题，这意味着字符串类型的秘密将更难从内存中删除。XML 数据可以存储在任何地方（数据库、文件），但需要额外的保护以防秘密或不应更改的信息。见章节“[Android 上的数据存储](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/)”以获取更多详细信息。如前所述：XML 中的真正危险在于[XML 外部实体 (XXE)](https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing)攻击，因为它可能允许读取仍可在应用程序中访问的外部数据源。
 
 #### 对象关系管理[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#orm)
 
@@ -1592,7 +1592,7 @@ String json = gson.toJson(obj);
 - [OrmLite](http://ormlite.com/) ,
 - [糖ORM](https://satyan.github.io/sugar/)，
 - [GreenDAO](https://greenrobot.org/greendao/)和
-- [活跃的安卓](http://www.activeandroid.com/)。
+- [活跃的Android](http://www.activeandroid.com/)。
 
 另一方面，[Realm使用自己的数据库来存储类的内容。](https://realm.io/docs/java/latest/)ORM 可以提供的保护量主要取决于数据库是否加密。[有关详细信息，请参阅“ Android 上](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/)的数据存储”一章。Realm 网站包含一个很好[的 ORM Lite 示例](https://github.com/j256/ormlite-examples/tree/master/android/HelloAndroid)。
 
@@ -1736,7 +1736,7 @@ public class MyParcelable implements Parcelable {
 有几种执行动态分析的方法：
 
 1. 对于实际的持久性：使用数据存储一章中描述的技术。
-2. 对于基于反射的方法：使用 Xposed 挂钩到反序列化方法或向序列化对象添加不可处理的信息以查看它们是如何处理的（例如，应用程序是否崩溃或可以通过丰富对象来提取额外信息）。
+2. 对于基于反射的方法：使用 Xposed Hook到反序列化方法或向序列化对象添加不可处理的信息以查看它们是如何处理的（例如，应用程序是否崩溃或可以通过丰富对象来提取额外信息）。
 
 ### 测试 WebViews 清理 (MSTG-PLATFORM-10)[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#testing-webviews-cleanup-mstg-platform-10)
 
@@ -1942,12 +1942,12 @@ protected void onResume() {
 
 - https://developer.android.com/guide/app-bundle/in-app-updates
 
-### 安卓片段注入[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-fragment-injection)
+### Android片段注入[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-fragment-injection)
 
 - https://www.synopsys.com/blogs/software-security/fragment-injection/
 - https://securityintelligence.com/wp-content/uploads/2013/12/android-collapses-into-fragments.pdf
 
-### 安卓权限文档[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-permissions-documentation)
+### Android权限文档[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-permissions-documentation)
 
 - https://developer.android.com/training/permissions/usage-notes
 - https://developer.android.com/training/permissions/requesting#java
@@ -1984,7 +1984,7 @@ protected void onResume() {
 - https://developers.google.com/digital-asset-links/v1/getting-started
 - https://pdfs.semanticscholar.org/0415/59c01d5235f8cf38a3c69ccee7e1f1a98067.pdf
 
-### 安卓应用程序通知[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-app-notifications)
+### Android应用程序通知[¶](https://mas.owasp.org/MASTG/Android/0x05h-Testing-Platform-Interaction/#android-app-notifications)
 
 - https://developer.android.com/guide/topics/ui/notifiers/notifications
 - https://developer.android.com/training/notify-user/build-notification
@@ -1999,7 +1999,7 @@ protected void onResume() {
 - MSTG-PLATFORM-4：“该应用程序不会通过 IPC 设施导出敏感功能，除非这些机制得到适当保护。”
 - MSTG-PLATFORM-5：“除非明确要求，否则 JavaScript 在 WebView 中被禁用。”
 - MSTG-PLATFORM-6：“WebViews 配置为仅允许所需的最小协议处理程序集（理想情况下，仅支持 https）。禁用潜在危险的处理程序，例如文件、电话和应用程序 ID。”
-- MSTG-PLATFORM-7：“如果应用程序的本机方法暴露给 WebView，请验证 WebView 仅呈现应用程序包中包含的 JavaScript。”
+- MSTG-PLATFORM-7：“如果应用程序的Native方法暴露给 WebView，请验证 WebView 仅呈现应用程序包中包含的 JavaScript。”
 - MSTG-PLATFORM-8：“对象序列化（如果有的话）是使用安全序列化 API 实现的。”
 - MSTG-PLATFORM-10：“在销毁 WebView 之前，应清除 WebView 的缓存、存储和加载的资源（JavaScript 等）。”
 - MSTG-ARCH-9：“存在强制更新移动应用程序的机制。”

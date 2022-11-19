@@ -1,10 +1,10 @@
-# 安卓本地认证[¶](https://mas.owasp.org/MASTG/Android/0x05f-Testing-Local-Authentication/#android-local-authentication)
+# Android本地认证[¶](https://mas.owasp.org/MASTG/Android/0x05f-Testing-Local-Authentication/#android-local-authentication)
 
 在本地身份验证期间，应用程序根据设备本地存储的凭据对用户进行身份验证。换句话说，用户通过提供有效的 PIN、密码或面部或指纹等生物特征来“解锁”应用程序或某些内层功能，这些特征通过引用本地数据进行验证。通常，这样做是为了让用户可以更方便地恢复与远程服务的现有会话，或者作为一种加强身份验证的方式来保护某些关键功能。
 
 正如之前在“[移动应用程序身份验证架构](https://mas.owasp.org/MASTG/General/0x04e-Testing-Authentication-and-Session-Management/)”一章中所述：测试人员应该知道本地身份验证应该始终在远程端点或基于加密原语强制执行。如果身份验证过程没有返回数据，攻击者可以轻松绕过本地身份验证。
 
-在 Android 中，Android 运行时支持两种本地身份验证机制：确认凭证流程和生物识别身份验证流程。
+在 Android 中，Android Runtime(运行时)支持两种本地身份验证机制：确认凭证流程和生物识别身份验证流程。
 
 ## 测试确认凭据（MSTG-AUTH-1 和 MSTG-STORAGE-11）[¶](https://mas.owasp.org/MASTG/Android/0x05f-Testing-Local-Authentication/#testing-confirm-credentials-mstg-auth-1-and-mstg-storage-11)
 
@@ -111,7 +111,7 @@ Android 平台提供了三种不同的生物认证类：
 
 Android 6.0（API 级别 23）引入了用于通过指纹对用户进行身份验证的公共 API，但在 Android 9（API 级别 28）中已弃用。通过[`FingerprintManager`](https://developer.android.com/reference/android/hardware/fingerprint/)类提供对指纹硬件的访问。应用程序可以通过实例化`FingerprintManager`对象并调用其`authenticate`方法来请求指纹身份验证。调用者注册回调方法来处理身份验证过程的可能结果（即成功、失败或错误）。请注意，此方法并不构成实际执行指纹身份验证的有力证据 - 例如，身份验证步骤可能会被攻击者修补，或者“成功”回调可能会使用动态检测过载。
 
-`KeyGenerator`通过将指纹 API 与 Android类结合使用，您可以获得更好的安全性。通过这种方法，对称密钥存储在 Android KeyStore 中并使用用户的指纹解锁。例如，为了使用户能够访问远程服务，会创建一个 AES 密钥来加密身份验证令牌。通过在创建密钥时调用`setUserAuthenticationRequired(true)`，确保用户必须重新验证才能检索到它。然后可以将加密的身份验证令牌直接保存在设备上（例如通过共享首选项）。这种设计是一种相对安全的方式，可以确保用户实际输入的是经过授权的指纹。
+`KeyGenerator`通过将指纹 API 与 Android类结合使用，您可以获得更好的安全性。通过这种方法，对称密钥存储在 Android KeyStore 中并使用用户的指纹解锁。例如，为了使用户能够访问远程服务，会创建一个 AES 密钥来加密身份验证令牌。通过在创建密钥时调用`setUserAuthenticationRequired(true)`，确保用户必须重新验证才能检索到它。然后可以将加密的身份验证令牌直接保存在设备上（例如通过Shared Preferences）。这种设计是一种相对安全的方式，可以确保用户实际输入的是经过授权的指纹。
 
 一个更安全的选择是使用非对称加密。在这里，移动应用程序在 KeyStore 中创建一个非对称密钥对，并在服务器后端注册公钥。随后的交易使用私钥进行签名，并由服务器使用公钥进行验证。
 
@@ -321,4 +321,4 @@ Android 8.0（API 级别 26）添加了两个额外的错误代码：
 
 ### 请求应用程序权限[¶](https://mas.owasp.org/MASTG/Android/0x05f-Testing-Local-Authentication/#request-app-permissions)
 
-- 运行时权限 - https://developer.android.com/training/permissions/requesting
+- Runtime(运行时)权限 - https://developer.android.com/training/permissions/requesting

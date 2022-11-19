@@ -163,7 +163,7 @@ uid=10084(u0_a84) gid=10084(u0_a84) groups=10083(u0_a83),1004(input),1007(log),1
 
 通常，您应该提供尽可能少的解释的编译代码。一些元数据，例如调试信息、行号和描述性函数或方法名称，使逆向工程师更容易理解二进制或字节码，但在发布版本中不需要这些，因此可以安全地省略而不会影响应用程序的功能。
 
-要检查本机二进制文件，请使用标准工具（如`nm`或`objdump`检查符号表）。发布版本通常不应包含任何调试符号。如果目标是混淆库，还建议删除不必要的动态符号。
+要检查Native二进制文件，请使用标准工具（如`nm`或`objdump`检查符号表）。发布版本通常不应包含任何调试符号。如果目标是混淆库，还建议删除不必要的动态符号。
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#static-analysis_2)
 
@@ -279,7 +279,7 @@ Android 应用程序通常使用第三方库。这些第三方库加速了开发
 
 - 一个库可能包含一个漏洞，这将使应用程序容易受到攻击。一个很好的例子是`OKHTTP`2.7.5 之前的版本，其中 TLS 链污染可以绕过 SSL 固定。
 - 库无法再维护或几乎无法使用，这就是没有报告和/或修复漏洞的原因。这可能会导致通过库在您的应用程序中出现错误和/或易受攻击的代码。
-- 图书馆可以使用 LGPL2.1 等许可证，这要求应用程序作者为使用该应用程序并要求深入了解其源代码的人提供对源代码的访问权限。事实上，应用程序应该被允许在修改其源代码的情况下重新分发。这可能危及应用程序的知识产权 (IP)。
+- 库（Libraries）可以使用 LGPL2.1 等Licenses（许可证），这要求应用程序作者为使用该应用程序并要求深入了解其源代码的人提供对源代码的访问权限。事实上，应用程序应该被允许在修改其源代码的情况下重新分发。这可能危及应用程序的知识产权 (IP)。
 
 请注意，此问题可能存在于多个层面：当您使用 webview 并在 webview 中运行 JavaScript 时，JavaScript 库也可能存在这些问题。这同样适用于 Cordova、React-native 和 Xamarin 应用程序的插件/库。
 
@@ -324,9 +324,9 @@ gradle dependencyCheckAnalyze --info
 
 当源不可用时，可以反编译应用程序并检查 JAR 文件。当正确应用 Dexguard 或[ProGuard](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#proguard)时，有关库的版本信息通常会被混淆并因此消失。否则，您仍然可以在给定库的 Java 文件的注释中经常找到这些信息。MobSF 等工具可以帮助分析应用程序中可能包含的库。如果您可以通过注释或某些版本中使用的特定方法检索库的版本，则可以手动查找 CVE。
 
-如果应用程序是高风险应用程序，您将最终手动审查库。在这种情况下，对本机代码有特定要求，您可以在“[测试代码质量](https://mas.owasp.org/MASTG/General/0x04h-Testing-Code-Quality/)”一章中找到这些要求。其次，最好检查是否应用了所有软件工程最佳实践。
+如果应用程序是高风险应用程序，您将最终手动审查库。在这种情况下，对Native代码有特定要求，您可以在“[测试代码质量](https://mas.owasp.org/MASTG/General/0x04h-Testing-Code-Quality/)”一章中找到这些要求。其次，最好检查是否应用了所有软件工程最佳实践。
 
-#### 检测应用程序库使用的许可证[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#detecting-the-licenses-used-by-the-libraries-of-the-application)
+#### 检测应用程序库使用的Licenses（许可证）[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#detecting-the-licenses-used-by-the-libraries-of-the-application)
 
 为了确保不侵犯版权法，最好使用一个可以迭代不同库的插件来检查依赖关系，例如`License Gradle Plugin`. 可以通过以下步骤使用此插件。
 
@@ -347,19 +347,19 @@ gradle downloadLicenses
 
 现在会生成一个license-report，可以用来查询第三方库使用的license。请检查许可协议以查看应用程序是否需要包含版权声明以及许可类型是否需要开源应用程序的代码。
 
-与依赖性检查类似，还有一些商业工具也可以检查许可证，例如[Sonatype Nexus IQ](https://www.sonatype.com/nexus/iqserver)、[Sourceclear](https://www.sourceclear.com/)、[Snyk](https://snyk.io/)或[Blackduck](https://www.blackducksoftware.com/)。
+与依赖性检查类似，还有一些商业工具也可以检查Licenses（许可证），例如[Sonatype Nexus IQ](https://www.sonatype.com/nexus/iqserver)、[Sourceclear](https://www.sourceclear.com/)、[Snyk](https://snyk.io/)或[Blackduck](https://www.blackducksoftware.com/)。
 
-> 注意：如果对第三方图书馆使用的许可模式的影响有疑问，请咨询法律专家。
+> 注意：如果对第三方库（Libraries）使用的许可模式的影响有疑问，请咨询法律专家。
 
-当库包含应用程序 IP 需要开源的许可证时，检查是否有可用于提供类似功能的库的替代方案。
+当库包含应用程序 IP 需要开源的Licenses（许可证）时，检查是否有可用于提供类似功能的库的替代方案。
 
-注意：如果是混合应用程序，请检查使用的构建工具：它们中的大多数都有许可证枚举插件来查找正在使用的许可证。
+注意：如果是混合应用程序，请检查使用的构建工具：它们中的大多数都有Licenses（许可证）枚举插件来查找正在使用的Licenses（许可证）。
 
-当源不可用时，可以反编译应用程序并检查 JAR 文件。当正确应用 Dexguard 或[ProGuard](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#proguard)时，有关库的版本信息通常会消失。否则，您仍然可以在给定库的 Java 文件的注释中经常找到它。MobSF 等工具可以帮助分析应用程序中可能包含的库。如果您可以通过注释或通过某些版本中使用的特定方法检索库的版本，则可以查找它们以获取手动使用的许可证。
+当源不可用时，可以反编译应用程序并检查 JAR 文件。当正确应用 Dexguard 或[ProGuard](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#proguard)时，有关库的版本信息通常会消失。否则，您仍然可以在给定库的 Java 文件的注释中经常找到它。MobSF 等工具可以帮助分析应用程序中可能包含的库。如果您可以通过注释或通过某些版本中使用的特定方法检索库的版本，则可以查找它们以获取手动使用的Licenses（许可证）。
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#dynamic-analysis_4)
 
-本节的动态分析包括验证是否遵守了许可证的版权。这通常意味着应用程序应该有一个`about`或`EULA`部分，其中根据第三方库的许可要求注明版权声明。
+本节的动态分析包括验证是否遵守了Licenses（许可证）的版权。这通常意味着应用程序应该有一个`about`或`EULA`部分，其中根据第三方库的许可要求注明版权声明。
 
 ## 测试异常处理（MSTG-CODE-6 和 MSTG-CODE-7）[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#testing-exception-handling-mstg-code-6-and-mstg-code-7)
 
@@ -373,7 +373,7 @@ gradle downloadLicenses
 
 - 确保应用程序使用设计良好且统一的方案来[处理异常](https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=88487665)。
 - 通过创建适当的空检查、绑定检查等来规划标准`RuntimeException`s（例如`NullPointerException`, `IndexOutOfBoundsException`, `ActivityNotFoundException`, `CancellationException`, ）。可以在 Android 开发人员文档中找到可用子类`SQLException`的[概述。`RuntimeException`](https://developer.android.com/reference/java/lang/RuntimeException.html)`RuntimeException`应该有意抛出一个子对象，并且这个意图应该由调用方法处理。
-- 确保对于每个非运行时`Throwable`都有一个正确的 catch 处理程序，它最终正确地处理实际的异常。
+- 确保对于每个非Runtime(运行时)`Throwable`都有一个正确的 catch 处理程序，它最终正确地处理实际的异常。
 - 抛出异常时，确保应用程序具有集中处理程序来处理导致类似行为的异常。这可以是静态类。对于特定于方法的异常，提供特定的 catch 块。
 - 确保应用程序在处理其 UI 或日志语句中的异常时不会暴露敏感信息。确保异常仍然足够详细以向用户解释问题。
 - 确保在`finally`块执行期间始终擦除高风险应用程序处理的所有机密信息。
@@ -436,7 +436,7 @@ protected void attachBaseContext(Context base) {
 
 有几种方法可以进行动态分析：
 
-- 使用 Xposed 挂钩方法并使用意外值调用它们或使用意外值（例如，空值）覆盖现有变量。
+- 使用 Xposed Hook方法并使用意外值调用它们或使用意外值（例如，空值）覆盖现有变量。
 - 在 Android 应用程序的 UI 字段中键入意外值。
 - 使用其意图、公共提供者和意外值与应用程序交互。
 - 篡改网络通信和/或应用程序存储的文件。
@@ -449,7 +449,7 @@ protected void attachBaseContext(Context base) {
 
 ## 内存损坏错误 (MSTG-CODE-8)[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#memory-corruption-bugs-mstg-code-8)
 
-Android 应用程序通常在 VM 上运行，其中大部分内存损坏问题都已得到解决。这并不意味着没有内存损坏错误。以[CVE-2018-9522](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-9522)为例，它与使用 Parcels 的序列化问题有关。接下来，在本机代码中，我们仍然会看到与我们在一般内存损坏部分中解释的相同的问题。最后，我们看到了支持服务中的内存错误，例如[BlackHat](https://www.blackhat.com/docs/us-15/materials/us-15-Drake-Stagefright-Scary-Code-In-The-Heart-Of-Android.pdf)中展示的 Stagefright 攻击。
+Android 应用程序通常在 VM 上运行，其中大部分内存损坏问题都已得到解决。这并不意味着没有内存损坏错误。以[CVE-2018-9522](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-9522)为例，它与使用 Parcels 的序列化问题有关。接下来，在Native代码中，我们仍然会看到与我们在一般内存损坏部分中解释的相同的问题。最后，我们看到了支持服务中的内存错误，例如[BlackHat](https://www.blackhat.com/docs/us-15/materials/us-15-Drake-Stagefright-Scary-Code-In-The-Heart-Of-Android.pdf)中展示的 Stagefright 攻击。
 
 内存泄漏通常也是一个问题。例如，当对`Context`对象的引用被传递给非`Activity`类时，或者当您将对类的引用传递`Activity`给您的帮助类时，就会发生这种情况。
 
@@ -469,7 +469,7 @@ Android 应用程序通常在 VM 上运行，其中大部分内存损坏问题�
 
 需要采取各种步骤：
 
-- 对于本机代码：使用 Valgrind 或 Mempatrol 分析代码的内存使用情况和内存调用。
+- 对于Native代码：使用 Valgrind 或 Mempatrol 分析代码的内存使用情况和内存调用。
 - 如果是 Java/Kotlin 代码，请尝试重新编译应用程序并将其与[Squares leak canary](https://github.com/square/leakcanary)一起使用。
 - [使用Android Studio 中的 Memory Profiler](https://developer.android.com/studio/profile/memory-profiler)检查是否有泄漏。
 - 使用[Android Java Deserialization Vulnerability Tester](https://github.com/modzero/modjoda)检查序列化漏洞。
@@ -482,27 +482,27 @@ Android 应用程序通常在 VM 上运行，其中大部分内存损坏问题�
 
 一般来说，应该测试所有二进制文件，包括主要应用程序可执行文件以及所有库/依赖项。然而，在 Android 上，我们将专注于本地库，因为主要的可执行文件被认为是安全的，我们将在接下来看到。
 
-Android 从应用程序 DEX 文件（例如 classes.dex）优化其 Dalvik 字节码并生成一个包含本机代码的新文件，通常具有 .odex、.oat 扩展名。这个[Android 编译的二进制文件](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#compiled-app-binary)使用[ELF 格式](https://refspecs.linuxfoundation.org/elf/gabi4+/contents.html)包装，这是 Linux 和 Android 用来打包汇编代码的格式。
+Android 从应用程序 DEX 文件（例如 classes.dex）优化其 Dalvik 字节码并生成一个包含Native代码的新文件，通常具有 .odex、.oat 扩展名。这个[Android 编译的二进制文件](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#compiled-app-binary)使用[ELF 格式](https://refspecs.linuxfoundation.org/elf/gabi4+/contents.html)包装，这是 Linux 和 Android 用来打包汇编代码的格式。
 
 该应用程序的[NDK 原生库](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#native-libraries)也[使用 ELF 格式](https://developer.android.com/ndk/guides/abis)。
 
 - [**PIE（位置独立可执行文件）**](https://mas.owasp.org/MASTG/General/0x04h-Testing-Code-Quality/#position-independent-code)：
 - 从 Android 7.0（API 级别 24）开始，主要可执行文件[默认启用PIC 编译。](https://source.android.com/devices/tech/dalvik/configure)
-- [在 Android 5.0（API 级别 21）中，不再](https://source.android.com/security/enhancements/enhancements50)支持非 PIE 启用的本机库，从那时起，PIE[由链接器强制执行](https://cs.android.com/android/platform/superproject/+/master:bionic/linker/linker_main.cpp;l=430)。
+- [在 Android 5.0（API 级别 21）中，不再](https://source.android.com/security/enhancements/enhancements50)支持非 PIE 启用的Native库(NATIVE LIBRARIES)，从那时起，PIE[由链接器强制执行](https://cs.android.com/android/platform/superproject/+/master:bionic/linker/linker_main.cpp;l=430)。
 - [**内存管理**](https://mas.owasp.org/MASTG/General/0x04h-Testing-Code-Quality/#memory-management)：
 - 垃圾收集将只针对主要二进制文件运行，二进制文件本身无需检查任何内容。
-- 垃圾收集不适用于 Android 本机库。开发人员负责进行适当的[手动内存管理](https://mas.owasp.org/MASTG/General/0x04h-Testing-Code-Quality/#manual-memory-management)。请参阅[“内存损坏错误 (MSTG-CODE-8)”](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#memory-corruption-bugs-mstg-code-8)。
+- 垃圾收集不适用于 Android Native库(NATIVE LIBRARIES)。开发人员负责进行适当的[手动内存管理](https://mas.owasp.org/MASTG/General/0x04h-Testing-Code-Quality/#manual-memory-management)。请参阅[“内存损坏错误 (MSTG-CODE-8)”](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#memory-corruption-bugs-mstg-code-8)。
 - [**堆栈粉碎保护**](https://mas.owasp.org/MASTG/General/0x04h-Testing-Code-Quality/#stack-smashing-protection)：
 - Android 应用程序被编译为 Dalvik 字节码，这被认为是内存安全的（至少用于缓解缓冲区溢出）。其他框架（例如 Flutter）不会使用堆栈金丝雀进行编译，因为它们的语言（在本例中为 Dart）会减轻缓冲区溢出。
-- 必须为 Android 本机库启用它，但可能很难完全确定它。
+- 必须为 Android Native库(NATIVE LIBRARIES)启用它，但可能很难完全确定它。
   - NDK 库应该启用它，因为编译器默认启用它。
   - 其他自定义 C/C++ 库可能未启用它。
 
 学到更多：
 
-- [安卓可执行格式](https://lief-project.github.io/doc/latest/tutorials/10_android_formats.html)
-- [Android 运行时 (ART)](https://source.android.com/devices/tech/dalvik/configure#how_art_works)
-- [安卓NDK](https://developer.android.com/ndk/guides)
+- [Android可执行格式](https://lief-project.github.io/doc/latest/tutorials/10_android_formats.html)
+- [Android Runtime(运行时) (ART)](https://source.android.com/devices/tech/dalvik/configure#how_art_works)
+- [AndroidNDK](https://developer.android.com/ndk/guides)
 - [NDK 开发人员的 Android 链接器更改](https://android.googlesource.com/platform/bionic/+/master/android-changes-for-ndk-developers.md)
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#static-analysis_7)
@@ -511,7 +511,7 @@ Android 从应用程序 DEX 文件（例如 classes.dex）优化其 Dalvik 字�
 
 您可以使用[radare2 的 rabin2](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#radare2)来获取二进制信息。我们将使用[UnCrackable App for Android Level 4](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-uncrackable-l4) v1.0 APK 作为示例。
 
-所有本机库都必须具有`canary`并且`pic`都设置为`true`.
+所有Native库(NATIVE LIBRARIES)都必须具有`canary`并且`pic`都设置为`true`.
 
 情况就是这样`libnative-lib.so`：
 
@@ -537,7 +537,7 @@ pic      true
 
 - MSTG-CODE-1：“该应用程序已签名并使用有效证书进行配置，其中的私钥受到适当保护。”
 - MSTG-CODE-2：“该应用程序已在发布模式下构建，具有适用于发布构建的设置（例如不可调试）。”
-- MSTG-CODE-3：“调试符号已从本机二进制文件中删除。”
+- MSTG-CODE-3：“调试符号已从Native二进制文件中删除。”
 - MSTG-CODE-4：“调试代码和开发人员帮助代码（例如测试代码、后门、隐藏设置）已被删除。该应用程序不会记录详细错误或调试消息。”
 - MSTG-CODE-5：“移动应用程序使用的所有第三方组件，例如库和框架，都被识别并检查已知漏洞。”
 - MSTG-CODE-6：“应用程序捕获并处理可能的异常。”
@@ -551,6 +551,6 @@ pic      true
 - 在 Android 中避免内存泄漏的 9 种方法 - https://android.jlelse.eu/9-ways-to-avoid-memory-leaks-in-android-b6d81648e35e
 - Android 中的内存泄漏模式 - https://android.jlelse.eu/memory-leak-patterns-in-android-4741a7fcb570
 
-### 安卓文档[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#android-documentation)
+### Android文档[¶](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#android-documentation)
 
 - 带密钥轮换的 APK 签名方案 - https://developer.android.com/about/versions/pie/android-9.0#apk-key-rotation

@@ -1,20 +1,20 @@
 # Android 反逆向防御[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#android-anti-reversing-defenses)
 
-## 测试根检测 (MSTG-RESILIENCE-1)[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#testing-root-detection-mstg-resilience-1)
+## 测试Root检测 (MSTG-RESILIENCE-1)[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#testing-root-detection-mstg-resilience-1)
 
 ### 概述[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#overview)
 
-在反逆向的背景下，root 检测的目标是让应用程序在有 root 权限的设备上运行更加困难，这反过来会阻止逆向工程师喜欢使用的一些工具和技术。与大多数其他防御措施一样，根检测本身并不是很有效，但是实施分散在整个应用程序中的多个根检查可以提高整体防篡改方案的有效性。
+在反逆向的背景下，root 检测的目标是让应用程序在有 root 权限的设备上运行更加困难，这反过来会阻止逆向工程师喜欢使用的一些工具和技术。与大多数其他防御措施一样，Root检测本身并不是很有效，但是实施分散在整个应用程序中的多个根检查可以提高整体防篡改方案的有效性。
 
 对于 Android，我们将“root 检测”定义得更广泛一些，包括自定义 ROM 检测，即确定设备是原装 Android 版本还是自定义版本。
 
-### 常见的根检测方法[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#common-root-detection-methods)
+### 常见的Root检测方法[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#common-root-detection-methods)
 
-在下一节中，我们列出了您会遇到的一些常见的根检测方法。您会在 OWASP 移动测试指南随附的[OWASP UnCrackable Apps for Android](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-crackmes)中找到其中一些方法的实现。
+在下一节中，我们列出了您会遇到的一些常见的Root检测方法。您会在 OWASP 移动测试指南随附的[OWASP UnCrackable Apps for Android](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-crackmes)中找到其中一些方法的实现。
 
-根检测也可以通过[RootBeer](https://github.com/scottyab/rootbeer)等库来实现。
+Root检测也可以通过[RootBeer](https://github.com/scottyab/rootbeer)等库来实现。
 
-#### 安全网[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#safetynet)
+#### SafetyNet[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#safetynet)
 
 SafetyNet 是一个 Android API，它提供一组服务并根据软件和硬件信息创建设备配置文件。然后将此配置文件与已通过 Android 兼容性测试的可接受设备型号列表进行比较。谷歌[建议](https://developers.google.com/android/reference/com/google/android/gms/safetynet/SafetyNet)将该功能用作“作为反滥用系统一部分的附加深度防御信号”。
 
@@ -47,7 +47,7 @@ SafetyNet 的具体工作原理没有详细记录，并且可能随时更改。�
 
 `basicIntegrity`SafetyNet Attestation API 最初提供了一个名为帮助开发人员确定设备完整性的单一值。随着 API 的发展，谷歌引入了一种新的、更严格的检查，其结果显示在一个名为 的值中`ctsProfileMatch`，它允许开发人员更精细地评估运行其应用程序的设备。
 
-从广义上讲，`basicIntegrity`为您提供有关设备及其 API 的一般完整性的信号。许多 Root 设备失败`basicIntegrity`，模拟器、虚拟设备和有篡改迹象的设备（例如 API 挂钩）也是如此。
+从广义上讲，`basicIntegrity`为您提供有关设备及其 API 的一般完整性的信号。许多 Root 设备失败`basicIntegrity`，模拟器、虚拟设备和有篡改迹象的设备（例如 API Hook）也是如此。
 
 另一方面，`ctsProfileMatch`给你一个关于设备兼容性的更严格的信号。只有经过谷歌认证的未经修改的设备才能通过`ctsProfileMatch`。将失败`ctsProfileMatch`的设备包括：
 
@@ -109,7 +109,7 @@ SafetyNet 的具体工作原理没有详细记录，并且可能随时更改。�
     }
 ```
 
-文件检查可以在 Java 和本机代码中轻松实现。以下 JNI 示例（改编自[rootinspector](https://github.com/devadvance/rootinspector/)）使用`stat`系统调用来检索有关文件的信息并在文件存在时返回“1”。
+文件检查可以在 Java 和Native代码中轻松实现。以下 JNI 示例（改编自[rootinspector](https://github.com/devadvance/rootinspector/)）使用`stat`系统调用来检索有关文件的信息并在文件存在时返回“1”。
 
 ```
 jboolean Java_com_example_statfile(JNIEnv * env, jobject this, jstring filepath) {
@@ -161,7 +161,7 @@ Supersu - 迄今为止最流行的 root 工具 - 运行名为 的身份验证守
 
 ##### 检查已安装的应用程序包[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#checking-installed-app-packages)
 
-您可以使用 Android 包管理器获取已安装包的列表。以下软件包名称属于流行的生根工具：
+您可以使用 Android 包管理器获取已安装包的列表。以下软件包名称属于流行的Root工具：
 
 ```
 com.thirdparty.superuser
@@ -193,45 +193,45 @@ for (int i = 1; ; i = 0)
 
 缺少谷歌无线 (OTA) 证书是自定义 ROM 的另一个标志：在现有的 Android 构建中，[OTA 更新谷歌的公共证书](https://blog.netspi.com/android-root-detection-techniques/)。
 
-#### 绕过根检测[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#bypassing-root-detection)
+#### 绕过Root检测[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#bypassing-root-detection)
 
-使用 jdb 、[DDMS](https://developer.android.com/studio/profile/monitor)和/或内核模块运行执行跟踪，`strace`以了解应用程序正在做什么。您通常会看到与操作系统的各种可疑交互，例如打开`su`以供阅读和获取进程列表。这些相互作用是根检测的可靠标志。识别并停用根检测机制，一次一个。如果您正在执行黑盒弹性评估，则禁用根检测机制是您的第一步。
+使用 jdb 、[DDMS](https://developer.android.com/studio/profile/monitor)和/或内核模块运行执行跟踪，`strace`以了解应用程序正在做什么。您通常会看到与操作系统的各种可疑交互，例如打开`su`以供阅读和获取进程列表。这些相互作用是Root检测的可靠标志。识别并停用Root检测机制，一次一个。如果您正在执行黑盒弹性评估，则禁用Root检测机制是您的第一步。
 
 要绕过这些检查，您可以使用几种技术，其中大部分在“逆向工程和篡改”一章中介绍过：
 
-- 重命名二进制文件。例如，在某些情况下，简单地重命名`su`二进制文件就足以阻止根检测（尽管尽量不要破坏您的环境！）。
+- 重命名二进制文件。例如，在某些情况下，简单地重命名`su`二进制文件就足以阻止Root检测（尽管尽量不要破坏您的环境！）。
 - 卸载`/proc`以防止读取进程列表。有时，不可用`/proc`就足以绕过此类检查。
-- 使用 Frida 或 Xposed 在 Java 和本机层上挂接 API。这会隐藏文件和进程，隐藏文件内容，并返回应用程序请求的各种虚假值。
+- 使用 Frida 或 Xposed 在 Java 和Native层上挂接 API。这会隐藏文件和进程，隐藏文件内容，并返回应用程序请求的各种虚假值。
 - 使用内核模块挂接低级 API。
 - 修补应用程序以删除检查。
 
 ### 成效评估[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#effectiveness-assessment)
 
-检查根检测机制，包括以下标准：
+检查Root检测机制，包括以下标准：
 
 - 多种检测方法分散在整个应用程序中（而不是将所有内容都放在一个方法中）。
-- 根检测机制在多个 API 层（Java API、本机库函数、汇编器/系统调用）上运行。
+- Root检测机制在多个 API 层（Java API、Native库(NATIVE LIBRARIES)函数、汇编器/系统调用）上运行。
 - 这些机制在某种程度上是原创的（它们不是从 StackOverflow 或其他来源复制和粘贴的）。
 
-开发根检测机制的绕过方法并回答以下问题：
+开发Root检测机制的绕过方法并回答以下问题：
 
 - 是否可以使用 RootCloak 等标准工具轻松绕过这些机制？
-- 处理根检测是否需要静态/动态分析？
+- 处理Root检测是否需要静态/动态分析？
 - 您需要编写自定义代码吗？
 - 成功绕过这些机制需要多长时间？
 - 您如何评估绕过这些机制的难度？
 
-如果根检测缺失或太容易被绕过，请根据上面列出的有效性标准提出建议。这些建议可能包括更多检测机制以及现有机制与其他防御措施的更好集成。
+如果Root检测缺失或太容易被绕过，请根据上面列出的有效性标准提出建议。这些建议可能包括更多检测机制以及现有机制与其他防御措施的更好集成。
 
 ## 测试反调试检测（MSTG-RESILIENCE-2）[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#testing-anti-debugging-detection-mstg-resilience-2)
 
 ### 概述[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#overview_1)
 
-调试是分析运行时应用程序行为的一种非常有效的方法。它允许逆向工程师单步执行代码、在任意点停止应用程序执行、检查变量状态、读取和修改内存等等。
+调试是分析Runtime(运行时)应用程序行为的一种非常有效的方法。它允许逆向工程师单步执行代码、在任意点停止应用程序执行、检查变量状态、读取和修改内存等等。
 
 反调试功能可以是预防性的或反应性的。顾名思义，预防性反调试首先防止调试器附加；反应式反调试涉及检测调试器并以某种方式对它们做出反应（例如，终止应用程序或触发隐藏行为）。适用“越多越好”的规则：为了最大限度地提高效率，防御者结合了多种预防和检测方法，这些方法在不同的 API 层上运行，并且分布在整个应用程序中。
 
-正如在“逆向工程和篡改”一章中提到的，我们必须处理 Android 上的两种调试协议：我们可以使用 JDWP 在 Java 级别进行调试，或者通过基于 ptrace 的调试器在本机层进行调试。一个好的反调试方案应该抵御这两种类型的调试。
+正如在“逆向工程和篡改”一章中提到的，我们必须处理 Android 上的两种调试协议：我们可以使用 JDWP 在 Java 级别进行调试，或者通过基于 ptrace 的调试器在Native层进行调试。一个好的反调试方案应该抵御这两种类型的调试。
 
 ### JDWP反调试[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#jdwp-anti-debugging)
 
@@ -259,7 +259,7 @@ for (int i = 1; ; i = 0)
     }
 ```
 
-通过访问 DvmGlobals 全局结构，可以通过本机代码调用相同的 API。
+通过访问 DvmGlobals 全局结构，可以通过Native代码调用相同的 API。
 
 ```
 JNIEXPORT jboolean JNICALL Java_com_test_debugging_DebuggerConnectedJNI(JNIenv * env, jobject obj) {
@@ -327,7 +327,7 @@ JNIEXPORT jboolean JNICALL Java_poc_c_crashOnInit ( JNIEnv* env , jobject ) {
 }
 ```
 
-即使 gDvm 变量不可用，您也可以在 ART 中使用类似的技术来禁用调试。ART 运行时将一些 JDWP 相关类的 vtables 导出为全局符号（在 C++ 中，vtables 是保存指向类方法的指针的表）。这包括类`JdwpSocketState`和的虚表`JdwpAdbState`，它们分别通过网络套接字和 ADB 处理 JDWP 连接。[您可以通过覆盖相关 vtables](https://web.archive.org/web/20200307152820/https://www.vantagepoint.sg/blog/88-anti-debugging-fun-with-android-art)（存档）中的方法指针来操纵调试运行时的行为。
+即使 gDvm 变量不可用，您也可以在 ART 中使用类似的技术来禁用调试。ART Runtime(运行时)将一些 JDWP 相关类的 vtables 导出为全局符号（在 C++ 中，vtables 是保存指向类方法的指针的表）。这包括类`JdwpSocketState`和的虚表`JdwpAdbState`，它们分别通过网络套接字和 ADB 处理 JDWP 连接。[您可以通过覆盖相关 vtables](https://web.archive.org/web/20200307152820/https://www.vantagepoint.sg/blog/88-anti-debugging-fun-with-android-art)（存档）中的方法指针来操纵调试Runtime(运行时)的行为。
 
 覆盖方法指针的一种方法是用 的地址覆盖函数`jdwpAdbState::ProcessIncoming`的地址`JdwpAdbState::Shutdown`。这将导致调试器立即断开连接。
 
@@ -399,11 +399,11 @@ JNIEXPORT void JNICALL Java_sg_vantagepoint_jdwptest_MainActivity_JDWPfun(
 
 #### 检查 TracerPid[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#checking-tracerpid)
 
-当您调试应用程序并在本机代码上设置断点时，Android Studio 会将所需的文件复制到目标设备并启动将用于`ptrace`附加到进程的 lldb-server。从这一刻起，如果你检查被调试进程的[状态文件](http://man7.org/linux/man-pages/man5/proc.5.html)（`/proc/<pid>/status`或`/proc/self/status`），你会看到“TracerPid”字段的值不为0，这是调试的标志。
+当您调试应用程序并在Native代码上设置断点时，Android Studio 会将所需的文件复制到目标设备并启动将用于`ptrace`附加到进程的 lldb-server。从这一刻起，如果你检查被调试进程的[状态文件](http://man7.org/linux/man-pages/man5/proc.5.html)（`/proc/<pid>/status`或`/proc/self/status`），你会看到“TracerPid”字段的值不为0，这是调试的标志。
 
-> 请记住，**这仅适用于本机代码**。如果您正在调试 Java/Kotlin-only 应用程序，“TracerPid”字段的值应为 0。
+> 请记住，**这仅适用于Native代码**。如果您正在调试 Java/Kotlin-only 应用程序，“TracerPid”字段的值应为 0。
 
-这种技术通常应用在 C 语言的 JNI 本机库中，如[Google 的 gperftools (Google Performance Tools)) Heap Checker](https://github.com/gperftools/gperftools/blob/master/src/heap-checker.cc#L112)方法的实现所示`IsDebuggerAttached`。但是，如果您希望将此检查作为 Java/Kotlin 代码的一部分包含在内，您可以参考[Tim Strazzere 的 Anti-Emulator 项目](https://github.com/strazzere/anti-emulator/)`hasTracerPid`中该方法的Java 实现。
+这种技术通常应用在 C 语言的 JNI Native库(NATIVE LIBRARIES)中，如[Google 的 gperftools (Google Performance Tools)) Heap Checker](https://github.com/gperftools/gperftools/blob/master/src/heap-checker.cc#L112)方法的实现所示`IsDebuggerAttached`。但是，如果您希望将此检查作为 Java/Kotlin 代码的一部分包含在内，您可以参考[Tim Strazzere 的 Anti-Emulator 项目](https://github.com/strazzere/anti-emulator/)`hasTracerPid`中该方法的Java 实现。
 
 当尝试自己实现这样的方法时，您可以使用 ADB 手动检查 TracerPid 的值。以下清单使用 Google 的 NDK 示例应用程序[hello-jni (com.example.hellojni)](https://github.com/android/ndk-samples/tree/android-mk/hello-jni)在附加 Android Studio 的调试器后执行检查：
 
@@ -557,15 +557,15 @@ Exiting
 
 ### 绕过调试器检测[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#bypassing-debugger-detection)
 
-没有绕过反调试的通用方法：最好的方法取决于用于防止或检测调试的特定机制以及整体保护方案中的其他防御措施。例如，如果没有完整性检查或您已经停用了它们，则为应用程序打补丁可能是最简单的方法。在其他情况下，挂钩框架或内核模块可能更可取。以下方法描述了绕过调试器检测的不同方法：
+没有绕过反调试的通用方法：最好的方法取决于用于防止或检测调试的特定机制以及整体保护方案中的其他防御措施。例如，如果没有完整性检查或您已经停用了它们，则为应用程序打补丁可能是最简单的方法。在其他情况下，Hook框架或内核模块可能更可取。以下方法描述了绕过调试器检测的不同方法：
 
 - 修补反调试功能：通过简单地用 NOP 指令覆盖它来禁用不需要的行为。请注意，如果反调试机制设计良好，可能需要更复杂的补丁。
-- `isDebuggable`使用 Frida 或 Xposed 在 Java 和本机层上挂接 API：操纵函数的返回值，例如`isDebuggerConnected`隐藏调试器。
+- `isDebuggable`使用 Frida 或 Xposed 在 Java 和Native层上挂接 API：操纵函数的返回值，例如`isDebuggerConnected`隐藏调试器。
 - 改变环境：Android 是一个开放的环境。如果实在不行，可以修改操作系统，颠覆开发者在设计反调试技巧时的假设。
 
 #### 绕过示例：UnCrackable App for Android Level 2[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#bypassing-example-uncrackable-app-for-android-level-2)
 
-在处理经过混淆的应用程序时，您经常会发现开发人员故意将数据和功能“隐藏”在本机库中。您将[在“UnCrackable App for Android”的第 2 级中](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-uncrackable-l2)找到这方面的示例。
+在处理经过混淆的应用程序时，您经常会发现开发人员故意将数据和功能“隐藏”在Native库(NATIVE LIBRARIES)中。您将[在“UnCrackable App for Android”的第 2 级中](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-uncrackable-l2)找到这方面的示例。
 
 乍一看，代码看起来像之前的挑战。一个名为的类`CodeCheck`负责验证用户输入的代码。实际检查似乎发生在`bar`声明为本*机*方法的方法中。
 
@@ -598,12 +598,12 @@ public class CodeCheck {
 
 - 附加基于 jdb 和 ptrace 的调试器失败或导致应用程序终止或出现故障。
 - 多种检测方法分散在整个应用程序的源代码中（而不是它们都在一个方法或函数中）。
-- 反调试防御在多个 API 层（Java、本机库函数、汇编器/系统调用）上运行。
+- 反调试防御在多个 API 层（Java、Native库(NATIVE LIBRARIES)函数、汇编器/系统调用）上运行。
 - 这些机制在某种程度上是原创的（而不是从 StackOverflow 或其他来源复制和粘贴）。
 
 努力绕过反调试防御并回答以下问题：
 
-- 是否可以轻松绕过这些机制（例如，通过挂钩单个 API 函数）？
+- 是否可以轻松绕过这些机制（例如，通过Hook单个 API 函数）？
 - 通过静态和动态分析识别反调试代码有多难？
 - 您是否需要编写自定义代码来禁用防御？你需要多少时间？
 - 您对绕过这些机制的难度的主观评估是什么？
@@ -616,7 +616,7 @@ public class CodeCheck {
 
 有两个与文件完整性相关的主题：
 
-1. *代码完整性检查：*在“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章中，我们讨论了Android 的APK 代码签名检查。我们还看到坚定的逆向工程师可以通过重新打包和重新签名应用程序轻松绕过此检查。为了使这个绕过过程更加复杂，可以通过对应用程序字节码、本机库和重要数据文件进行 CRC 检查来增强保护方案。这些检查可以在 Java 和本机层上实现。这个想法是要有额外的控制，这样即使代码签名有效，应用程序也只能在未修改的状态下正确运行。
+1. *代码完整性检查：*在“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章中，我们讨论了Android 的APK 代码签名检查。我们还看到坚定的逆向工程师可以通过重新打包和重新签名应用程序轻松绕过此检查。为了使这个绕过过程更加复杂，可以通过对应用程序字节码、Native库(NATIVE LIBRARIES)和重要数据文件进行 CRC 检查来增强保护方案。这些检查可以在 Java 和Native层上实现。这个想法是要有额外的控制，这样即使代码签名有效，应用程序也只能在未修改的状态下正确运行。
 2. *文件存储完整性检查：*应保护应用程序存储在SD卡或公共存储中的文件的完整性和存储的键值对的完整性`SharedPreferences`。
 
 #### 示例实现 - 应用程序源代码[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#sample-implementation-application-source-code)
@@ -625,7 +625,7 @@ public class CodeCheck {
 
 - AndroidManifest.xml,
 - 类文件 *.dex,
-- 本机库 (*.so)。
+- Native库(NATIVE LIBRARIES) (*.so)。
 
 以下[来自 Android 破解博客的示例实现](https://androidcracking.blogspot.com/2011/06/anti-tampering-with-crc-check.html)计算了一个 CRC `classes.dex`，并将其与预期值进行比较。
 
@@ -658,7 +658,7 @@ private void crcTest() throws IOException {
 
 使用 BouncyCastle 生成 HMAC 时完成以下过程：
 
-1. 确保 BouncyCastle 或 SpongyCastle 已注册为安全提供程序。
+1. 确保 BouncyCastle 或 SpongyCastle 已注册为security providers。
 2. 使用密钥（可以存储在密钥库中）初始化 HMAC。
 3. 获取需要 HMAC 的内容的字节数组。
 4. 使用字节码调用`doFinal`HMAC。
@@ -667,7 +667,7 @@ private void crcTest() throws IOException {
 
 使用 BouncyCastle 验证 HMAC 时完成以下过程：
 
-1. 确保 BouncyCastle 或 SpongyCastle 已注册为安全提供程序。
+1. 确保 BouncyCastle 或 SpongyCastle 已注册为security providers。
 2. 将消息和 HMAC 字节提取为单独的数组。
 3. 重复生成 HMAC 过程的步骤 1-4。
 4. 将提取的 HMAC 字节与步骤 3 的结果进行比较。
@@ -754,8 +754,8 @@ public enum HMACWrapper {
 
 ##### 绕过应用程序源完整性检查[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#bypassing-the-application-source-integrity-checks)
 
-1. 修补反调试功能。通过简单地用 NOP 指令覆盖相关的字节码或本机代码来禁用不需要的行为。
-2. 使用 Frida 或 Xposed 在 Java 和本机层上挂钩文件系统 API。返回原始文件的句柄而不是修改后的文件。
+1. 修补反调试功能。通过简单地用 NOP 指令覆盖相关的字节码或Native代码来禁用不需要的行为。
+2. 使用 Frida 或 Xposed 在 Java 和Native层上Hook文件系统 API。返回原始文件的句柄而不是修改后的文件。
 3. 使用内核模块拦截与文件相关的系统调用。当进程尝试打开修改后的文件时，返回文件未修改版本的文件描述符。
 
 有关修补、代码注入和内核模块的示例，请参阅“ [Android 上的篡改和逆向工程”一章。](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)
@@ -771,7 +771,7 @@ public enum HMACWrapper {
 
 在未修改的状态下运行应用程序并确保一切正常。将简单的补丁应用到`classes.dex`应用程序包中的任何 .so 库。按照“基本安全测试”一章中的描述重新打包并重新签署应用程序，然后运行该应用程序。该应用程序应检测到修改并以某种方式做出响应。至少，应用程序应该提醒用户和/或终止。绕过防御并回答以下问题：
 
-- 是否可以轻松绕过这些机制（例如，通过挂钩单个 API 函数）？
+- 是否可以轻松绕过这些机制（例如，通过Hook单个 API 函数）？
 - 通过静态和动态分析识别反调试代码有多难？
 - 您是否需要编写自定义代码来禁用防御？你需要多少时间？
 - 您如何评估绕过这些机制的难度？
@@ -793,7 +793,7 @@ public enum HMACWrapper {
 
 ### 检测方法[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#detection-methods)
 
-您可以通过查找关联的应用程序包、文件、进程或其他特定于工具的修改和工件来检测以未修改形式安装的流行逆向工程工具。在以下示例中，我们将讨论检测本指南中广泛使用的 Frida 检测框架的不同方法。其他工具如Substrate、Xposed等也可以类似检测。请注意，DBI/注入/挂钩工具通常可以通过运行时完整性检查隐式检测，这将在下面讨论。
+您可以通过查找关联的应用程序包、文件、进程或其他特定于工具的修改和工件来检测以未修改形式安装的流行逆向工程工具。在以下示例中，我们将讨论检测本指南中广泛使用的 Frida 检测框架的不同方法。其他工具如Substrate、Xposed等也可以类似检测。请注意，DBI/注入/Hook工具通常可以通过Runtime(运行时)完整性检查隐式检测，这将在下面讨论。
 
 例如，在 root 设备上的默认配置中，Frida 作为 frida-server 在设备上运行。当您显式附加到目标应用程序时（例如通过 frida-trace 或 Frida REPL），Frida 将 frida-agent 注入到应用程序的内存中。因此，您可能希望在附加到应用程序之后（而不是之前）找到它。如果你检查`/proc/<pid>/maps`你会发现 frida-agent 是 frida-agent-64.so：
 
@@ -820,13 +820,13 @@ bullhead:/ # cat /proc/18370/maps | grep -i frida
 
 | 方法                           | 描述                                                         | 讨论                                                         |
 | :----------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| **检查应用程序签名**           | 为了将 frida-gadget 嵌入到 APK 中，需要重新打包并退出。您可以在应用启动时检查 APK 的签名（例如，自 API 级别 28 起的[GET_SIGNING_CERTIFICATES](https://developer.android.com/reference/android/content/pm/PackageManager#GET_SIGNING_CERTIFICATES)），并将其与您固定在 APK 中的签名进行比较。 | 不幸的是，这太微不足道了，无法绕过，例如通过修补 APK 或执行系统调用挂钩。 |
+| **检查应用程序签名**           | 为了将 frida-gadget 嵌入到 APK 中，需要重新打包并退出。您可以在应用启动时检查 APK 的签名（例如，自 API 级别 28 起的[GET_SIGNING_CERTIFICATES](https://developer.android.com/reference/android/content/pm/PackageManager#GET_SIGNING_CERTIFICATES)），并将其与您固定在 APK 中的签名进行比较。 | 不幸的是，这太微不足道了，无法绕过，例如通过修补 APK 或执行系统调用Hook。 |
 | **检查相关工件的环境**         | 工件可以是包文件、二进制文件、库、进程和临时文件。对于 Frida，这可能是在目标（有根）系统中运行的 frida-server（负责通过 TCP 公开 Frida 的守护进程）。检查正在运行的服务 ( [`getRunningServices`](https://developer.android.com/reference/android/app/ActivityManager.html#getRunningServices(int))) 和进程 ( `ps`)，搜索名称为“frida-server”的服务。您还可以遍历已加载库的列表并检查是否存在可疑库（例如名称中包含“frida”的库）。 | 从 Android 7.0（API 级别 24）开始，检查正在运行的服务/进程不会向您显示像 frida-server 这样的守护进程，因为它不是由应用程序本身启动的。即使有可能，绕过这个也很容易，只需重命名相应的 Frida 工件 (frida-server/frida-gadget/frida-agent)。 |
 | **检查打开的 TCP 端口**        | frida-server 进程默认绑定到 TCP 端口 27042。检查此端口是否打开是检测守护进程的另一种方法。 | 此方法在其默认模式下检测 frida-server，但可以通过命令行参数更改监听端口，因此绕过它有点太简单了。 |
 | **检查响应 D-Bus Auth 的端口** | `frida-server`使用 D-Bus 协议进行通信，因此您可以期望它响应 D-Bus AUTH。向每个打开的端口发送一条 D-Bus AUTH 消息并检查答案，希望它`frida-server`会自己显示出来。 | 这是一种相当可靠的检测方法`frida-server`，但 Frida 提供了不需要 frida-server 的替代操作模式。 |
 | **扫描进程内存以查找已知工件** | 扫描内存以查找在 Frida 库中发现的工件，例如所有版本的 frida-gadget 和 frida-agent 中都存在字符串“LIBFRIDA”。例如，使用`Runtime.getRuntime().exec`并遍历在`/proc/self/maps`或`/proc/<pid>/maps`（取决于 Android 版本）搜索字符串中列出的内存映射。 | 这种方法更有效一些，仅使用 Frida 很难绕过，尤其是在添加了一些混淆并且正在扫描多个工件的情况下。但是，所选工件可能会在 Frida 二进制文件中进行修补。[在Berdhard Mueller 的 GitHub](https://github.com/muellerberndt/frida-detection-demo/blob/master/AntiFrida/app/src/main/cpp/native-lib.cpp)上找到源代码。 |
 
-请记住，这张表远非详尽无遗。我们可以开始讨论[命名管道](https://en.wikipedia.org/wiki/Named_pipe)（由 frida-server 用于外部通信）、检测[蹦床](https://en.wikipedia.org/wiki/Trampoline_(computing))（在函数序言处插入的间接跳转向量），这将有助于检测 Substrate 或 Frida 的拦截器，但例如，不会有效对抗弗里达的追猎者；以及许多其他或多或少有效的检测方法。它们中的每一个都将取决于您是否使用有根设备、生根方法的特定版本和/或工具本身的版本。此外，该应用程序可以尝试通过使用各种混淆技术来使其更难检测已实施的保护机制，如下面“[针对逆向工程的测试弹性”部分所述](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#testing-obfuscation-mstg-resilience-9)”。最后，这是保护在不受信任的环境（在用户设备中运行的应用程序）上处理的数据的猫捉老鼠游戏的一部分。
+请记住，这张表远非详尽无遗。我们可以开始讨论[命名管道](https://en.wikipedia.org/wiki/Named_pipe)（由 frida-server 用于外部通信）、检测[蹦床](https://en.wikipedia.org/wiki/Trampoline_(computing))（在函数序言处插入的间接跳转向量），这将有助于检测 Substrate 或 Frida 的拦截器，但例如，不会有效对抗Frida的追猎者；以及许多其他或多或少有效的检测方法。它们中的每一个都将取决于您是否使用有Root设备、Root方法的特定版本和/或工具本身的版本。此外，该应用程序可以尝试通过使用各种混淆技术来使其更难检测已实施的保护机制，如下面“[针对逆向工程的测试弹性”部分所述](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#testing-obfuscation-mstg-resilience-9)”。最后，这是保护在不受信任的环境（在用户设备中运行的应用程序）上处理的数据的猫捉老鼠游戏的一部分。
 
 > 重要的是要注意，这些控制只会增加逆向工程过程的复杂性。如果使用，最好的方法是巧妙地组合控件而不是单独使用它们。然而，它们都不能保证 100% 的有效性，因为逆向工程师总是可以完全访问设备，因此总是会赢！您还必须考虑将某些控件集成到您的应用程序中可能会增加应用程序的复杂性，甚至会影响其性能。
 
@@ -843,15 +843,15 @@ bullhead:/ # cat /proc/18370/maps | grep -i frida
 
 接下来，绕过逆向工程工具的检测并回答以下问题：
 
-- 是否可以轻松绕过这些机制（例如，通过挂钩单个 API 函数）？
+- 是否可以轻松绕过这些机制（例如，通过Hook单个 API 函数）？
 - 通过静态和动态分析识别反逆向工程代码有多难？
 - 您是否需要编写自定义代码来禁用防御？你需要多少时间？
 - 您如何评估绕过这些机制的难度？
 
 绕过逆向工程工具的检测时，应遵循以下步骤：
 
-1. 修补反逆向工程功能。通过简单地用 NOP 指令覆盖相关的字节码或本机代码来禁用不需要的行为。
-2. 使用 Frida 或 Xposed 在 Java 和本机层上挂钩文件系统 API。返回原始文件的句柄，而不是修改后的文件。
+1. 修补反逆向工程功能。通过简单地用 NOP 指令覆盖相关的字节码或Native代码来禁用不需要的行为。
+2. 使用 Frida 或 Xposed 在 Java 和Native层上Hook文件系统 API。返回原始文件的句柄，而不是修改后的文件。
 3. 使用内核模块拦截与文件相关的系统调用。当进程尝试打开修改后的文件时，返回文件未修改版本的文件描述符。
 
 有关修补、代码注入和内核模块的示例，请参阅“ [Android 上的篡改和逆向工程”一章。](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)
@@ -864,7 +864,7 @@ bullhead:/ # cat /proc/18370/maps | grep -i frida
 
 ### 模拟器检测示例[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#emulator-detection-examples)
 
-有几个指标表明正在模拟有问题的设备。尽管所有这些 API 调用都可以挂钩，但这些指标提供了适度的第一道防线。
+有几个指标表明正在模拟有问题的设备。尽管所有这些 API 调用都可以Hook，但这些指标提供了适度的第一道防线。
 
 第一组指标在文件中`build.prop`。
 
@@ -906,12 +906,12 @@ TelephonyManager.getSubscriberId()                      310260000000000         
 TelephonyManager.getVoiceMailNumber()                   15552175049             emulator
 ```
 
-请记住，Xposed 或 Frida 等挂钩框架可以挂钩此 API 以提供虚假数据。
+请记住，Xposed 或 Frida 等Hook框架可以Hook此 API 以提供虚假数据。
 
 ### 绕过模拟器检测[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#bypassing-emulator-detection)
 
-1. 修补模拟器检测功能。通过简单地用 NOP 指令覆盖相关的字节码或本机代码来禁用不需要的行为。
-2. 使用 Frida 或 Xposed API 在 Java 和本机层上挂钩文件系统 API。返回看起来无辜的值（最好从真实设备中获取）而不是明显的模拟器值。例如，您可以覆盖该`TelephonyManager.getDeviceID`方法以返回 IMEI 值。
+1. 修补模拟器检测功能。通过简单地用 NOP 指令覆盖相关的字节码或Native代码来禁用不需要的行为。
+2. 使用 Frida 或 Xposed API 在 Java 和Native层上Hook文件系统 API。返回看起来无辜的值（最好从真实设备中获取）而不是明显的模拟器值。例如，您可以覆盖该`TelephonyManager.getDeviceID`方法以返回 IMEI 值。
 
 有关修补、代码注入和内核模块的示例，请参阅“ [Android 上的篡改和逆向工程”一章。](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)
 
@@ -922,24 +922,24 @@ TelephonyManager.getVoiceMailNumber()                   15552175049             
 绕过防御并回答以下问题：
 
 - 通过静态和动态分析识别模拟器检测代码有多难？
-- 是否可以轻松绕过检测机制（例如，通过挂钩单个 API 函数）？
+- 是否可以轻松绕过检测机制（例如，通过Hook单个 API 函数）？
 - 您是否需要编写自定义代码来禁用反仿真功能？你需要多少时间？
 - 您如何评估绕过这些机制的难度？
 
-## 测试运行时完整性检查 (MSTG-RESILIENCE-6)[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#testing-runtime-integrity-checks-mstg-resilience-6)
+## 测试Runtime(运行时)完整性检查 (MSTG-RESILIENCE-6)[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#testing-runtime-integrity-checks-mstg-resilience-6)
 
 ### 概述[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#overview_5)
 
-此类别中的控件验证应用程序内存空间的完整性，以保护应用程序免受运行时应用的内存补丁的影响。此类补丁包括对二进制代码、字节码、函数指针表和重要数据结构的不必要更改，以及加载到进程内存中的流氓代码。完整性可以通过以下方式验证：
+此类别中的控件验证应用程序内存空间的完整性，以保护应用程序免受Runtime(运行时)应用的内存补丁的影响。此类补丁包括对二进制代码、字节码、函数指针表和重要数据结构的不必要更改，以及加载到进程内存中的流氓代码。完整性可以通过以下方式验证：
 
 1. 将内存的内容或内容的校验和与正确的值进行比较，
 2. 在内存中搜索不需要的修改的签名。
 
 与“检测逆向工程工具和框架”类别有一些重叠，事实上，当我们展示如何在进程内存中搜索与 Frida 相关的字符串时，我们展示了基于签名的方法。以下是各种完整性监控的更多示例。
 
-#### 运行时完整性检查示例[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#runtime-integrity-check-examples)
+#### Runtime(运行时)完整性检查示例[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#runtime-integrity-check-examples)
 
-##### 检测对 JAVA 运行时的篡改[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#detecting-tampering-with-the-java-runtime)
+##### 检测对 JAVA Runtime(运行时)的篡改[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#detecting-tampering-with-the-java-runtime)
 
 此检测代码来自[dead && end 博客](https://d3adend.org/blog/?p=589)。
 
@@ -973,15 +973,15 @@ catch(Exception e) {
 }
 ```
 
-##### 检测本机挂钩[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#detecting-native-hooks)
+##### 检测NativeHook[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#detecting-native-hooks)
 
-通过使用 ELF 二进制文件，可以通过覆盖内存中的函数指针（例如，全局偏移表或 PLT 挂钩）或修补部分函数代码本身（内联挂钩）来安装本机函数挂钩。检查各个内存区域的完整性是检测这种挂钩的一种方法。
+通过使用 ELF 二进制文件，可以通过覆盖内存中的函数指针（例如，全局偏移表或 PLT Hook）或修补部分函数代码本身（内联Hook）来安装Native函数Hook。检查各个内存区域的完整性是检测这种Hook的一种方法。
 
-全局偏移表 (GOT) 用于解析库函数。在运行时，动态链接器用全局符号的绝对地址修补这个表。*GOT 钩子*覆盖存储的函数地址并将合法的函数调用重定向到对手控制的代码。这种类型的挂钩可以通过枚举进程内存映射并验证每个 GOT 入口指向合法加载的库来检测。
+全局偏移表 (GOT) 用于解析库函数。在Runtime(运行时)，动态链接器用全局符号的绝对地址修补这个表。*GOT 钩子*覆盖存储的函数地址并将合法的函数调用重定向到对手控制的代码。这种类型的Hook可以通过枚举进程内存映射并验证每个 GOT 入口指向合法加载的库来检测。
 
-与 GNU 相比`ld`，它仅在第一次需要符号地址时才解析符号地址（惰性绑定），Android 链接器解析所有外部函数并在加载库后立即写入相应的 GOT 条目（立即绑定）。因此，您可以期望所有 GOT 条目在运行时都指向其各自库的代码段中的有效内存位置。GOT hook 检测方法通常是遍历 GOT 并验证这一点。
+与 GNU 相比`ld`，它仅在第一次需要符号地址时才解析符号地址（惰性绑定），Android 链接器解析所有外部函数并在加载库后立即写入相应的 GOT 条目（立即绑定）。因此，您可以期望所有 GOT 条目在Runtime(运行时)都指向其各自库的代码段中的有效内存位置。GOT hook 检测方法通常是遍历 GOT 并验证这一点。
 
-*内联挂钩*通过覆盖函数代码开头或结尾的一些指令来工作。在运行时，这个所谓的蹦床将执行重定向到注入的代码。您可以通过检查库函数的序言和结尾是否有可疑指令来检测内联挂钩，例如远跳转到库外的位置。
+*内联Hook*通过覆盖函数代码开头或结尾的一些指令来工作。在Runtime(运行时)，这个所谓的蹦床将执行重定向到注入的代码。您可以通过检查库函数的序言和结尾是否有可疑指令来检测内联Hook，例如远跳转到库外的位置。
 
 ### 成效评估[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#effectiveness-assessment_5)
 
@@ -989,8 +989,8 @@ catch(Exception e) {
 
 使用以下技术绕过检查：
 
-1. 修补完整性检查。通过使用 NOP 指令覆盖相应的字节码或本机代码来禁用不需要的行为。
-2. 使用 Frida 或 Xposed 挂钩用于检测的 API 并返回假值。
+1. 修补完整性检查。通过使用 NOP 指令覆盖相应的字节码或Native代码来禁用不需要的行为。
+2. 使用 Frida 或 Xposed Hook用于检测的 API 并返回假值。
 
 有关修补、代码注入和内核模块的示例，请参阅“ [Android 上的篡改和逆向工程”一章。](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)
 
@@ -1006,7 +1006,7 @@ Android 应用程序可以使用不同的工具实施其中一些混淆技术。
 
 详细了解 Android 混淆技术：
 
-- Gautam Arvind[的“Android 本机代码的安全加固”](https://darvincitech.wordpress.com/2020/01/07/security-hardening-of-android-native-code/)
+- Gautam Arvind[的“Android Native代码的安全加固”](https://darvincitech.wordpress.com/2020/01/07/security-hardening-of-android-native-code/)
 - Eduardo Novella[的“APKiD：AppShielding 产品的快速识别”](https://github.com/enovella/cve-bio-enovella/blob/master/slides/APKiD-NowSecure-Connect19-enovella.pdf)
 - [“原生 Android 应用程序的挑战：混淆和漏洞”](https://www.theses.fr/2020REN1S047.pdf)，作者 Pierre Graux
 
@@ -1056,7 +1056,7 @@ android {
 -keep public class MyClass
 ```
 
-混淆通常会以运行时性能为代价，因此它通常只应用于代码的某些非常特定的部分，通常是那些处理安全和运行时保护的部分。
+混淆通常会以Runtime(运行时)性能为代价，因此它通常只应用于代码的某些非常特定的部分，通常是那些处理安全和Runtime(运行时)保护的部分。
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05j-Testing-Resiliency-Against-Reverse-Engineering/#static-analysis)
 
@@ -1096,12 +1096,12 @@ class a$b
 - 二进制文件中的字符串资源和字符串可能已被加密。
 - 与受保护功能相关的代码和数据可能会被加密、打包或以其他方式隐藏。
 
-对于本机代码：
+对于Native代码：
 
 - [libc API](https://man7.org/linux/man-pages/dir_section_3.html)（例如打开、读取）可能已被操作系统[系统调用](https://man7.org/linux/man-pages/man2/syscalls.2.html)取代。
 - [Obfuscator-LLVM](https://github.com/obfuscator-llvm/obfuscator)可能已被应用于执行[“控制流扁平化”](https://github.com/obfuscator-llvm/obfuscator/wiki/Control-Flow-Flattening)或[“虚假控制流”](https://github.com/obfuscator-llvm/obfuscator/wiki/Bogus-Control-Flow)。
 
-其中一些技术在Gautam Arvind的博客文章[“Android 本机代码的安全强化”](https://darvincitech.wordpress.com/2020/01/07/security-hardening-of-android-native-code/)和Eduardo Novella的[“APKiD：AppShielding 产品的快速识别”演示文稿中进行了讨论和分析。](https://github.com/enovella/cve-bio-enovella/blob/master/slides/APKiD-NowSecure-Connect19-enovella.pdf)
+其中一些技术在Gautam Arvind的博客文章[“Android Native代码的安全强化”](https://darvincitech.wordpress.com/2020/01/07/security-hardening-of-android-native-code/)和Eduardo Novella的[“APKiD：AppShielding 产品的快速识别”演示文稿中进行了讨论和分析。](https://github.com/enovella/cve-bio-enovella/blob/master/slides/APKiD-NowSecure-Connect19-enovella.pdf)
 
 要进行更详细的评估，您需要详细了解相关威胁和使用的混淆方法。诸如[APKiD 之](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#apkid)类的工具可能会为您提供有关目标应用程序使用了哪些技术的额外指示，例如混淆器、加壳器和反调试措施。
 
@@ -1242,7 +1242,7 @@ apkid owasp-mastg/Crackmes/Android/Level_04/r2pay-v1.0.apk
 3. 按照以下步骤从模拟器中检索数据：
 4. 通过 ADB shell 通过 SSH 连接到您的模拟器。
 5. 执行`run-as <your app-id>`。您的应用程序 ID 是 AndroidManifest.xml 中描述的包。
-6. `chmod 777`缓存和共享首选项的内容。
+6. `chmod 777`缓存和Shared Preferences的内容。
 7. 从 app-id 退出当前用户。
 8. `/data/data/<your appid>/cache`将和的内容复制`shared-preferences`到 SD 卡。
 9. 使用 ADB 或 DDMS 来拉取内容。
@@ -1251,7 +1251,7 @@ apkid owasp-mastg/Crackmes/Android/Level_04/r2pay-v1.0.apk
 12. 将步骤 3 中的数据复制到第二个模拟器的 SD 卡。
 13. 通过 ADB shell 通过 SSH 连接到您的模拟器。
 14. 执行`run-as <your app-id>`。您的 app-id 是 中描述的包 `AndroidManifest.xml`。
-15. `chmod 777`文件夹的缓存和共享首选项。
+15. `chmod 777`文件夹的缓存和Shared Preferences。
 16. 复制 SD 卡的旧内容`to /data/data/<your appid>/cache`和`shared-preferences`.
 17. 你能继续处于认证状态吗？如果是这样，绑定可能无法正常工作。
 
@@ -1346,7 +1346,7 @@ Google 建议不要使用这些标识符，除非应用程序存在高风险。
    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    ```
 
-2. 在运行时向用户请求权限：有关详细信息，请参阅[https://developer.android.com/training/permissions/requesting.html 。](https://developer.android.com/training/permissions/requesting.html)
+2. 在Runtime(运行时)向用户请求权限：有关详细信息，请参阅[https://developer.android.com/training/permissions/requesting.html 。](https://developer.android.com/training/permissions/requesting.html)
 
 3. 获取序列号：
 
@@ -1362,7 +1362,7 @@ Google 建议不要使用这些标识符，除非应用程序存在高风险。
    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
    ```
 
-2. 如果您使用的是 Android 版本 Android 6（API 级别 23）或更高版本，请在运行时向用户请求权限：有关更多详细信息，请参阅https://developer.android.com/training/permissions/requesting.html。
+2. 如果您使用的是 Android 版本 Android 6（API 级别 23）或更高版本，请在Runtime(运行时)向用户请求权限：有关更多详细信息，请参阅https://developer.android.com/training/permissions/requesting.html。
 
 3. 获取 IMEI：
 
@@ -1410,7 +1410,7 @@ Google 建议不要使用这些标识符，除非应用程序存在高风险。�
 
 1. 在您的 root 设备上运行该应用程序。
 2. 确保您可以在应用程序实例中提高信任度（例如，在应用程序中进行身份验证）。
-3. 从第一个有根设备检索数据。
+3. 从第一个有Root设备检索数据。
 4. 在第二个获得 root 权限的设备上安装应用程序。
 5. 在应用程序的数据文件夹中，覆盖第 3 步中的数据。
 6. 你能继续处于认证状态吗？如果是这样，绑定可能无法正常工作。

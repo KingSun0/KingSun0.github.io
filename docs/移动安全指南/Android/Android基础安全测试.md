@@ -1,8 +1,8 @@
-# 安卓基础安全测试[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#android-basic-security-testing)
+# Android基础安全测试[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#android-basic-security-testing)
 
 在上一章中，我们概述了 Android 平台并描述了其应用程序的结构。在本章中，我们将讨论如何设置安全测试环境，并介绍可用于测试 Android 应用程序是否存在安全漏洞的基本流程和技术。这些基本过程是以下章节中概述的测试用例的基础。
 
-## 安卓测试设置[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#android-testing-setup)
+## Android测试设置[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#android-testing-setup)
 
 您几乎可以在任何运行 Windows、Linux 或 macOS 的机器上设置功能齐全的测试环境。
 
@@ -10,7 +10,7 @@
 
 至少，您需要[Android Studio](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#android-studio)（随[Android SDK](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#android-sdk)一起提供）平台工具、模拟器和应用程序来管理各种 SDK 版本和框架组件。Android Studio 还附带了一个用于创建模拟器图像的 Android 虚拟设备 (AVD) 管理器应用程序。确保您的系统上安装了最新的[SDK 工具](https://developer.android.com/studio/releases/sdk-tools)和[平台工具](https://developer.android.com/studio/releases/platform-tools)包。
 
-此外，如果您打算使用包含本机库的应用程序，您可能希望通过安装[Android NDK来完成主机设置（这也与“ ](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#android-ndk)[Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章相关）。
+此外，如果您打算使用包含Native库(NATIVE LIBRARIES)的应用程序，您可能希望通过安装[Android NDK来完成主机设置（这也与“ ](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#android-ndk)[Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章相关）。
 
 有时从计算机显示或控制设备可能很有用。为此，您可以使用[Scrcpy](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#scrcpy)。
 
@@ -18,19 +18,19 @@
 
 对于动态分析，您需要一个 Android 设备来运行目标应用程序。原则上，您可以在没有真实 Android 设备的情况下仅使用模拟器进行测试。但是，应用程序在模拟器上的执行速度非常慢，而且模拟器可能无法提供真实的结果。在真实设备上进行测试可以使过程更顺畅，环境更逼真。另一方面，模拟器允许您轻松更改 SDK 版本或创建多个设备。下表列出了每种方法的优缺点的完整概述。
 
-| 财产           | 身体的                                                       | 仿真器/模拟器                                                |
-| :------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| 恢复能力       | Softbricks 总是可行的，但新固件通常仍然可以被刷新。硬砖非常罕见。 | 模拟器可能会崩溃或损坏，但可以创建新模拟器或恢复快照。       |
-| 重置           | 可以恢复出厂设置或刷新。                                     | 可以删除和重新创建模拟器。                                   |
-| 快照           | 不可能。                                                     | 支持，非常适合恶意软件分析。                                 |
-| 速度           | 比模拟器快多了。                                             | 通常很慢，但正在改进。                                       |
-| 成本           | 可用设备的起价通常为 200 美元。您可能需要不同的设备，例如带有或不带生物识别传感器的设备。 | 存在免费和商业解决方案。                                     |
-| 易于生根       | 高度依赖设备。                                               | 通常默认为 root。                                            |
-| 易于检测模拟器 | 它不是模拟器，因此模拟器检查不适用。                         | 将存在许多人工制品，从而很容易检测到该应用程序正在模拟器中运行。 |
-| 易于根检测     | 更容易隐藏根，因为许多根检测算法会检查模拟器属性。使用 Magisk Systemless root 几乎不可能检测到。 | 模拟器几乎总是会触发根检测算法，因为它们是为使用可以找到的许多人工制品进行测试而构建的。 |
-| 硬件交互       | 通过蓝牙、NFC、4G、Wi-Fi、生物识别、摄像头、GPS、陀螺仪等轻松交互 | 通常相当有限，具有模拟硬件输入（例如随机 GPS 坐标）          |
-| API 级别支持   | 取决于设备和社区。活跃的社区将不断分发更新版本（例如 LineageOS），而不太受欢迎的设备可能只会收到一些更新。在版本之间切换需要刷新设备，这是一个繁琐的过程。 | 始终支持最新版本，包括测试版。可以轻松下载和启动包含特定 API 级别的模拟器。 |
-| 本机库支持     | 本机库通常是为 ARM 设备构建的，因此它们可以在物理设备上运行。 | 某些模拟器在 x86 CPU 上运行，因此它们可能无法运行打包的本机库。 |
+| 资产       | 真机                                                                                   | 仿真器/模拟器                                                |
+|:---------|:-------------------------------------------------------------------------------------| :----------------------------------------------------------- |
+| 恢复能力     | Softbricks 总是可行的，但新固件通常仍然可以被刷新。硬砖非常罕见。                                               | 模拟器可能会崩溃或损坏，但可以创建新模拟器或恢复快照。       |
+| 重置       | 可以恢复出厂设置或刷新。                                                                         | 可以删除和重新创建模拟器。                                   |
+| 快照       | 不可能。                                                                                 | 支持，非常适合恶意软件分析。                                 |
+| 速度       | 比模拟器快多了。                                                                             | 通常很慢，但正在改进。                                       |
+| 成本       | 可用设备的起价通常为 200 美元。您可能需要不同的设备，例如带有或不带生物识别传感器的设备。                                      | 存在免费和商业解决方案。                                     |
+| 易于root   | 高度依赖设备。                                                                              | 通常默认为 root。                                            |
+| 易于检测模拟器  | 它不是模拟器，因此模拟器检查不适用。                                                                   | 将存在许多人工制品，从而很容易检测到该应用程序正在模拟器中运行。 |
+| 易于root检测 | 更容易隐藏Root，因为许多Root检测算法会检查模拟器属性。使用 Magisk Systemless root 几乎不可能检测到。                         | 模拟器几乎总是会触发Root检测算法，因为它们是为使用可以找到的许多人工制品进行测试而构建的。 |
+| 硬件交互     | 通过蓝牙、NFC、4G、Wi-Fi、生物识别、摄像头、GPS、陀螺仪等轻松交互                                              | 通常相当有限，具有模拟硬件输入（例如随机 GPS 坐标）          |
+| API 级别支持 | 取决于设备和社区。活跃的社区将不断分发更新版本（例如 LineageOS），而不太受欢迎的设备可能只会收到一些更新。在版本之间切换需要刷新设备，这是一个繁琐的过程。   | 始终支持最新版本，包括测试版。可以轻松下载和启动包含特定 API 级别的模拟器。 |
+| Native库(NATIVE LIBRARIES)支持    | Native库(NATIVE LIBRARIES)通常是为 ARM 设备构建的，因此它们可以在物理设备上运行。                                                    | 某些模拟器在 x86 CPU 上运行，因此它们可能无法运行打包的Native库(NATIVE LIBRARIES)。 |
 | 恶意软件危险   | 恶意软件样本可以感染设备，但如果您可以清除设备存储空间并刷新一个干净的固件，从而将其恢复为出厂设置，这应该不是问题。请注意，存在试图利用 USB 桥接器的恶意软件样本。 | 恶意软件样本可以感染模拟器，但可以简单地删除并重新创建模拟器。还可以创建快照并比较不同的快照以帮助进行恶意软件分析。请注意，存在试图攻击管理程序的恶意软件概念证明。 |
 
 #### 在真实设备上测试[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#testing-on-a-real-device)
@@ -41,7 +41,7 @@
 
 或者，谷歌的[Android One](https://www.android.com/one/)项目包含的设备将获得相同的支持窗口（2 年的操作系统更新，1 年的安全更新）并具有接近库存的体验。虽然它最初是作为一个针对低端设备的项目开始的，但该计划已经发展到包括中端和高端智能手机，其中许多都得到了改装社区的积极支持。
 
-[LineageOS](https://lineageos.org/)项目支持的设备也是非常好的测试设备候选者。他们有一个活跃的社区，易于遵循闪烁和生根说明，并且最新的 Android 版本通常可以作为 Lineage 安装快速获得。在 OEM 停止分发更新后很长一段时间内，LineageOS 还继续支持新的 Android 版本。
+[LineageOS](https://lineageos.org/)项目支持的设备也是非常好的测试设备候选者。他们有一个活跃的社区，易于遵循闪烁和Root说明，并且最新的 Android 版本通常可以作为 Lineage 安装快速获得。在 OEM 停止分发更新后很长一段时间内，LineageOS 还继续支持新的 Android 版本。
 
 使用 Android 物理设备时，您需要在设备上启用开发人员模式和 USB 调试，以便使用[ADB](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#adb)调试界面。自 Android 4.2（API 级别 16）起， “设置”应用中的“**开发者选项**”子菜单默认隐藏。要激活它，请点击**关于手机视图的****版本号**部分七次。请注意，内部版本号字段的位置因设备而略有不同。例如，在 LG 手机上，它位于**About phone** -> **Software information**下。完成此操作后，**开发人员选项**将显示在“设置”菜单的底部。激活开发人员选项后，您可以使用**USB调试**开关。
 
@@ -76,11 +76,11 @@ AVD 通过其所谓的[扩展控件](https://developer.android.com/studio/run/ad
 
 还请验证本书末尾的“[测试工具”一章。](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/)
 
-#### 获得特权访问[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#getting-privileged-access)
+#### 获得Root权限[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#getting-privileged-access)
 
-*建议在真实设备上进行Root*（即修改操作系统，以便您可以以 root 用户身份运行命令）进行测试。这使您可以完全控制操作系统，并允许您绕过应用程序沙盒等限制。这些权限反过来允许您更轻松地使用代码注入和函数挂钩等技术。
+*建议在真实设备上进行Root*（即修改操作系统，以便您可以以 root 用户身份运行命令）进行测试。这使您可以完全控制操作系统，并允许您绕过应用程序沙盒等限制。这些权限反过来允许您更轻松地使用代码注入和函数Hook等技术。
 
-请注意，生根是有风险的，在继续之前需要弄清三个主要后果。生根可能会产生以下负面影响：
+请注意，Root是有风险的，在继续之前需要弄清三个主要后果。Root可能会产生以下负面影响：
 
 - 使设备保修失效（在采取任何行动之前务必检查制造商的政策）
 - “变砖”设备，即使其无法操作和无法使用
@@ -88,37 +88,37 @@ AVD 通过其所谓的[扩展控件](https://developer.android.com/studio/run/ad
 
 您不应该对存储您的私人信息的个人设备进行 root。我们建议改用便宜的专用测试设备。许多旧设备，例如 Google 的 Nexus 系列，可以运行最新的 Android 版本并且非常适合测试。
 
-**您需要了解，对您的设备进行 root 操作最终是您的决定，OWASP 对任何损坏概不负责。如果您不确定，请在开始生根过程之前寻求专家建议。**
+**您需要了解，对您的设备进行 root 操作最终是您的决定，OWASP 对任何损坏概不负责。如果您不确定，请在开始Root过程之前寻求专家建议。**
 
 ##### 哪些手机可以ROOT[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#which-mobiles-can-be-rooted)
 
-几乎所有安卓手机都可以root。Android 操作系统的商业版本（在内核级别是 Linux 操作系统的演变）针对移动世界进行了优化。这些版本的某些功能已被删除或禁用，例如，非特权用户能够成为“root”用户（具有提升的特权）。Root 手机意味着允许用户成为 root 用户，例如，添加一个名为 的标准 Linux 可执行文件`su`，用于更改为另一个用户帐户。
+几乎所有Android手机都可以root。Android 操作系统的商业版本（在内核级别是 Linux 操作系统的演变）针对移动世界进行了优化。这些版本的某些功能已被删除或禁用，例如，非特权用户能够成为“root”用户（具有提升的特权）。Root 手机意味着允许用户成为 root 用户，例如，添加一个名为 的标准 Linux 可执行文件`su`，用于更改为另一个用户帐户。
 
 要对移动设备进行 root，首先要解锁其引导加载程序。解锁过程取决于设备制造商。然而，出于实际原因，对某些移动设备进行 root 操作比对其他移动设备进行 root 操作更受欢迎，特别是在安全测试方面：由谷歌创建并由三星、LG 和摩托罗拉等公司制造的设备是最受欢迎的，特别是因为它们是许多开发人员使用。解锁引导加载程序后，设备保修不会失效，并且 Google 提供了许多工具来支持 root 本身。[XDA 论坛上](https://www.xda-developers.com/root/)发布了所有主要品牌设备的 root 指南精选列表。
 
 ##### 用 MAGISK 刷机[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#rooting-with-magisk)
 
-Magisk（“Magic Mask”）是一种 root Android 设备的方法。它的专长在于对系统进行修改的方式。虽然其他生根工具会更改系统分区上的实际数据，但 Magisk 不会（称为“无系统”）。这提供了一种方法来隐藏对 root 敏感的应用程序（例如银行或游戏）的修改，并允许使用官方 Android OTA 升级，而无需事先取消对设备的 root 权限。
+Magisk（“Magic Mask”）是一种 root Android 设备的方法。它的专长在于对系统进行修改的方式。虽然其他Root工具会更改系统分区上的实际数据，但 Magisk 不会（称为“无系统”）。这提供了一种方法来隐藏对 root 敏感的应用程序（例如银行或游戏）的修改，并允许使用官方 Android OTA 升级，而无需事先取消对设备的 root 权限。
 
-[您可以阅读GitHub 上的官方文档](https://topjohnwu.github.io/Magisk/)来熟悉 Magisk 。如果您没有安装 Magisk，您可以在[文档](https://topjohnwu.github.io/Magisk/)中找到安装说明。如果你使用的是安卓官方版本并打算升级，Magisk[在 GitHub 上提供了教程](https://topjohnwu.github.io/Magisk/ota.html)。
+[您可以阅读GitHub 上的官方文档](https://topjohnwu.github.io/Magisk/)来熟悉 Magisk 。如果您没有安装 Magisk，您可以在[文档](https://topjohnwu.github.io/Magisk/)中找到安装说明。如果你使用的是Android官方版本并打算升级，Magisk[在 GitHub 上提供了教程](https://topjohnwu.github.io/Magisk/ota.html)。
 
 此外，开发人员可以使用 Magisk 的强大功能来创建自定义模块并将它们[提交](https://github.com/Magisk-Modules-Repo/submission)到官方[Magisk 模块存储库](https://github.com/Magisk-Modules-Repo)。然后可以在 Magisk Manager 应用程序中安装提交的模块。这些可安装模块之一是著名的[Xposed Framework](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#xposed)的无系统版本（适用于最高 27 的 SDK 版本）。
 
-##### 根检测[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#root-detection)
+##### Root检测[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#root-detection)
 
-“在 Android 上测试反逆向防御”一章中提供了一个广泛的根检测方法列表。
+“在 Android 上测试反逆向防御”一章中提供了一个广泛的Root检测方法列表。
 
-对于典型的移动应用程序安全构建，您通常需要在禁用根检测的情况下测试调试构建。如果此类构建不可用于测试，您可以通过本书稍后介绍的多种方式禁用根检测。
+对于典型的移动应用程序安全构建，您通常需要在禁用Root检测的情况下测试调试构建。如果此类构建不可用于测试，您可以通过本书稍后介绍的多种方式禁用Root检测。
 
 ## 基本测试操作[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#basic-testing-operations)
 
-### 访问设备外壳[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#accessing-the-device-shell)
+### 访问设备Shell[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#accessing-the-device-shell)
 
-测试应用程序时最常做的事情之一是访问设备外壳。在本节中，我们将了解如何使用/不使用 USB 电缆从您的主机远程访问 Android shell，以及如何从设备本身本地访问 Android shell。
+测试应用程序时最常做的事情之一是访问设备Shell。在本节中，我们将了解如何使用/不使用 USB 电缆从您的主机远程访问 Android shell，以及如何从设备本身本地访问 Android shell。
 
-#### 远程外壳[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#remote-shell)
+#### 远程Shell[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#remote-shell)
 
-为了从您的主机连接到 Android 设备的外壳，[adb](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#adb)通常是您选择的工具（除非您更喜欢使用远程 SSH 访问，例如[通过 Termux](https://wiki.termux.com/wiki/Remote_Access#Using_the_SSH_server)）。
+为了从您的主机连接到 Android 设备的Shell，[adb](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#adb)通常是您选择的工具（除非您更喜欢使用远程 SSH 访问，例如[通过 Termux](https://wiki.termux.com/wiki/Remote_Access#Using_the_SSH_server)）。
 
 对于本节，我们假设您已正确启用开发人员模式和 USB 调试，如“在真实设备上测试”中所述。通过 USB 连接 Android 设备后，您可以通过运行以下命令访问远程设备的 shell：
 
@@ -155,7 +155,7 @@ emulator-5554    device
 
 - 使用 USB 电缆将设备连接到主机，并将目标设备设置为在端口 5555 上侦听 TCP/IP 连接：`adb tcpip 5555`。
 - 从目标设备断开 USB 电缆并运行`adb connect <device_ip_address>`。通过运行检查设备现在是否可用`adb devices`。
-- 用 . 打开外壳`adb shell`。
+- 用 . 打开Shell`adb shell`。
 
 但是，请注意，这样做会使您的设备对同一网络中的任何人开放，并且知道您设备的 IP 地址。您可能更喜欢使用 USB 连接。
 
@@ -167,13 +167,13 @@ emulator-5554    device
 
 如果愿意，您还可以启用 SSH 访问。一个方便的选择是使用[Termux](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#termux)，您可以轻松地将其[配置为提供 SSH 访问](https://wiki.termux.com/wiki/Remote_Access#Using_the_SSH_server)（使用密码或公钥身份验证）并使用命令启动它`sshd`（默认在端口 8022 上启动）。为了通过 SSH 连接到 Termux，您可以简单地运行命令`ssh -p 8022 <ip_address>`（`ip_address`实际的远程设备 IP 在哪里）。这个选项有一些额外的好处，因为它允许通过 SFTP 也可以在端口 8022 上访问文件系统。
 
-#### 设备上的外壳应用程序[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#on-device-shell-app)
+#### 设备上的Shell应用程序[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#on-device-shell-app)
 
 虽然与远程 shell 相比，通常使用设备上的 shell（终端仿真器）（如[Termux](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#termux) ）可能非常乏味，但事实证明，在出现网络问题或检查某些配置等情况下，它可以方便地进行调试。
 
 ### 主机设备数据传输[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#host-device-data-transfer)
 
-#### 使用亚行[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#using-adb)
+#### 使用ADB[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#using-adb)
 
 您可以使用[adb](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#adb)命令`adb pull <remote> <local>`和`adb push <local> <remote>` [命令](https://developer.android.com/studio/command-line/adb#copyfiles)将文件复制到设备或从设备复制文件。它们的用法非常简单。例如，以下`foo.txt`将从您当前目录（本地）复制到`sdcard`文件夹（远程）：
 
@@ -194,9 +194,9 @@ Android Studio 有一个[内置的 Device File Explorer](https://developer.andro
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05b/android-studio-file-device-explorer.png)
 
-如果您使用的是有根设备，您现在可以开始探索整个文件系统。但是，当使用非 root 设备访问应用程序沙箱时，除非该应用程序是可调试的，否则您将被“囚禁”在应用程序沙箱中。
+如果您使用的是有Root设备，您现在可以开始探索整个文件系统。但是，当使用非 root 设备访问应用程序沙箱时，除非该应用程序是可调试的，否则您将被“囚禁”在应用程序沙箱中。
 
-#### 使用异议[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#using-objection)
+#### 使用objection[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#using-objection)
 
 当您在特定应用程序上工作并想要复制您可能在其沙箱中遇到的文件时，此选项很有用（请注意，您将只能访问目标应用程序有权访问的文件）。这种方法无需将应用程序设置为可调试即可工作，否则在使用 Android Studio 的设备文件资源管理器时需要将其设置为可调试。
 
@@ -267,14 +267,14 @@ sg.vp.owasp_mobile.omtg_android
 
 ### 获取和提取应用程序[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#obtaining-and-extracting-apps)
 
-有多种方法可以从设备中提取 APK 文件。您需要根据应用程序是公开的还是私有的来决定哪一种是最简单的方法。
+有多种方法可以从设备中提取 APK 文件。您需要Root据应用程序是公开的还是私有的来决定哪一种是最简单的方法。
 
 #### 替代应用商店[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#alternative-app-stores)
 
 最简单的选择之一是从镜像 Google Play 商店公共应用程序的网站下载 APK。但是，请记住，这些网站不是官方网站，无法保证应用程序未被重新打包或未包含恶意软件。一些托管 APK 且不以修改应用程序甚至列出应用程序的 SHA-1 和 SHA-256 校验和而闻名的知名网站是：
 
-- [APK镜像](https://apkmirror.com/)
-- [APK纯](https://apkpure.com/)
+- [APKMirror](https://apkmirror.com/)
+- [APKPure](https://apkpure.com/)
 
 请注意，您无法控制这些站点，并且您无法保证它们将来会做什么。仅当这是您唯一的选择时才使用它们。
 
@@ -405,8 +405,8 @@ adb install path_to_apk
 分析应用程序的一个基本步骤是信息收集。这可以通过检查主机上的应用程序包或通过访问设备上的应用程序数据来远程完成。您将在后续章节中找到更多高级技术，但目前我们将重点关注基础知识：获取所有已安装应用程序的列表、浏览应用程序包以及访问设备本身的应用程序数据目录。这应该让您对应用程序的全部内容有一些了解，甚至不必对其进行逆向工程或执行更高级的分析。我们将回答以下问题：
 
 - 包中包含哪些文件？
-- 该应用程序使用哪些本机库？
-- 应用程序定义了哪些应用程序组件？任何服务或内容提供商？
+- 该应用程序使用哪些Native库(NATIVE LIBRARIES)？
+- 应用程序定义了哪些应用程序组件？任何服务或Content Provider(内容提供者)？
 - 应用程序是否可调试？
 - 该应用程序是否包含网络安全策略？
 - 该应用程序在安装时是否会创建任何新文件？
@@ -509,7 +509,7 @@ drwxr-xr-x  131 sven  staff   4.3K Dec  5 16:29 res
 drwxr-xr-x    9 sven  staff   306B Dec  5 16:29 smali
 ```
 
-##### 安卓清单[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#the-android-manifest)
+##### Android Manifest[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#the-android-manifest)
 
 Android Manifest 是主要的信息来源，它包括很多有趣的信息，例如包名、权限、应用程序组件等。
 
@@ -524,7 +524,7 @@ Android Manifest 是主要的信息来源，它包括很多有趣的信息，例
 
 ##### 应用二进制[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#app-binary)
 
-如上文“[探索应用程序包](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#exploring-the-app-package)`classes.dex`”中所示，可以在应用程序包的根目录中找到应用程序二进制文件 ( )。它是一个所谓的 DEX（Dalvik 可执行文件）文件，其中包含已编译的 Java 代码。由于其性质，在应用一些转换后，您将能够使用反编译器生成 Java 代码。我们还看到了`smali`运行 apktool 后获得的文件夹。它包含以称为 smali 的中间语言编写的反汇编 Dalvik 字节码，smali 是 Dalvik 可执行文件的人类可读表示。
+如上文“[探索应用程序包](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#exploring-the-app-package)`classes.dex`”中所示，可以在应用程序包的Root目录中找到应用程序二进制文件 ( )。它是一个所谓的 DEX（Dalvik 可执行文件）文件，其中包含已编译的 Java 代码。由于其性质，在应用一些转换后，您将能够使用反编译器生成 Java 代码。我们还看到了`smali`运行 apktool 后获得的文件夹。它包含以称为 smali 的中间语言编写的反汇编 Dalvik 字节码，smali 是 Dalvik 可执行文件的人类可读表示。
 
 有关如何对 DEX 文件进行逆向工程的更多信息，请参阅“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章中的“[查看反编译的 Java 代码”部分。](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-decompiled-java-code)
 
@@ -546,9 +546,9 @@ adb root
 adb pull /data/app/~~DEMFPZh7R4qfUwwwh1czYA==/com.example.myapplication-pOslqiQkJclb_1Vk9-WAXg==/oat/arm64/base.odex
 ```
 
-请注意，具体目录将根据您的 Android 版本而有所不同。如果`/oat/arm64/base.odex`找不到该文件，请在返回的目录中手动搜索`pm path`。
+请注意，具体目录将Root据您的 Android 版本而有所不同。如果`/oat/arm64/base.odex`找不到该文件，请在返回的目录中手动搜索`pm path`。
 
-##### 本机库[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#native-libraries)
+##### Native库(NATIVE LIBRARIES)[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#native-libraries)
 
 您可以检查`lib`APK 中的文件夹：
 
@@ -560,7 +560,7 @@ libsqlcipher_android.so
 libstlport_shared.so
 ```
 
-或来自反对的设备：
+或来自objection设备：
 
 ```
 ...g.vp.owasp_mobile.omtg_android on (google: 8.1.0) [usb] # ls lib
@@ -572,15 +572,15 @@ File    ...  libstlport_shared.so
 File    ...  libsqlcipher_android.so
 ```
 
-目前，这就是您可以获得的有关本机库的所有信息，除非您开始对它们进行逆向工程，这是使用与用于逆向应用程序二进制文件的方法不同的方法完成的，因为此代码无法反编译，只能反汇编。有关如何对这些库进行逆向工程的更多信息，请参阅“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章中的“[查看反汇编本机代码”部分。](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)
+目前，这就是您可以获得的有关Native库(NATIVE LIBRARIES)的所有信息，除非您开始对它们进行逆向工程，这是使用与用于逆向应用程序二进制文件的方法不同的方法完成的，因为此代码无法反编译，只能反汇编。有关如何对这些库进行逆向工程的更多信息，请参阅“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章中的“[查看反汇编Native代码”部分。](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)
 
 ##### 其他应用资源[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#other-app-resources)
 
-通常值得查看您可能在 APK 的根文件夹中找到的其余资源和文件，因为有时它们包含其他好东西，如密钥存储、加密数据库、证书等。
+通常值得查看您可能在 APK 的Root文件夹中找到的其余资源和文件，因为有时它们包含其他好东西，如密钥存储、加密数据库、证书等。
 
 #### 访问应用程序数据目录[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#accessing-app-data-directories)
 
-安装该应用程序后，您可以探索更多信息，其中异议等工具会派上用场。
+安装该应用程序后，您可以探索更多信息，其中objection等工具会派上用场。
 
 使用 objection 时可以检索各种信息，其中`env`会显示应用程序的所有目录信息。
 
@@ -605,7 +605,7 @@ packageCodePath         /data/app/sg.vp.owasp_mobile.omtg_android-kR0ovWl9eoU_yh
 - 外部数据目录位于`/storage/emulated/0/Android/data/[package-name]`或`/sdcard/Android/data/[package-name]`
 - 应用程序包的路径在`/data/app/`
 
-内部数据目录是应用程序用来存储运行时创建的数据的目录，其基本结构如下：
+内部数据目录是应用程序用来存储Runtime(运行时)创建的数据的目录，其基本结构如下：
 
 ```
 ...g.vp.owasp_mobile.omtg_android on (google: 8.1.0)  [usb] # ls
@@ -625,7 +625,7 @@ Readable: True  Writable: True
 
 - **cache**：此位置用于数据缓存。例如，WebView 缓存就在这个目录中。
 - **code_cache**：这是用于存储缓存代码的文件系统特定于应用程序的缓存目录的位置。在运行 Android 5.0（API 级别 21）或更高版本的设备上，当应用程序或整个平台升级时，系统将删除存储在该位置的所有文件。
-- **lib**：此文件夹存储用 C/C++ 编写的本机库。这些库可以具有多个文件扩展名之一，包括 .so 和 .dll（x86 支持）。此文件夹包含应用程序具有原生库的平台的子目录，包括
+- **lib**：此文件夹存储用 C/C++ 编写的Native库(NATIVE LIBRARIES)。这些库可以具有多个文件扩展名之一，包括 .so 和 .dll（x86 支持）。此文件夹包含应用程序具有原生库的平台的子目录，包括
 - armeabi：所有基于 ARM 的处理器的编译代码
 - armeabi-v7a：编译代码适用于所有基于 ARM 的处理器，仅限版本 7 及更高版本
 - arm64-v8a：所有基于 ARM 的 64 位处理器的编译代码，仅基于版本 8 及更高版本
@@ -634,7 +634,7 @@ Readable: True  Writable: True
 - mips：MIPS 处理器的编译代码
 - **shared_prefs**：此文件夹包含一个 XML 文件，该文件存储通过[SharedPreferences API](https://developer.android.com/training/basics/data-storage/shared-preferences.html)保存的值。
 - **files**：此文件夹存储应用程序创建的常规文件。
-- **databases**：该文件夹存放应用在运行时生成的SQLite数据库文件，如用户数据文件。
+- **databases**：该文件夹存放应用在Runtime(运行时)生成的SQLite数据库文件，如用户数据文件。
 
 但是，应用程序可能不仅在这些文件夹中而且在父文件夹 ( `/data/data/[package-name]`) 中存储更多数据。
 
@@ -847,12 +847,12 @@ emulator @Nexus_5X_API_23 -http-proxy 127.0.0.1:8080
 
 然后系统会提示您确认安装证书（如果您还没有设置设备 PIN 码，系统还会要求您设置）。
 
-这会将证书安装在用户证书存储中（在 Genymotion VM 上测试）。为了将证书放在根存储中，您可以执行以下步骤：
+这会将证书安装在用户证书存储中（在 Genymotion VM 上测试）。为了将证书放在Root存储中，您可以执行以下步骤：
 
 1. `adb root`使用和以 root 身份运行 adb `adb shell`。
 2. 在 找到新安装的证书`/data/misc/user/0/cacerts-added/`。
 3. 将证书复制到以下文件夹`/system/etc/security/cacerts/`。
-4. 重启安卓虚拟机。
+4. 重启Android虚拟机。
 
 对于 Android 7.0（API 级别 24）及更高版本，请遵循“[绕过网络安全配置](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#bypassing-the-network-security-configuration)”部分中描述的相同过程。
 
@@ -985,7 +985,7 @@ Finished
 
 或者，您可以手动执行以下步骤以获得相同的结果：
 
-- 使 /system 分区可写，这只有在有根设备上才有可能。运行“mount”命令以确保 /system 是可写的：`mount -o rw,remount /system`。如果此命令失败，请尝试运行以下命令`mount -o rw,remount -t ext4 /system`
+- 使 /system 分区可写，这只有在有Root设备上才有可能。运行“mount”命令以确保 /system 是可写的：`mount -o rw,remount /system`。如果此命令失败，请尝试运行以下命令`mount -o rw,remount -t ext4 /system`
 
 - 准备代理的 CA 证书以匹配系统证书格式。以格式导出代理的证书`der`（这是 Burp Suite 中的默认格式），然后运行以下命令：
 
@@ -1005,7 +1005,7 @@ Finished
 
 ### 潜在障碍[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#potential-obstacles)
 
-应用程序通常实施安全控制，这使得对应用程序执行安全审查变得更加困难，例如根检测和证书固定。理想情况下，您将获得启用这些控件的应用程序版本和禁用控件的应用程序版本。这允许您分析控件的正确实现，之后您可以继续使用安全性较低的版本进行进一步测试。
+应用程序通常实施安全控制，这使得对应用程序执行安全审查变得更加困难，例如Root检测和证书固定。理想情况下，您将获得启用这些控件的应用程序版本和禁用控件的应用程序版本。这允许您分析控件的正确实现，之后您可以继续使用安全性较低的版本进行进一步测试。
 
 当然，这并不总是可行的，您可能需要对启用所有安全控制的应用程序执行黑盒评估。下面的部分向您展示了如何绕过不同应用程序的证书固定。
 
@@ -1029,7 +1029,7 @@ adb reverse tcp:8080 tcp:8080
 
 一旦设置了拦截代理并拥有 MITM 位置，您可能仍然看不到任何东西。这主要是由于以下原因：
 
-- 该应用程序使用像 Xamarin 这样的框架，它根本不使用 Android 操作系统的代理设置或
+- 该应用程序使用像 Xamarin 这样的框架，它Root本不使用 Android 操作系统的代理设置或
 - 您正在测试的应用程序正在验证是否设置了代理并且现在不允许任何通信。
 
 在这两种情况下，您都需要额外的步骤才能最终看到流量。在下面的部分中，我们将描述两种不同的解决方案，bettercap 和 iptables。
@@ -1127,7 +1127,7 @@ setTimeout(function(){
 
 - Cydia Substrate：安装[Android-SSL-TrustKiller](https://github.com/iSECPartners/Android-SSL-TrustKiller)包。
 - Frida：使用[frida-multiple-unpinning](https://codeshare.frida.re/@akabe1/frida-multiple-unpinning/)脚本。
-- 异议：使用`android sslpinning disable`命令。
+- objection：使用`android sslpinning disable`命令。
 - Xposed：安装[TrustMeAlready](https://github.com/ViRb3/TrustMeAlready)或[SSLUnpinning](https://github.com/ac-pm/SSLUnpinning_Xposed)模块。
 
 如果你有安装了 frida-server 的 root 设备，你可以通过运行以下[Objection](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)命令来绕过 SSL 固定（如果你使用的是非 root 设备，请[重新打包你的应用程序）：](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#repackaging-apps)
@@ -1179,7 +1179,7 @@ keytool -list -keystore "res/raw/truststore.bks" -provider org.bouncycastle.jce.
 
 动态绕过固定逻辑使其更加方便，因为无需绕过任何完整性检查，并且执行试错尝试要快得多。
 
-找到正确的挂钩方法通常是最困难的部分，并且可能需要相当长的时间，具体取决于混淆程度。由于开发人员通常会重用现有库，因此搜索标识所用库的字符串和许可文件是一种很好的方法。确定库后，检查未混淆的源代码以找到适合动态检测的方法。
+找到正确的Hook方法通常是最困难的部分，并且可能需要相当长的时间，具体取决于混淆程度。由于开发人员通常会重用现有库，因此搜索标识所用库的字符串和许可文件是一种很好的方法。确定库后，检查未混淆的源代码以找到适合动态检测的方法。
 
 例如，假设您找到一个使用混淆的 OkHTTP3 库的应用程序。[文档](https://square.github.io/okhttp/3.x/okhttp/)显示该类`CertificatePinner.Builder`负责为特定域添加引脚。如果您可以修改[Builder.add 方法](https://square.github.io/okhttp/3.x/okhttp/okhttp3/CertificatePinner.Builder.html#add-java.lang.String-java.lang.String...-)的参数，则可以将散列更改为属于您的证书的正确散列。可以通过两种方式找到正确的方法，正如Jeroen Beckers在[这篇博文中所解释的那样：](https://blog.nviso.eu/2019/04/02/circumventing-ssl-pinning-in-obfuscated-apps-with-okhttp/)
 
@@ -1188,9 +1188,9 @@ keytool -list -keystore "res/raw/truststore.bks" -provider org.bouncycastle.jce.
 
 对于 Builder.add 方法，您可以通过运行以下 grep 命令找到可能的方法：`grep -ri java/lang/String;\[Ljava/lang/String;)L ./`
 
-此命令将搜索所有将字符串和字符串变量列表作为参数的方法，并返回一个复杂对象。根据应用程序的大小，代码中可能有一个或多个匹配项。
+此命令将搜索所有将字符串和字符串变量列表作为参数的方法，并返回一个复杂对象。Root据应用程序的大小，代码中可能有一个或多个匹配项。
 
-使用 Frida 挂钩每个方法并打印参数。其中一个将打印出域名和证书哈希，之后您可以修改参数以规避已实施的固定。
+使用 Frida Hook每个方法并打印参数。其中一个将打印出域名和证书哈希，之后您可以修改参数以规避已实施的固定。
 
 ## 参考[¶](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#references)
 
@@ -1202,7 +1202,7 @@ keytool -list -keystore "res/raw/truststore.bks" -provider org.bouncycastle.jce.
 - Android 9.0 行为变更 - https://developer.android.com/about/versions/pie/android-9.0-changes-all#device-security-changes
 - 代号、标签和版本号 - https://source.android.com/setup/start/build-numbers
 - 创建和管理虚拟设备 - https://developer.android.com/studio/run/managing-avds.html
-- 移动设备生根指南 - https://www.xda-developers.com/root/
+- 移动设备Root指南 - https://www.xda-developers.com/root/
 - API 级别 - https://developer.android.com/guide/topics/manifest/uses-sdk-element#ApiLevels
 - AssetManager - https://developer.android.com/reference/android/content/res/AssetManager
 - SharedPreferences API - https://developer.android.com/training/basics/data-storage/shared-preferences.html

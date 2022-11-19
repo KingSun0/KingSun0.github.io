@@ -1,4 +1,4 @@
-# 安卓数据存储[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#android-data-storage)
+# Android数据存储[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#android-data-storage)
 
 保护身份验证令牌、私人信息和其他敏感数据是移动安全的关键。在本章中，您将了解 Android 为本地数据存储提供的 API 以及使用它们的最佳实践。
 
@@ -24,25 +24,25 @@
 
 Android根据用户、开发人员和应用程序的需要提供了多种[数据存储方法。](https://developer.android.com/guide/topics/data/data-storage.html)例如，某些应用程序使用数据存储来跟踪用户设置或用户提供的数据。可以通过多种方式为这个用例持久存储数据。以下列出了 Android 平台上广泛使用的持久性存储技术：
 
-- 共享首选项
+- Shared Preferences
 - SQLite 数据库
-- 火力地堡数据库
-- 领域数据库
-- 内部存储器
-- 外置储存
+- Firebase Databases
+- Realm Databases
+- 内部存储器(Internal Storage)
+- 外置储存(External Storage)
 - 密钥库
 
 除此之外，Android 中还有许多为各种用例构建的其他功能，这些功能也可能导致数据存储，也应分别进行测试，例如：
 
 - 记录功能
-- 安卓备份
+- Android备份
 - 进程内存
 - 键盘缓存
 - 截图
 
 了解每个相关的数据存储功能对于正确执行适当的测试用例非常重要。本概述旨在提供这些数据存储方法中的每一种的简要概述，以及点测试人员进一步相关的文档。
 
-### 共享首选项[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#shared-preferences)
+### Shared Preferences[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#shared-preferences)
 
 [SharedPreferences](https://developer.android.com/training/data-storage/shared-preferences) API 通常用于永久保存键值对的小型集合。存储在 SharedPreferences 对象中的数据被写入纯文本 XML 文件。SharedPreferences 对象可以声明为全球可读（所有应用程序均可访问）或私有。滥用 SharedPreferences API 通常会导致敏感数据暴露。考虑以下示例：
 
@@ -56,7 +56,7 @@ editor.putString("password", "supersecret");
 editor.commit();
 ```
 
-科特林的例子：
+Kotlin的例子：
 
 ```
 var sharedPref = getSharedPreferences("key", Context.MODE_WORLD_READABLE)
@@ -167,9 +167,9 @@ python FirebaseScanner.py -p <pathOfAPKFile>
 python FirebaseScanner.py -f <commaSeperatedFirebaseProjectNames>
 ```
 
-#### 领域数据库[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#realm-databases)
+#### Realm Databases[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#realm-databases)
 
-[Java 领域数据库](https://mongodb.com/docs/realm/sdk/java/)在开发人员中越来越受欢迎。数据库及其内容可以使用存储在配置文件中的密钥进行加密。
+[Java Realm Databases](https://mongodb.com/docs/realm/sdk/java/)在开发人员中越来越受欢迎。数据库及其内容可以使用存储在配置文件中的密钥进行加密。
 
 ```
 //the getKey() method either gets the key from the server or from a KeyStore, or is derived from a password.
@@ -180,11 +180,11 @@ RealmConfiguration config = new RealmConfiguration.Builder()
 Realm realm = Realm.getInstance(config);
 ```
 
-如果数据库*未*加密，您应该能够获取数据。如果数据库*已*加密，请确定密钥是否在源或资源中进行了硬编码，以及它是否未受保护地存储在共享首选项或其他某个位置。
+如果数据库*未*加密，您应该能够获取数据。如果数据库*已*加密，请确定密钥是否在源或资源中进行了硬编码，以及它是否未受保护地存储在Shared Preferences或其他某个位置。
 
-### 内部存储器[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#internal-storage)
+### 内部存储器(Internal Storage)[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#internal-storage)
 
-您可以将文件保存到设备的[内部存储器](https://developer.android.com/guide/topics/data/data-storage.html#filesInternal)中。保存到内部存储的文件默认是容器化的，不能被设备上的其他应用程序访问。当用户卸载您的应用程序时，这些文件将被删除。以下代码片段会将敏感数据持久存储到内部存储中。
+您可以将文件保存到设备的[内部存储器(Internal Storage)](https://developer.android.com/guide/topics/data/data-storage.html#filesInternal)中。保存到内部存储的文件默认是容器化的，不能被设备上的其他应用程序访问。当用户卸载您的应用程序时，这些文件将被删除。以下代码片段会将敏感数据持久存储到内部存储中。
 
 Java 示例：
 
@@ -201,7 +201,7 @@ try {
 }
 ```
 
-科特林的例子：
+Kotlin的例子：
 
 ```
 var fos: FileOutputStream? = null
@@ -214,7 +214,7 @@ fos.close()
 
 搜索类`FileInputStream`以找出在应用程序中打开和读取的文件。
 
-### 外置储存[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#external-storage)
+### 外置储存(External Storage)[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#external-storage)
 
 每个 Android 兼容设备都支持[共享外部存储](https://developer.android.com/guide/topics/data/data-storage.html#filesExternal)。此存储可以是可移动的（例如 SD 卡）或内部的（不可移动的）。保存到外部存储的文件是全球可读的。启用 USB 大容量存储后，用户可以修改它们。您可以使用以下代码片段将敏感信息作为文件内容持久存储到外部存储器`password.txt`。
 
@@ -229,7 +229,7 @@ FileOutputStream fos;
     fos.close();
 ```
 
-科特林的例子：
+Kotlin的例子：
 
 ```
 val password = "SecretPassword"
@@ -261,7 +261,7 @@ Android KeyStore 提供的安全级别取决于它的实现，而这取决于设
 
 #### 硬件支持的 Android KeyStore[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#hardware-backed-android-keystore)
 
-如前所述，硬件支持的 Android KeyStore 为 Android 的纵深防御安全概念提供了另一层。Android 6（API 级别 23）引入了 Keymaster 硬件抽象层 (HAL)。应用程序可以验证密钥是否存储在安全硬件中（通过检查是否`KeyInfo.isinsideSecureHardware`返回`true`）。运行 Android 9（API 级别 28）及更高版本的设备可以有一个`StrongBox Keymaster`模块，即驻留在硬件安全模块中的 Keymaster HAL 的实现，该模块具有自己的 CPU、安全存储、真正的随机数生成器和防止包篡改的机制. 要使用此功能，`true`必须在使用生成或导入密钥时传递给类或类`setIsStrongBoxBacked`中的方法`KeyGenParameterSpec.Builder``KeyProtection.Builder``AndroidKeystore`. 为确保在运行时使用 StrongBox，请检查是否`isInsideSecureHardware`返回，如果 StrongBox Keymaster 对于给定的算法和与密钥关联的密钥大小不可用，`true`系统不会抛出该异常。`StrongBoxUnavailableException`可以在[AOSP 页面](https://source.android.com/security/keystore)上找到基于硬件的密钥库的功能描述。
+如前所述，硬件支持的 Android KeyStore 为 Android 的纵深防御安全概念提供了另一层。Android 6（API 级别 23）引入了 Keymaster 硬件抽象层 (HAL)。应用程序可以验证密钥是否存储在安全硬件中（通过检查是否`KeyInfo.isinsideSecureHardware`返回`true`）。运行 Android 9（API 级别 28）及更高版本的设备可以有一个`StrongBox Keymaster`模块，即驻留在硬件安全模块中的 Keymaster HAL 的实现，该模块具有自己的 CPU、安全存储、真正的随机数生成器和防止包篡改的机制. 要使用此功能，`true`必须在使用生成或导入密钥时传递给类或类`setIsStrongBoxBacked`中的方法`KeyGenParameterSpec.Builder``KeyProtection.Builder``AndroidKeystore`. 为确保在Runtime(运行时)使用 StrongBox，请检查是否`isInsideSecureHardware`返回，如果 StrongBox Keymaster 对于给定的算法和与密钥关联的密钥大小不可用，`true`系统不会抛出该异常。`StrongBoxUnavailableException`可以在[AOSP 页面](https://source.android.com/security/keystore)上找到基于硬件的密钥库的功能描述。
 
 Keymaster HAL 是硬件支持组件（可信执行环境 (TEE) 或安全元件 (SE)）的接口，由 Android Keystore 使用。这种硬件支持组件的一个例子是[Titan](https://android-developers.googleblog.com/2018/10/building-titan-better-security-through.html) M。
 
@@ -323,7 +323,7 @@ Android Keystore 认证响应的典型示例如下所示：
 
 从安全分析的角度来看，分析师可以对密钥证明的安全实施执行以下检查：
 
-- 检查密钥证明是否完全在客户端实现。在这种情况下，可以通过篡改应用程序、方法挂钩等方式轻松绕过。
+- 检查密钥证明是否完全在客户端实现。在这种情况下，可以通过篡改应用程序、方法Hook等方式轻松绕过。
 - 检查服务器在启动密钥证明时是否使用随机质询。因为不这样做会导致不安全的实施，从而使其容易受到重放攻击。此外，应执行与挑战的随机性有关的检查。
 - 检查服务器是否验证密钥证明响应的完整性。
 - 检查服务器是否对链上证书进行完整性验证、信任验证、有效性等基本检查。
@@ -428,7 +428,7 @@ SecureKeyWrapper ::= SEQUENCE {
 
 ##### 存储密钥的不安全选项[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#insecure-options-to-store-keys)
 
-存储加密密钥的安全性较低的方法是在 Android 的 SharedPreferences 中。使用[SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences.html)时，文件只能由创建它的应用程序读取。但是，在有根设备上，任何其他具有根访问权限的应用程序都可以简单地读取其他应用程序的 SharedPreference 文件。AndroidKeyStore 不是这种情况。由于 AndroidKeyStore 访问是在内核级别管理的，因此需要相当多的工作和技巧才能在 AndroidKeyStore 不清除或破坏密钥的情况下绕过。
+存储加密密钥的安全性较低的方法是在 Android 的 SharedPreferences 中。使用[SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences.html)时，文件只能由创建它的应用程序读取。但是，在有Root设备上，任何其他具有根访问权限的应用程序都可以简单地读取其他应用程序的 SharedPreference 文件。AndroidKeyStore 不是这种情况。由于 AndroidKeyStore 访问是在内核级别管理的，因此需要相当多的工作和技巧才能在 AndroidKeyStore 不清除或破坏密钥的情况下绕过。
 
 最后三个选项是在源代码中使用硬编码的加密密钥，具有可预测的混淆功能或基于稳定属性的密钥派生功能，并将生成的密钥存储在公共场所，如`/sdcard/`. 硬编码加密密钥是一个问题，因为这意味着应用程序的每个实例都使用相同的加密密钥。攻击者可以对应用程序的本地副本进行逆向工程以提取加密密钥，并使用该密钥解密任何设备上应用程序加密的任何数据。
 
@@ -482,7 +482,7 @@ Android 上的所有应用程序都使用内存来执行正常的计算操作，
 - 分析源代码中的数据存储。
 - 确保触发应用程序中所有可能的功能（例如，通过单击所有可能的地方）以确保数据生成。
 - 检查所有应用程序生成和修改的文件，并确保存储方法足够安全。
-- 这包括 SharedPreferences、SQL 数据库、领域数据库、内部存储、外部存储等。
+- 这包括 SharedPreferences、SQL 数据库、Realm Databases、内部存储、外部存储等。
 
 一般来说，存储在设备本地的敏感数据至少应该加密，并且任何用于加密方法的密钥都应该安全地存储在 Android Keystore 中。这些文件也应该存储在应用程序沙箱中。如果应用程序可以实现，敏感数据应该存储在设备之外，或者更好的是，根本不存储。
 
@@ -493,7 +493,7 @@ Android 上的所有应用程序都使用内存来执行正常的计算操作，
 - 检查`AndroidManifest.xml`读/写外部存储权限，例如，`uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"`.
 - 检查用于存储数据的关键字和 API 调用的源代码：
 - 文件权限，例如：
-  - `MODE_WORLD_READABLE`或`MODE_WORLD_WRITABLE`：您应该避免对文件使用`MODE_WORLD_WRITEABLE`and `MODE_WORLD_READABLE`，因为任何应用程序都可以读取或写入文件，即使它们存储在应用程序的私有数据目录中。如果必须与其他应用程序共享数据，请考虑使用内容提供程序。内容提供者向其他应用程序提供读写权限，并且可以根据具体情况授予动态权限。
+  - `MODE_WORLD_READABLE`或`MODE_WORLD_WRITABLE`：您应该避免对文件使用`MODE_WORLD_WRITEABLE`and `MODE_WORLD_READABLE`，因为任何应用程序都可以读取或写入文件，即使它们存储在应用程序的私有数据目录中。如果必须与其他应用程序共享数据，请考虑使用内容提供程序。Content Provider(内容提供者)向其他应用程序提供读写权限，并且可以根据具体情况授予动态权限。
 - 类和函数，例如：
   - `SharedPreferences`类（存储键值对）
   - 类`FileOutPutStream`（使用内部或外部存储）
@@ -597,11 +597,11 @@ buildTypes {
 - 识别不应包含在生产版本中的开发文件、备份文件和旧文件。
 - 确定 SQLite 数据库是否可用以及它们是否包含敏感信息。SQLite 数据库存储在`/data/data/<package-name>/databases`.
 - 确定 SQLite 数据库是否已加密。如果是这样，请确定数据库密码是如何生成和存储的，以及它是否如密钥库概述的“[存储密钥](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#storing-a-key)”部分中所述受到充分保护。
-- 检查存储为 XML 文件（在 中`/data/data/<package-name>/shared_prefs`）的共享首选项以获取敏感信息。默认情况下，共享首选项是不安全且未加密的。某些应用程序可能会选择使用[安全首选项](https://github.com/scottyab/secure-preferences)来加密存储在共享首选项中的值。
+- 检查存储为 XML 文件（在 中`/data/data/<package-name>/shared_prefs`）的Shared Preferences以获取敏感信息。默认情况下，Shared Preferences是不安全且未加密的。某些应用程序可能会选择使用[安全首选项](https://github.com/scottyab/secure-preferences)来加密存储在Shared Preferences中的值。
 - 检查 中文件的权限`/data/data/<package-name>`。只有安装应用程序时创建的用户和组（例如 u0_a82）才应该具有用户读取、写入和执行权限 ( `rwx`)。其他用户不应该有访问文件的权限，但他们可能有目录的执行权限。
 - 检查任何 Firebase 实时数据库的使用情况，并尝试通过进行以下网络调用来确定它们是否配置错误：
 - `https://_firebaseProjectName_.firebaseio.com/.json`
-- 判断 Realm 数据库是否可用`/data/data/<package-name>/files/`，是否未加密，是否包含敏感信息。默认情况下，文件扩展名是`realm`，文件名是`default`。[使用领域浏览器](https://github.com/realm/realm-browser-osx)检查领域数据库。
+- 判断 Realm 数据库是否可用`/data/data/<package-name>/files/`，是否未加密，是否包含敏感信息。默认情况下，文件扩展名是`realm`，文件名是`default`。[使用领域浏览器](https://github.com/realm/realm-browser-osx)检查Realm Databases。
 
 ## 测试本地存储以进行输入验证 (MSTG-PLATFORM-2)[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#testing-local-storage-for-input-validation-mstg-platform-2)
 
@@ -613,9 +613,9 @@ buildTypes {
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#static-analysis_1)
 
-#### 使用共享首选项[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#using-shared-preferences)
+#### 使用Shared Preferences[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#using-shared-preferences)
 
-当您使用`SharedPreferences.Editor`读取或写入 int/boolean/long 值时，您无法检查数据是否被覆盖。然而：除了链接值外，它几乎不能用于实际攻击（例如，不能打包额外的漏洞来接管控制流）。在 a`String`或 a的情况下，`StringSet`您应该注意数据的解释方式。使用基于反射的持久化？查看 Android 的“测试对象持久性”部分，了解应如何对其进行验证。使用`SharedPreferences.Editor`来存储和读取证书或密钥？确保你已经修补了你的安全供应商给定的漏洞，例如在[Bouncy Castle](https://www.cvedetails.com/cve/CVE-2018-1000613/)中发现的漏洞。
+当您使用`SharedPreferences.Editor`读取或写入 int/boolean/long 值时，您无法检查数据是否被覆盖。然而：除了链接值外，它几乎不能用于实际攻击（例如，不能打包额外的漏洞来接管控制流）。在 a`String`或 a的情况下，`StringSet`您应该注意数据的解释方式。使用基于反射的持久化？查看 Android 的“测试对象持久性”部分，了解应如何对其进行验证。使用`SharedPreferences.Editor`来存储和读取证书或密钥？确保你已经修补了你的Security Provider给定的漏洞，例如在[Bouncy Castle](https://www.cvedetails.com/cve/CVE-2018-1000613/)中发现的漏洞。
 
 在所有情况下，对内容进行 HMACed 有助于确保未应用任何添加和/或更改。
 
@@ -812,11 +812,11 @@ adb logcat | grep "$(adb shell ps | grep <package-name> | awk '{print $2}')"
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#static-analysis_5)
 
-第一步是查看`AndroidManifest.xml`以检测应用公开的内容提供者。`<provider>`您可以通过元素识别内容提供者。完成以下步骤：
+第一步是查看`AndroidManifest.xml`以检测应用公开的Content Provider(内容提供者)。`<provider>`您可以通过元素识别Content Provider(内容提供者)。完成以下步骤：
 
 - 判断导出标签( `android:exported`) 的值是否为`"true"`。即使不是，`"true"`如果`<intent-filter>`已经为标签定义了标签，标签也会自动设置为。如果内容仅供应用程序本身访问，请设置`android:exported`为`"false"`. 如果不是，请将标志设置为`"true"`并定义适当的读/写权限。
 - 确定数据是否受到权限标记 ( `android:permission`) 的保护。权限标签限制对其他应用程序的曝光。
-- 确定`android:protectionLevel`属性是否具有值`signature`。此设置表示数据仅供来自同一企业的应用程序访问（即，使用相同的密钥签名）。要使其他应用程序可以访问数据，请对`<permission>`元素应用安全策略并设置适当的`android:protectionLevel`. 如果您使用`android:permission`，其他应用程序必须`<uses-permission>`在其清单中声明相应的元素才能与您的内容提供者交互。您可以使用该`android:grantUriPermissions`属性向其他应用程序授予更具体的访问权限；您可以限制对`<grant-uri-permission>`元素的访问。
+- 确定`android:protectionLevel`属性是否具有值`signature`。此设置表示数据仅供来自同一企业的应用程序访问（即，使用相同的密钥签名）。要使其他应用程序可以访问数据，请对`<permission>`元素应用安全策略并设置适当的`android:protectionLevel`. 如果您使用`android:permission`，其他应用程序必须`<uses-permission>`在其清单中声明相应的元素才能与您的Content Provider(内容提供者)交互。您可以使用该`android:grantUriPermissions`属性向其他应用程序授予更具体的访问权限；您可以限制对`<grant-uri-permission>`元素的访问。
 
 检查源代码以了解内容提供程序的使用方式。搜索以下关键字：
 
@@ -900,9 +900,9 @@ fun query(uri: Uri?, array: Array<String?>?, s: String?, array2: Array<String?>?
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#dynamic-analysis_4)
 
-#### 测试内容提供者[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#testing-content-providers)
+#### 测试Content Provider(内容提供者)[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#testing-content-providers)
 
-要动态分析应用程序的内容提供者，首先枚举攻击面：将应用程序的包名称传递给 Drozer 模块`app.provider.info`：
+要动态分析应用程序的Content Provider(内容提供者)，首先枚举攻击面：将应用程序的包名称传递给 Drozer 模块`app.provider.info`：
 
 ```
 dz> run app.provider.info -a com.mwr.example.sieve
@@ -928,7 +928,7 @@ dz> run app.provider.info -a com.mwr.example.sieve
 
 在此示例中，导出了两个内容提供程序。两者都可以未经许可访问，`/Keys`除了`DBContentProvider`. 使用此信息，您可以重建部分内容 URI 以访问`DBContentProvider`（URI 以 开头`content://`）。
 
-要在应用程序中识别内容提供者 URI，请使用 Drozer 的`scanner.provider.finduris`模块。该模块以多种方式猜测路径并确定可访问的内容 URI：
+要在应用程序中识别Content Provider(内容提供者) URI，请使用 Drozer 的`scanner.provider.finduris`模块。该模块以多种方式猜测路径并确定可访问的内容 URI：
 
 ```
 dz> run scanner.provider.finduris -a com.mwr.example.sieve
@@ -942,7 +942,7 @@ content://com.mwr.example.sieve.DBContentProvider/Passwords
 content://com.mwr.example.sieve.DBContentProvider/Passwords/
 ```
 
-获得可访问内容提供者列表后，尝试使用以下`app.provider.query`模块从每个提供者中提取数据：
+获得可访问Content Provider(内容提供者)列表后，尝试使用以下`app.provider.query`模块从每个提供者中提取数据：
 
 ```
 dz> run app.provider.query content://com.mwr.example.sieve.DBContentProvider/Passwords/ --vertical
@@ -953,7 +953,7 @@ password: PSFjqXIMVa5NJFudgDuuLVgJYFD+8w== (Base64 - encoded)
 email: incognitoguy50@gmail.com
 ```
 
-您还可以使用 Drozer 插入、更新和删除易受攻击的内容提供者的记录：
+您还可以使用 Drozer 插入、更新和删除易受攻击的Content Provider(内容提供者)的记录：
 
 - 插入记录
 
@@ -981,7 +981,7 @@ dz> run app.provider.delete content://settings/secure
                 --selection-args my_setting
 ```
 
-#### 内容提供者中的 SQL 注入[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#sql-injection-in-content-providers)
+#### Content Provider(内容提供者)中的 SQL 注入[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#sql-injection-in-content-providers)
 
 Android 平台提倡使用 SQLite 数据库来存储用户数据。因为这些数据库是基于 SQL 的，所以它们可能容易受到 SQL 注入的攻击。您可以使用 Drozer 模块`app.provider.query`通过操作传递给内容提供程序的投影和选择字段来测试 SQL 注入：
 
@@ -1012,7 +1012,7 @@ dz> run app.provider.query content://com.mwr.example.sieve.DBContentProvider/Pas
 | thisismypassword | 9876 |
 ```
 
-您可以使用该模块自动执行这些步骤，该`scanner.provider.injection`模块会自动在应用程序中查找易受攻击的内容提供者：
+您可以使用该模块自动执行这些步骤，该`scanner.provider.injection`模块会自动在应用程序中查找易受攻击的Content Provider(内容提供者)：
 
 ```
 dz> run scanner.provider.injection -a com.mwr.example.sieve
@@ -1027,9 +1027,9 @@ Injection in Selection:
   content://com.mwr.example.sieve.DBContentProvider/Passwords/
 ```
 
-#### 基于文件系统的内容提供者[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#file-system-based-content-providers)
+#### 基于文件系统的Content Provider(内容提供者)[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#file-system-based-content-providers)
 
-内容提供者可以提供对底层文件系统的访问。这允许应用程序共享文件（Android 沙箱通常会阻止这种情况）。您可以使用 Drozer 模块`app.provider.read`和`app.provider.download`分别从导出的基于文件的内容提供程序读取和下载文件。这些内容提供者容易受到目录遍历的影响，这允许读取目标应用程序沙箱中其他受保护的文件。
+Content Provider(内容提供者)可以提供对底层文件系统的访问。这允许应用程序共享文件（Android 沙箱通常会阻止这种情况）。您可以使用 Drozer 模块`app.provider.read`和`app.provider.download`分别从导出的基于文件的内容提供程序读取和下载文件。这些Content Provider(内容提供者)容易受到目录遍历的影响，这允许读取目标应用程序沙箱中其他受保护的文件。
 
 ```
 dz> run app.provider.download content://com.vulnerable.app.FileProvider/../../../../../../../../data/data/com.vulnerable.app/database.db /home/user/database.db
@@ -1046,7 +1046,7 @@ Vulnerable Providers:
   content://com.mwr.example.sieve.FileBackupProvider
 ```
 
-请注意，`adb`也可用于查询内容提供者：
+请注意，`adb`也可用于查询Content Provider(内容提供者)：
 
 ```
 $ adb shell content query --uri content://com.owaspomtg.vulnapp.provider.CredentialProvider/credentials
@@ -1163,7 +1163,7 @@ android:backupAgent
 adb backup -apk -nosystem <package-name>
 ```
 
-亚行现在应该回复“现在解锁您的设备并确认备份操作”，并且应该在 Android 手机上要求您输入密码。这是一个可选步骤，您无需提供。如果电话未提示此消息，请尝试以下命令（包括引号）：
+ADB现在应该回复“现在解锁您的设备并确认备份操作”，并且应该在 Android 手机上要求您输入密码。这是一个可选步骤，您无需提供。如果电话未提示此消息，请尝试以下命令（包括引号）：
 
 ```
 adb backup "-apk -nosystem <package-name>"
@@ -1195,7 +1195,7 @@ java -jar abe.jar unpack backup.ab
 abe [-debug] [-useenv=yourenv] unpack <backup.ab> <backup.tar> [password]
 ```
 
-[password]: 是你的安卓设备之前询问你时的密码。例如这里是：123
+[password]: 是你的Android设备之前询问你时的密码。例如这里是：123
 
 ```
 java -jar abe.jar unpack backup.ab backup.tar 123
@@ -1211,7 +1211,7 @@ tar xvf mybackup.tar
 
 ### 概述[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#overview_8)
 
-制造商希望在应用程序启动和退出时为设备用户提供美观的体验，因此他们引入了屏幕截图保存功能，以便在应用程序后台运行时使用。此功能可能会带来安全风险。如果用户在显示敏感数据时故意截屏应用程序，则可能会暴露敏感数据。在设备上运行并能够连续捕获屏幕的恶意应用程序也可能会泄露数据。屏幕截图被写入本地存储，它们可能会被流氓应用程序（如果设备已获得 root 权限）或窃取设备的人从中恢复。
+制造商希望在应用程序启动和退出时为设备用户提供美观的体验，因此他们引入了屏幕截图保存功能，以便在应用程序后台Runtime(运行时)使用。此功能可能会带来安全风险。如果用户在显示敏感数据时故意截屏应用程序，则可能会暴露敏感数据。在设备上运行并能够连续捕获屏幕的恶意应用程序也可能会泄露数据。屏幕截图被写入本地存储，它们可能会被流氓应用程序（如果设备已获得 root 权限）或窃取设备的人从中恢复。
 
 例如，捕获银行应用程序的屏幕截图可能会泄露有关用户帐户、信用、交易等的信息。
 
@@ -1343,11 +1343,11 @@ try {
 }
 ```
 
-但是，这并不能保证内容会在运行时被覆盖。为了优化字节码，编译器会分析并决定不覆盖数据，因为它以后不会被使用（即，这是一个不必要的操作）。即使代码在已编译的 DEX 中，优化也可能发生在 VM 中的即时或提前编译期间。
+但是，这并不能保证内容会在Runtime(运行时)被覆盖。为了优化字节码，编译器会分析并决定不覆盖数据，因为它以后不会被使用（即，这是一个不必要的操作）。即使代码在已编译的 DEX 中，优化也可能发生在 VM 中的即时或提前编译期间。
 
 这个问题没有灵丹妙药，因为不同的解决方案会产生不同的后果。例如，您可能会执行额外的计算（例如，将数据异或到虚拟缓冲区），但您无法知道编译器优化分析的范围。另一方面，在编译器范围之外使用被覆盖的数据（例如，在临时文件中序列化它）保证它会被覆盖，但显然会影响性能和维护。
 
-然后，使用`Arrays.fill`覆盖数据是一个坏主意，因为该方法是一个明显的挂钩目标（有关更多详细信息，请参阅“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章）。
+然后，使用`Arrays.fill`覆盖数据是一个坏主意，因为该方法是一个明显的Hook目标（有关更多详细信息，请参阅“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章）。
 
 上述示例的最后一个问题是内容仅被零覆盖。您应该尝试用随机数据或非关键对象的内容覆盖关键对象。这将使构建能够根据其管理识别敏感数据的扫描仪变得非常困难。
 
@@ -1580,9 +1580,9 @@ Usage: /[!bf] [arg]  Search stuff (see 'e??search' for options)
 ...
 ```
 
-#### 运行时内存分析[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#runtime-memory-analysis)
+#### Runtime(运行时)内存分析[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#runtime-memory-analysis)
 
-除了将内存转储到主机上，您还可以使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)。有了它，您可以在应用程序运行时分析和检查应用程序的内存。例如，您可以从 r2frida 运行之前的搜索命令并在内存中搜索字符串、十六进制值等。执行此操作时，请记住`\`在启动会话后在搜索命令（以及任何其他 r2frida 特定命令）前面加上反斜杠与`r2 frida://usb//<name_of_your_app>`。
+除了将内存转储到主机上，您还可以使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)。有了它，您可以在应用程序Runtime(运行时)分析和检查应用程序的内存。例如，您可以从 r2frida 运行之前的搜索命令并在内存中搜索字符串、十六进制值等。执行此操作时，请记住`\`在启动会话后在搜索命令（以及任何其他 r2frida 特定命令）前面加上反斜杠与`r2 frida://usb//<name_of_your_app>`。
 
 有关更多信息、选项和方法，请参阅“ Android 上的篡改和逆向工程”一章中的“[内存中搜索](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#in-memory-search)”部分。
 
@@ -1661,7 +1661,7 @@ SELECT password FROM ".*" WHERE (null != password)
 - 最近的 Android 操作系统版本
 - USB调试激活
 - 设备加密
-- 设备生根（另请参阅“测试根检测”）
+- 设备Root（另请参阅“测试Root检测”）
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#static-analysis_10)
 
@@ -1692,9 +1692,9 @@ SELECT password FROM ".*" WHERE (null != password)
 - MSTG-STORAGE-11：“该应用程序执行最低限度的设备访问安全策略，例如要求用户设置设备密码。”
 - MSTG-PLATFORM-2：“来自外部来源和用户的所有输入都经过验证，并在必要时进行清理。这包括通过 UI、IPC 机制（如意图、自定义 URL 和网络来源）接收的数据。”
 
-### 图书馆[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#libraries)
+### 库（Libraries）[¶](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#libraries)
 
-- [Java AES 加密](https://github.com/tozny/java-aes-crypto)
-- [SQL密码](https://www.zetetic.net/sqlcipher/sqlcipher-for-android)
-- [安全偏好](https://github.com/scottyab/secure-preferences)
-- [忒弥斯](https://github.com/cossacklabs/themis)
+- [Java AES Crypto](https://github.com/tozny/java-aes-crypto)
+- [SQL Cipher](https://www.zetetic.net/sqlcipher/sqlcipher-for-android)
+- [Secure Preferences](https://github.com/scottyab/secure-preferences)
+- [Themis](https://github.com/cossacklabs/themis)

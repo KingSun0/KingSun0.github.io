@@ -1,4 +1,4 @@
-# 安卓网络通讯[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#android-network-communication)
+# Android网络通讯[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#android-network-communication)
 
 几乎每个 Android 应用程序都充当一个或多个远程服务的客户端。由于这种网络通信通常发生在公共 Wi-Fi 等不受信任的网络上，因此基于经典网络的攻击成为一个潜在问题。
 
@@ -6,7 +6,7 @@
 
 ## 概述[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#overview)
 
-### 安卓网络安全配置[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#android-network-security-configuration)
+### Android网络安全配置[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#android-network-security-configuration)
 
 从 Android 7.0（API 级别 24）开始，Android 应用程序可以使用所谓的[网络安全配置](https://developer.android.com/training/articles/security-config)功能自定义其网络安全设置，该功能提供以下主要功能：
 
@@ -335,7 +335,7 @@ HostnameVerifier NO_VERIFY = org.apache.http.conn.ssl.SSLSocketFactory
 I/X509Util: Failed to validate the certificate chain, error: Pin verification failed
 ```
 
-#### 信托经理[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#trustmanager)
+#### TrustManager[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#trustmanager)
 
 实施证书固定涉及三个主要步骤：
 
@@ -482,7 +482,7 @@ myWebView.setWebViewClient(new WebViewClient(){
 
 按照[“测试端点识别验证 > 动态分析”](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#testing-endpoint-identify-verification-mstg-network-3)中的说明进行操作。如果这样做不会导致流量被代理，则可能意味着实际上已实施证书固定并且所有安全措施都已到位。所有域都会发生同样的情况吗？
 
-作为快速冒烟测试，您可以尝试使用[异议](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)绕过证书固定，如[“绕过证书固定”](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#bypassing-certificate-pinning)中所述。被异议挂钩的固定相关 API 应该出现在异议的输出中。
+作为快速冒烟测试，您可以尝试使用[objection](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)绕过证书固定，如[“绕过证书固定”](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/#bypassing-certificate-pinning)中所述。被objectionHook的固定相关 API 应该出现在objection的输出中。
 
 ![反对 Android SSL Pinning 绕过](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/Images/Chapters/0x05b/android_ssl_pinning_bypass.png)
 
@@ -493,17 +493,17 @@ myWebView.setWebViewClient(new WebViewClient(){
 
 [在这两种情况下，应用程序或其某些组件可能会以 objection 支持](https://github.com/sensepost/objection/blob/master/agent/src/android/pinning.ts)的方式实现自定义固定。请查看静态分析部分以了解具体的固定指标和更深入的测试。
 
-## 测试安全提供程序 (MSTG-NETWORK-6)[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#testing-the-security-provider-mstg-network-6)
+## 测试security providers (MSTG-NETWORK-6)[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#testing-the-security-provider-mstg-network-6)
 
 ### 概述[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#overview_2)
 
-Android 依靠安全提供程序来提供基于 SSL/TLS 的连接。设备附带的这种安全提供程序（一个例子是[OpenSSL](https://www.openssl.org/news/vulnerabilities.html)）的问题是它经常有错误和/或漏洞。为避免已知漏洞，开发人员需要确保应用程序将安装适当的安全提供程序。自 2016 年 7 月 11 日起，谷歌[一直拒绝](https://support.google.com/faqs/answer/6376725?hl=en)使用易受攻击的 OpenSSL 版本的 Play 商店应用程序提交（包括新应用程序和更新）。
+Android 依靠security providers来提供基于 SSL/TLS 的连接。设备附带的这种security providers（一个例子是[OpenSSL](https://www.openssl.org/news/vulnerabilities.html)）的问题是它经常有错误和/或漏洞。为避免已知漏洞，开发人员需要确保应用程序将安装适当的security providers。自 2016 年 7 月 11 日起，谷歌[一直拒绝](https://support.google.com/faqs/answer/6376725?hl=en)使用易受攻击的 OpenSSL 版本的 Play 商店应用程序提交（包括新应用程序和更新）。
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#static-analysis_3)
 
-基于Android SDK 的应用程序应该依赖于GooglePlayServices。例如，在 gradle 构建文件中，您会`compile 'com.google.android.gms:play-services-gcm:x.x.x'`在 dependencies 块中找到。您需要确保使用或`ProviderInstaller`调用该类。需要由应用程序的组件尽早调用。这些方法抛出的异常应该被正确捕获和处理。如果应用程序无法修补其安全提供程序，它可以通知 API 其安全性较低的状态或限制用户操作（因为在这种情况下所有 HTTPS 流量都应被视为风险更高）。`installIfNeeded``installIfNeededAsync``ProviderInstaller`
+基于Android SDK 的应用程序应该依赖于GooglePlayServices。例如，在 gradle 构建文件中，您会`compile 'com.google.android.gms:play-services-gcm:x.x.x'`在 dependencies 块中找到。您需要确保使用或`ProviderInstaller`调用该类。需要由应用程序的组件尽早调用。这些方法抛出的异常应该被正确捕获和处理。如果应用程序无法修补其security providers，它可以通知 API 其安全性较低的状态或限制用户操作（因为在这种情况下所有 HTTPS 流量都应被视为风险更高）。`installIfNeeded``installIfNeededAsync``ProviderInstaller`
 
-[以下是Android 开发人员文档](https://developer.android.com/training/articles/security-gms-provider.html)中的两个示例，展示了如何更新安全提供程序以防止 SSL 攻击。在这两种情况下，开发人员都需要正确处理异常，并且在应用程序使用未打补丁的安全提供程序时向后端报告可能是明智的。
+[以下是Android 开发人员文档](https://developer.android.com/training/articles/security-gms-provider.html)中的两个示例，展示了如何更新security providers以防止 SSL 攻击。在这两种情况下，开发人员都需要正确处理异常，并且在应用程序使用未打补丁的security providers时向后端报告可能是明智的。
 
 同步修补：
 
@@ -649,7 +649,7 @@ public class MainActivity extends Activity
 
 当您没有源代码时：
 
-- 使用 Xposed 挂钩到`java.security`包中，然后`java.security.Security`使用方法挂钩`getProviders`（不带参数）。返回值将是一个数组`Provider`。
+- 使用 Xposed Hook到`java.security`包中，然后`java.security.Security`使用方法Hook`getProviders`（不带参数）。返回值将是一个数组`Provider`。
 - 确定第一个提供者是否是`GmsCore_OpenSSL`。
 
 ## 参考[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#references)
@@ -662,7 +662,7 @@ public class MainActivity extends Activity
 - MSTG-NETWORK-4：“该应用程序要么使用自己的证书存储，要么固定端点证书或公钥，随后不会与提供不同证书或密钥的端点建立连接，即使由受信任的 CA 签名也是如此。”
 - MSTG-NETWORK-6：“该应用程序仅依赖于最新的连接和安全库。”
 
-### 安卓开发者文档[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#android-developer-documentation)
+### Android开发者文档[¶](https://mas.owasp.org/MASTG/Android/0x05g-Testing-Network-Communication/#android-developer-documentation)
 
 - 网络安全配置 - https://developer.android.com/training/articles/security-config
 - 网络安全配置（缓存替代）- [https://webcache.googleusercontent.com/search?q=cache:hOONLxvMTwYJ:https://developer.android.com/training/articles/security-config+&cd=10&hl=nl&ct= clnk&gl=nl](https://webcache.googleusercontent.com/search?q=cache:hOONLxvMTwYJ:https://developer.android.com/training/articles/security-config+&cd=10&hl=nl&ct=clnk&gl=nl)

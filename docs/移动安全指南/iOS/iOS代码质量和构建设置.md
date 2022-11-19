@@ -181,7 +181,7 @@ iOS 应用程序通常使用第三方库来加速开发，因为开发人员必�
 
 - 一个库可能包含一个漏洞，这将使应用程序容易受到攻击。一个很好的例子是`AFNetworking`版本 2.5.1，它包含一个禁用证书验证的错误。此漏洞将允许攻击者对使用该库连接到其 API 的应用程序执行中间人攻击。
 - 库无法再维护或几乎无法使用，这就是没有报告和/或修复漏洞的原因。这可能会导致通过库在您的应用程序中出现错误和/或易受攻击的代码。
-- 图书馆可以使用 LGPL2.1 等许可证，这要求应用程序作者为使用该应用程序并要求深入了解其源代码的人提供对源代码的访问权限。事实上，应用程序应该被允许在修改其源代码的情况下重新分发。这可能危及应用程序的知识产权 (IP)。
+- 库（Libraries）可以使用 LGPL2.1 等Licenses（许可证），这要求应用程序作者为使用该应用程序并要求深入了解其源代码的人提供对源代码的访问权限。事实上，应用程序应该被允许在修改其源代码的情况下重新分发。这可能危及应用程序的知识产权 (IP)。
 
 请注意，此问题可能存在于多个层面：当您使用 webview 并在 webview 中运行 JavaScript 时，JavaScript 库也可能存在这些问题。这同样适用于 Cordova、React-native 和 Xamarin 应用程序的插件/库。
 
@@ -191,7 +191,7 @@ iOS 应用程序通常使用第三方库来加速开发，因为开发人员必�
 
 为了确保应用程序使用的库没有携带漏洞，最好检查 CocoaPods 或 Carthage 安装的依赖项。
 
-##### 斯威夫特包管理器[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#swift-package-manager)
+##### Swift包管理器[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#swift-package-manager)
 
 如果使用[Swift Package Manager](https://swift.org/package-manager)管理第三方依赖，可以通过以下步骤分析第三方库的漏洞：
 
@@ -209,7 +209,7 @@ swift build
 dependency-check  --enableExperimental --out . --scan Package.swift
 ```
 
-##### 可可豆[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#cocoapods)
+##### CocoaPods[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#cocoapods)
 
 如果使用[CocoaPods](https://cocoapods.org/)管理第三方依赖，可以通过以下步骤分析第三方库的漏洞。
 
@@ -241,7 +241,7 @@ pod dependencies
 dependency-check  --enableExperimental --out . --scan Podfile.lock
 ```
 
-##### 迦太基[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#carthage)
+##### Carthage[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#carthage)
 
 如果[Carthage](https://github.com/Carthage/Carthage)用于第三方依赖，则可以通过以下步骤分析第三方库是否存在漏洞。
 
@@ -272,13 +272,13 @@ carthage update --platform iOS
 
 接下来，请注意，对于混合应用程序，您必须使用[RetireJS](https://retirejs.github.io/retire.js/)检查 JavaScript 依赖项。同样对于 Xamarin，您将必须检查 C# 依赖项。
 
-最后，如果应用程序是高风险应用程序，您将最终手动审查库。在这种情况下，对本机代码有特定要求，这类似于 MASVS 为整个应用程序建立的要求。其次，最好检查是否应用了所有软件工程最佳实践。
+最后，如果应用程序是高风险应用程序，您将最终手动审查库。在这种情况下，对Native代码有特定要求，这类似于 MASVS 为整个应用程序建立的要求。其次，最好检查是否应用了所有软件工程最佳实践。
 
-#### 检测应用程序库使用的许可证[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#detecting-the-licenses-used-by-the-libraries-of-the-application)
+#### 检测应用程序库使用的Licenses（许可证）[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#detecting-the-licenses-used-by-the-libraries-of-the-application)
 
 为了保证不侵犯版权，最好检查Swift Packager Manager、CocoaPods或Carthage安装的依赖。
 
-##### 斯威夫特包管理器[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#swift-package-manager_1)
+##### Swift包管理器[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#swift-package-manager_1)
 
 当应用程序源可用并使用 Swift 包管理器时，在项目的根目录中执行以下代码，即 Package.swift 文件所在的位置：
 
@@ -286,20 +286,20 @@ carthage update --platform iOS
 swift build
 ```
 
-每个依赖项的源代码现已下载到`/.build/checkouts/`项目中的文件夹中。在这里，您可以在各自的文件夹中找到每个库的许可证。
+每个依赖项的源代码现已下载到`/.build/checkouts/`项目中的文件夹中。在这里，您可以在各自的文件夹中找到每个库的Licenses（许可证）。
 
-##### 可可豆[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#cocoapods_1)
+##### CocoaPods[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#cocoapods_1)
 
-当应用程序源可用并使用 CocoaPods 时，执行以下步骤以获取不同的许可证：首先，在项目的根目录，即 Podfile 所在的位置，键入
+当应用程序源可用并使用 CocoaPods 时，执行以下步骤以获取不同的Licenses（许可证）：首先，在项目的根目录，即 Podfile 所在的位置，键入
 
 ```
 sudo gem install CocoaPods
 pod install
 ```
 
-这将创建一个 Pods 文件夹，其中安装了所有库，每个库都在自己的文件夹中。您现在可以通过检查每个文件夹中的许可证文件来检查每个库的许可证。
+这将创建一个 Pods 文件夹，其中安装了所有库，每个库都在自己的文件夹中。您现在可以通过检查每个文件夹中的Licenses（许可证）文件来检查每个库的Licenses（许可证）。
 
-##### 迦太基[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#carthage_1)
+##### Carthage[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#carthage_1)
 
 当应用程序源可用并使用 Carthage 时，在 Cartfile 所在的项目根目录下执行以下代码：
 
@@ -308,23 +308,23 @@ brew install carthage
 carthage update --platform iOS
 ```
 
-每个依赖项的源代码现已下载到`Carthage/Checkouts`项目中的文件夹中。在这里，您可以在各自的文件夹中找到每个库的许可证。
+每个依赖项的源代码现已下载到`Carthage/Checkouts`项目中的文件夹中。在这里，您可以在各自的文件夹中找到每个库的Licenses（许可证）。
 
-##### 图书馆许可证问题[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#issues-with-library-licenses)
+##### 库（Libraries）Licenses（许可证）问题[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#issues-with-library-licenses)
 
-当库包含应用程序 IP 需要开源的许可证时，检查是否有可用于提供类似功能的库的替代项。
+当库包含应用程序 IP 需要开源的Licenses（许可证）时，检查是否有可用于提供类似功能的库的替代项。
 
-注意：如果是混合应用程序，请检查使用的构建工具：它们中的大多数都有许可证枚举插件来查找正在使用的许可证。
+注意：如果是混合应用程序，请检查使用的构建工具：它们中的大多数都有Licenses（许可证）枚举插件来查找正在使用的Licenses（许可证）。
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#dynamic-analysis_3)
 
-本节的动态分析包括两部分：实际许可证验证和检查在缺少源的情况下涉及哪些库。
+本节的动态分析包括两部分：实际Licenses（许可证）验证和检查在缺少源的情况下涉及哪些库。
 
-需要验证许可证的版权是否得到遵守。这通常意味着应用程序应该有一个`about`或`EULA`部分，其中根据第三方库的许可要求注明版权声明。
+需要验证Licenses（许可证）的版权是否得到遵守。这通常意味着应用程序应该有一个`about`或`EULA`部分，其中根据第三方库的许可要求注明版权声明。
 
 #### 列出应用程序库[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#listing-application-libraries)
 
-在执行应用程序分析时，分析应用程序依赖项（通常以库或所谓的 iOS 框架的形式）并确保它们不包含任何漏洞也很重要。即使您没有源代码，您仍然可以使用[objection](https://github.com/sensepost/objection)、[MobSF](https://github.com/MobSF/Mobile-Security-Framework-MobSF)或 otool 等工具识别某些应用依赖项。异议是推荐的工具，因为它提供最准确的结果并且易于使用。它包含一个与 iOS Bundles 一起工作的模块，它提供了两个命令：`list_bundles`和`list_frameworks`。
+在执行应用程序分析时，分析应用程序依赖项（通常以库或所谓的 iOS 框架的形式）并确保它们不包含任何漏洞也很重要。即使您没有源代码，您仍然可以使用[objection](https://github.com/sensepost/objection)、[MobSF](https://github.com/MobSF/Mobile-Security-Framework-MobSF)或 otool 等工具识别某些应用依赖项。objection是推荐的工具，因为它提供最准确的结果并且易于使用。它包含一个与 iOS Bundles 一起工作的模块，它提供了两个命令：`list_bundles`和`list_frameworks`。
 
 该`list_bundles`命令列出了所有与框架无关的应用程序包。输出包含可执行文件名称、包 ID、库版本和库路径。
 
@@ -568,7 +568,7 @@ func request(url: URL, completion: @escaping (Result<MSTG, RequestError>) -> Voi
 - 在 iOS 应用程序的 UI 字段中输入意外值。
 - 通过提供意外或引发异常的值来测试自定义 URL 方案、粘贴板和其他应用程序间通信控件。
 - 篡改网络通信和/或应用程序存储的文件。
-- 对于 Objective-C，您可以使用 Cycript 挂钩方法并为它们提供可能导致被调用方抛出异常的参数。
+- 对于 Objective-C，您可以使用 Cycript Hook方法并为它们提供可能导致被调用方抛出异常的参数。
 
 在大多数情况下，应用程序不应崩溃。相反，它应该
 
@@ -578,7 +578,7 @@ func request(url: URL, completion: @escaping (Result<MSTG, RequestError>) -> Voi
 
 ## 内存损坏错误 (MSTG-CODE-8)[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#memory-corruption-bugs-mstg-code-8)
 
-iOS 应用程序有多种方法会遇到内存损坏错误：首先是一般内存损坏错误部分中提到的本机代码问题。接下来，Objective-C 和 Swift 都有各种不安全的操作来实际包装可能会产生问题的本机代码。最后，Swift 和 Objective-C 实现都可能由于保留不再使用的对象而导致内存泄漏。
+iOS 应用程序有多种方法会遇到内存损坏错误：首先是一般内存损坏错误部分中提到的Native代码问题。接下来，Objective-C 和 Swift 都有各种不安全的操作来实际包装可能会产生问题的Native代码。最后，Swift 和 Objective-C 实现都可能由于保留不再使用的对象而导致内存泄漏。
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06i-Testing-Code-Quality-and-Build-Settings/#static-analysis_6)
 
@@ -623,7 +623,7 @@ iOS 应用程序有多种方法会遇到内存损坏错误：首先是一般内�
 
 - [OS X ABI Mach-O 文件格式参考](https://github.com/aidansteele/osx-abi-macho-file-format-reference)
 - [iOS 二进制保护](https://sensepost.com/blog/2021/on-ios-binary-protections/)
-- [iOS 和 iPadOS 运行时进程的安全性](https://support.apple.com/en-gb/guide/security/sec15bfe098e/web)
+- [iOS 和 iPadOS Runtime(运行时)进程的安全性](https://support.apple.com/en-gb/guide/security/sec15bfe098e/web)
 - [Mach-O 编程主题 - 位置无关代码](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/MachOTopics/1-Articles/dynamic_code.html)
 
 检测这些保护机制是否存在的测试在很大程度上取决于用于开发应用程序的语言。例如，用于检测堆栈金丝雀存在的现有技术不适用于纯 Swift 应用程序。
@@ -742,7 +742,7 @@ FraudForce            dylib    False        False  True   True      False       
 
 - MSTG-CODE-1：“该应用程序已签名并使用有效证书进行配置，其中的私钥受到适当保护。”
 - MSTG-CODE-2：“该应用程序已在发布模式下构建，具有适用于发布构建的设置（例如不可调试）。”
-- MSTG-CODE-3：“调试符号已从本机二进制文件中删除。”
+- MSTG-CODE-3：“调试符号已从Native二进制文件中删除。”
 - MSTG-CODE-4：“调试代码和开发人员帮助代码（例如测试代码、后门、隐藏设置）已被删除。该应用程序不会记录详细错误或调试消息。”
 - MSTG-CODE-5：“移动应用程序使用的所有第三方组件，例如库和框架，都被识别并检查已知漏洞。”
 - MSTG-CODE-6：“应用程序捕获并处理可能的异常。”

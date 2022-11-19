@@ -1,24 +1,24 @@
-# 安卓篡改和逆向工程[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#android-tampering-and-reverse-engineering)
+# Android篡改和逆向工程[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#android-tampering-and-reverse-engineering)
 
 Android 的开放性使其成为逆向工程师的有利环境。在下一章中，我们将把 Android 逆向和特定于操作系统的工具视为进程的一些特性。
 
 Android 为逆向工程师提供了 iOS 所不具备的巨大优势。由于 Android 是开源的，您可以在 Android 开源项目 (AOSP) 中研究其源代码，并以任何您想要的方式修改操作系统及其标准工具。即使在标准的零售设备上，也可以在不跳过许多步骤的情况下执行诸如激活开发者模式和侧载应用程序之类的操作。从 SDK 附带的强大工具到范围广泛的可用逆向工程工具，有很多细节可以让您的生活更轻松。
 
-但是，也存在一些特定于 Android 的挑战。例如，您需要同时处理 Java 字节码和本机代码。Java 本机接口 (JNI) 有时会被故意用于混淆逆向工程师（公平地说，使用 JNI 有正当理由，例如提高性能或支持遗留代码）。开发人员有时会使用本机层来“隐藏”数据和功能，并且他们可能会构建他们的应用程序，以便执行经常在两层之间跳转。
+但是，也存在一些特定于 Android 的挑战。例如，您需要同时处理 Java 字节码和Native代码。Java Native接口 (JNI) 有时会被故意用于混淆逆向工程师（公平地说，使用 JNI 有正当理由，例如提高性能或支持遗留代码）。开发人员有时会使用Native层来“隐藏”数据和功能，并且他们可能会构建他们的应用程序，以便执行经常在两层之间跳转。
 
-您至少需要了解基于 Java 的 Android 环境以及 Android 所基于的 Linux 操作系统和内核。您还需要合适的工具集来处理运行在 Java 虚拟机上的字节码和本机代码。
+您至少需要了解基于 Java 的 Android 环境以及 Android 所基于的 Linux 操作系统和内核。您还需要合适的工具集来处理运行在 Java 虚拟机上的字节码和Native代码。
 
 请注意，我们将使用[适用于 Android 的 OWASP UnCrackable 应用程序](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-crackmes)作为示例，在以下部分中演示各种逆向工程技术，因此请期待部分和全部剧透。我们鼓励您在继续阅读之前亲自尝试挑战！
 
 ## 逆向工程[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reverse-engineering)
 
-逆向工程是将应用程序拆开以了解其工作原理的过程。您可以通过检查已编译的应用程序（静态分析）、在运行时观察应用程序（动态分析）或两者的组合来做到这一点。
+逆向工程是将应用程序拆开以了解其工作原理的过程。您可以通过检查已编译的应用程序（静态分析）、在Runtime(运行时)观察应用程序（动态分析）或两者的组合来做到这一点。
 
 ### 反汇编和反编译[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#disassembling-and-decompiling)
 
 在Android应用程序安全测试中，如果应用程序完全基于Java并且没有任何本地代码（C/C++代码），逆向工程过程相对容易并且恢复（反编译）几乎所有的源代码。在这些情况下，黑盒测试（可以访问编译后的二进制文件，但不能访问原始源代码）可以非常接近白盒测试。
 
-然而，如果代码被有意混淆（或应用了一些破坏工具的反编译技巧），逆向工程过程可能非常耗时且效率低下。这也适用于包含本机代码的应用程序。它们仍然可以进行逆向工程，但该过程不是自动化的，并且需要了解低级细节。
+然而，如果代码被有意混淆（或应用了一些破坏工具的反编译技巧），逆向工程过程可能非常耗时且效率低下。这也适用于包含Native代码的应用程序。它们仍然可以进行逆向工程，但该过程不是自动化的，并且需要了解低级细节。
 
 #### 反编译 Java 代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#decompiling-java-code)
 
@@ -34,11 +34,11 @@ Android 为逆向工程师提供了 iOS 所不具备的巨大优势。由于 And
 
 Android 反编译器更进一步，尝试将 Android 字节码转换回 Java 源代码，使其更易于阅读。幸运的是，Java 反编译器通常可以很好地处理 Android 字节码。上面提到的工具嵌入，有时甚至结合流行的免费反编译器，例如：
 
-- [京东](https://java-decompiler.github.io/)
+- [JD](https://java-decompiler.github.io/)
 - [JAD](http://www.javadecompilers.com/jad)
 - [jadx](https://github.com/skylot/jadx)
-- [南河三](https://github.com/mstrobel/procyon)
-- [病死率](https://www.benf.org/other/cfr/)
+- [Procyon](https://github.com/mstrobel/procyon)
+- [CFR](https://www.benf.org/other/cfr/)
 
 或者，您可以使用Visual Studio Code的[APKLab扩展或在您的 APK 上运行](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#apklab)[apkx](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#apkx)，或使用从以前的工具导出的文件在您首选的 IDE 上打开反向源代码。
 
@@ -74,16 +74,16 @@ Android 反编译器更进一步，尝试将 Android 字节码转换回 Java 源
 
 请参阅下面的“[查看反编译的 Java 代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-decompiled-java-code)”部分，了解在检查反编译的 Java 代码时如何进行。
 
-#### 反汇编本机代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#disassembling-native-code)
+#### 反汇编Native代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#disassembling-native-code)
 
-Dalvik 和 ART 都支持 Java 本机接口 (JNI)，它定义了 Java 代码与用 C/C++ 编写的本机代码交互的方式。与其他基于 Linux 的操作系统一样，本机代码被打包（编译）到 ELF 动态库 (*.so) 中，Android 应用程序在运行时通过该`System.load`方法加载。但是，Android 二进制文件不是依赖于广泛使用的 C 库（例如 glibc），而是针对名为[Bionic](https://github.com/android/platform_bionic)的自定义 libc 构建的。Bionic 添加了对重要的 Android 特定服务的支持，例如系统属性和日志记录，但它并不完全与 POSIX 兼容。
+Dalvik 和 ART 都支持 Java Native接口 (JNI)，它定义了 Java 代码与用 C/C++ 编写的Native代码交互的方式。与其他基于 Linux 的操作系统一样，Native代码被打包（编译）到 ELF 动态库 (*.so) 中，Android 应用程序在Runtime(运行时)通过该`System.load`方法加载。但是，Android 二进制文件不是依赖于广泛使用的 C 库（例如 glibc），而是针对名为[Bionic](https://github.com/android/platform_bionic)的自定义 libc 构建的。Bionic 添加了对重要的 Android 特定服务的支持，例如系统属性和日志记录，但它并不完全与 POSIX 兼容。
 
-在逆向包含本机代码的 Android 应用程序时，我们需要了解一些与 Java 和本机代码之间的 JNI 桥相关的数据结构。从逆向的角度来看，我们需要了解两个关键的数据结构：`JavaVM`和`JNIEnv`。它们都是指向函数表指针的指针：
+在逆向包含Native代码的 Android 应用程序时，我们需要了解一些与 Java 和Native代码之间的 JNI 桥相关的数据结构。从逆向的角度来看，我们需要了解两个关键的数据结构：`JavaVM`和`JNIEnv`。它们都是指向函数表指针的指针：
 
 - `JavaVM`提供一个接口来调用用于创建和销毁 JavaVM 的函数。Android 只允许`JavaVM`每个进程一个，并且与我们的逆向目的无关。
 - `JNIEnv`提供对大多数 JNI 函数的访问，这些函数可以通过`JNIEnv`指针以固定偏移量访问。这个`JNIEnv`指针是传递给每个 JNI 函数的第一个参数。我们将在本章后面的例子中再次讨论这个概念。
 
-值得强调的是，分析反汇编的本机代码比反汇编的 Java 代码更具挑战性。在 Android 应用程序中逆向本机代码时，我们将需要一个反汇编程序。
+值得强调的是，分析反汇编的Native代码比反汇编的 Java 代码更具挑战性。在 Android 应用程序中逆向Native代码时，我们将需要一个反汇编程序。
 
 在下一个示例中，我们将从 OWASP MASTG 存储库中反转 HelloWorld-JNI.apk。在模拟器或 Android 设备中安装和运行它是可选的。
 
@@ -126,13 +126,13 @@ extends AppCompatActivity {
 }
 ```
 
-注意`public native String stringFromJNI`底部的声明。关键字“native”告诉 Java 编译器这个方法是用本地语言实现的。相应的函数在运行时解析，但前提是加载了导出具有预期签名的全局符号的本机库（签名包括包名、类名和方法名）。在此示例中，此要求由以下 C 或 C++ 函数满足：
+注意`public native String stringFromJNI`底部的声明。关键字“native”告诉 Java 编译器这个方法是用本地语言实现的。相应的函数在Runtime(运行时)解析，但前提是加载了导出具有预期签名的全局符号的Native库(NATIVE LIBRARIES)（签名包括包名、类名和方法名）。在此示例中，此要求由以下 C 或 C++ 函数满足：
 
 ```
 JNIEXPORT jstring JNICALL Java_sg_vantagepoint_helloworld_MainActivity_stringFromJNI(JNIEnv *env, jobject)
 ```
 
-那么这个函数的原生实现在哪里呢？如果您查看解压缩的 APK 存档的“lib”目录，您会看到几个子目录（每个受支持的处理器架构一个），每个子目录都包含一个版本的本机库，在本例中为`libnative-lib.so`. 调用时`System.loadLibrary`，加载器会根据运行应用程序的设备选择正确的版本。在继续之前，请注意传递给当前 JNI 函数的第一个参数。它与`JNIEnv`本节前面讨论的数据结构相同。
+那么这个函数的原生实现在哪里呢？如果您查看解压缩的 APK 存档的“lib”目录，您会看到几个子目录（每个受支持的处理器架构一个），每个子目录都包含一个版本的Native库(NATIVE LIBRARIES)，在本例中为`libnative-lib.so`. 调用时`System.loadLibrary`，加载器会根据运行应用程序的设备选择正确的版本。在继续之前，请注意传递给当前 JNI 函数的第一个参数。它与`JNIEnv`本节前面讨论的数据结构相同。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/archs.jpg)
 
@@ -150,19 +150,19 @@ $ rabin2 -s HelloWord-JNI/lib/armeabi-v7a/libnative-lib.so | grep -i Java
 003 0x00000e78 0x00000e78 GLOBAL   FUNC   16 Java_sg_vantagepoint_helloworldjni_MainActivity_stringFromJNI
 ```
 
-`stringFromJNI`这是调用本机方法时最终执行的本机函数。
+`stringFromJNI`这是调用Native方法时最终执行的Native函数。
 
 要反汇编代码，您可以加载`libnative-lib.so`到任何理解 ELF 二进制文件的反汇编程序（即任何反汇编程序）中。如果应用程序附带不同架构的二进制文件，理论上您可以选择您最熟悉的架构，只要它与反汇编程序兼容即可。每个版本都从相同的源代码编译并实现相同的功能。但是，如果您计划稍后在实时设备上调试该库，通常明智的做法是选择 ARM 版本。
 
-为了同时支持较旧和较新的 ARM 处理器，Android 应用附带了针对不同应用程序二进制接口 (ABI) 版本编译的多个 ARM 版本。ABI 定义了应用程序的机器代码在运行时应该如何与系统交互。支持以下 ABI：
+为了同时支持较旧和较新的 ARM 处理器，Android 应用附带了针对不同应用程序二进制接口 (ABI) 版本编译的多个 ARM 版本。ABI 定义了应用程序的机器代码在Runtime(运行时)应该如何与系统交互。支持以下 ABI：
 
 - armeabi：ABI 适用于至少支持 ARMv5TE 指令集的基于 ARM 的 CPU。
 - armeabi-v7a：此 ABI 扩展了 armeabi 以包含多个 CPU 指令集扩展。
 - arm64-v8a：用于支持 AArch64（新的 64 位 ARM 架构）的基于 ARMv8 的 CPU 的 ABI。
 
-大多数反汇编程序都可以处理这些架构中的任何一种。`HelloWord-JNI/lib/armeabi-v7a/libnative-lib.so`下面，我们将在 radare2 和 IDA Pro 中查看 armeabi-v7a 版本（位于）。请参阅下面的“[检查反汇编的本机代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分，了解在检查反汇编的本机代码时如何进行。
+大多数反汇编程序都可以处理这些架构中的任何一种。`HelloWord-JNI/lib/armeabi-v7a/libnative-lib.so`下面，我们将在 radare2 和 IDA Pro 中查看 armeabi-v7a 版本（位于）。请参阅下面的“[检查反汇编的Native代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分，了解在检查反汇编的Native代码时如何进行。
 
-##### 雷达2[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#radare2)
+##### RADARE2[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#radare2)
 
 [要在radare2](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#radare2)中打开文件，您只需运行`r2 -A HelloWord-JNI/lib/armeabi-v7a/libnative-lib.so`. “ [Android 基本安全测试](https://mas.owasp.org/MASTG/Android/0x05b-Basic-Security_Testing/)”一章已经介绍了radare2。请记住，您可以在加载二进制文件后立即使用标志`-A`运行`aaa`命令，以便分析所有引用的代码。
 
@@ -220,11 +220,11 @@ Usage: aa[0*?]   # see also 'af' and 'afna'
 >
 > 习惯于[IDA](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#ida-pro-commercial-tool)或[Hopper](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#hopper-commercial-tool)的人只是加载二进制文件，出去泡杯咖啡，然后在分析完成后，他们开始进行手动分析以了解程序在做什么。确实，这些工具在后台执行分析，并且 GUI 未被阻止。但这会占用大量 CPU 时间，而且 r2 的目标是在更多平台上运行，而不仅仅是高端台式计算机。
 
-这就是说，请参阅“[审查反汇编本机代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分以了解更多关于 radare2 如何帮助我们更快地执行逆向任务的信息。例如，获取特定函数的反汇编是一项可以在一个命令中执行的微不足道的任务。
+这就是说，请参阅“[审查反汇编Native代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分以了解更多关于 radare2 如何帮助我们更快地执行逆向任务的信息。例如，获取特定函数的反汇编是一项可以在一个命令中执行的微不足道的任务。
 
 ##### IDA专业版[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#ida-pro)
 
-如果您拥有[IDA Pro](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#ida-pro-commercial-tool)许可证，请打开文件，然后在“加载新文件”对话框中，选择“ELF for ARM（共享对象）”作为文件类型（IDA 应该会自动检测到这一点），然后选择“ARM Little-Endian” " 作为处理器类型。
+如果您拥有[IDA Pro](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#ida-pro-commercial-tool)Licenses（许可证），请打开文件，然后在“加载新文件”对话框中，选择“ELF for ARM（共享对象）”作为文件类型（IDA 应该会自动检测到这一点），然后选择“ARM Little-Endian” " 作为处理器类型。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/IDA_open_file.jpg)
 
@@ -238,7 +238,7 @@ Usage: aa[0*?]   # see also 'af' and 'afna'
 
 ### 基本信息收集[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#basic-information-gathering)
 
-如前几节所述，Android 应用程序可以同时包含 Java/Kotlin 字节码和本机代码。在本节中，我们将学习一些使用静态分析收集基本信息的方法和工具。
+如前几节所述，Android 应用程序可以同时包含 Java/Kotlin 字节码和Native代码。在本节中，我们将学习一些使用静态分析收集基本信息的方法和工具。
 
 #### 检索字符串[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#retrieving-strings)
 
@@ -264,17 +264,17 @@ Dextra 的输出可以使用标准的 Linux 命令进行操作，例如，`grep`
 
 重要的是要知道，使用上述工具获得的字符串列表可能非常大，因为它还包括应用程序中使用的各种类和包名称。浏览完整列表，特别是对于大型二进制文件，可能会非常麻烦。因此，建议从基于关键字的搜索开始，仅在关键字搜索无济于事时才浏览列表。一些可以作为良好起点的通用关键字是 - password、key 和 secret。当您使用应用程序本身时，可以获得特定于应用程序上下文的其他有用关键字。例如，假设应用程序具有登录表单，您可以记下显示的占位符或输入字段的标题文本，并将其用作静态分析的入口点。
 
-##### 本机代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#native-code)
+##### Native代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#native-code)
 
-为了从 Android 应用程序中使用的本机代码中提取字符串，您可以使用 Ghidra 或 Cutter 等 GUI 工具，或者依赖基于 CLI 的工具，例如*字符串*Unix 实用程序 ( `strings <path_to_binary>`) 或 radare2 的 rabin2 ( `rabin2 -zz <path_to_binary>`)。使用基于 CLI 的工具时，您可以利用 grep 等其他工具（例如结合正则表达式）进一步过滤和分析结果。
+为了从 Android 应用程序中使用的Native代码中提取字符串，您可以使用 Ghidra 或 Cutter 等 GUI 工具，或者依赖基于 CLI 的工具，例如*字符串*Unix 实用程序 ( `strings <path_to_binary>`) 或 radare2 的 rabin2 ( `rabin2 -zz <path_to_binary>`)。使用基于 CLI 的工具时，您可以利用 grep 等其他工具（例如结合正则表达式）进一步过滤和分析结果。
 
 #### 交叉引用[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#cross-references)
 
-##### JAVA 和科特林[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#java-and-kotlin)
+##### JAVA 和Kotlin[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#java-and-kotlin)
 
 有许多 RE 工具支持检索 Java 交叉引用。对于许多基于 GUI 的函数，这通常是通过右键单击所需函数并选择相应的选项来完成的，例如在 Ghidra 中**显示对**的引用或在 jadx中[查找](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#jadx)[**用法**](https://github.com/skylot/jadx/wiki/jadx-gui-features-overview#find-usage)。
 
-##### 本机代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#native-code_1)
+##### Native代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#native-code_1)
 
 与 Java 分析类似，您也可以使用 Ghidra 分析原生库并通过右键单击所需函数并选择**Show References to 来**获取交叉引用。
 
@@ -352,11 +352,11 @@ public class a {
 
 获取解密字符串的更快方法是添加动态分析。稍后我们将重新访问[UnCrackable App for Android Level 1](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-uncrackable-l1)以展示如何操作（例如在“调试”部分），所以不要删除该项目！
 
-#### 查看反汇编的本机代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)
+#### 查看反汇编的Native代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)
 
-按照“反汇编本机代码”中的示例，我们将使用不同的反汇编程序来查看反汇编的本机代码。
+按照“反汇编Native代码”中的示例，我们将使用不同的反汇编程序来查看反汇编的Native代码。
 
-##### 雷达2[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#radare2_1)
+##### RADARE2[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#radare2_1)
 
 在 radare2 中打开文件后，您应该首先获取要查找的函数的地址。您可以通过列出或获取`i`有关某些关键字的符号`s`( `is`) 和 grepping（`~`radare2 的内置 grep）的信息来执行此操作，在我们的例子中，我们正在寻找 JNI 相关符号，因此我们输入“Java”：
 
@@ -418,7 +418,7 @@ $ r2 -qc 'e emu.str=true; s 0x00000e78; af; pdf' HelloWord-JNI/lib/armeabi-v7a/l
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/helloworld_stringfromjni.jpg)
 
-那里的代码不多，但你应该分析一下。您需要知道的第一件事是传递给每个 JNI 函数的第一个参数是 JNI 接口指针。接口指针是指向指针的指针。这个指针指向一个函数表：一个由更多指针组成的数组，每个指针都指向一个 JNI 接口函数（你是不是头晕了？）。函数表由 Java VM 初始化，并允许本机函数与 Java 环境交互。
+那里的代码不多，但你应该分析一下。您需要知道的第一件事是传递给每个 JNI 函数的第一个参数是 JNI 接口指针。接口指针是指向指针的指针。这个指针指向一个函数表：一个由更多指针组成的数组，每个指针都指向一个 JNI 接口函数（你是不是头晕了？）。函数表由 Java VM 初始化，并允许Native函数与 Java 环境交互。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/JNI_interface.png)
 
@@ -460,9 +460,9 @@ BX   R2
 
 当此函数返回时，R0 包含指向新构造的 UTF 字符串的指针。这是最终的返回值，所以 R0 保持不变，函数返回。
 
-##### 吉德拉[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#ghidra)
+##### Ghidra[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#ghidra)
 
-在 Ghidra 中打开库后，我们可以在 Functions 下的**Symbol Tree**面板中看到定义的所有**函数**。当前应用程序的本机库相对非常小。共有三个用户定义函数：`FUN_001004d0`、`FUN_0010051c`和`Java_sg_vantagepoint_helloworldjni_MainActivity_stringFromJNI`。其他符号不是用户定义的，而是为共享库的正常运行而生成的。函数中的指令`Java_sg_vantagepoint_helloworldjni_MainActivity_stringFromJNI`已经在前面的章节中详细讨论过。在本节中，我们可以查看函数的反编译。
+在 Ghidra 中打开库后，我们可以在 Functions 下的**Symbol Tree**面板中看到定义的所有**函数**。当前应用程序的Native库(NATIVE LIBRARIES)相对非常小。共有三个用户定义函数：`FUN_001004d0`、`FUN_0010051c`和`Java_sg_vantagepoint_helloworldjni_MainActivity_stringFromJNI`。其他符号不是用户定义的，而是为共享库的正常运行而生成的。函数中的指令`Java_sg_vantagepoint_helloworldjni_MainActivity_stringFromJNI`已经在前面的章节中详细讨论过。在本节中，我们可以查看函数的反编译。
 
 在当前函数内部有对另一个函数的调用，其地址是通过访问`JNIEnv`指针中的偏移量（发现为`plParm1`）获得的。上面也以图解方式演示了此逻辑。反汇编函数的相应 C 代码显示在**反编译**器窗口中。这段反编译的 C 代码使理解所进行的函数调用变得更加容易。由于这个函数很小而且非常简单，反编译输出非常准确，这在处理复杂函数时可能会发生巨大变化。
 
@@ -478,10 +478,10 @@ BX   R2
 
 有多种开源工具可用于对 APK 进行自动安全分析。
 
-- [雄虫](https://github.com/AndroBugs/AndroBugs_Framework)
-- [杰达斯](https://github.com/flankerhqd/JAADAS)
+- [Androbugs](https://github.com/AndroBugs/AndroBugs_Framework)
+- [JAADAS](https://github.com/flankerhqd/JAADAS)
 - [MobSF](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#mobsf)
-- [快克](https://github.com/linkedin/qark/)
+- [QARK](https://github.com/linkedin/qark/)
 
 ## 动态分析[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#dynamic-analysis)
 
@@ -495,7 +495,7 @@ BX   R2
 
 ### 非 Root 设备的动态分析[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#dynamic-analysis-on-non-rooted-devices)
 
-非根设备具有复制应用程序预期运行的环境的好处。
+非Root设备具有复制应用程序预期运行的环境的好处。
 
 多亏了诸如[objection](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)之类的工具，您可以为应用程序打补丁以便测试它，就像您在已获得 root 权限的设备上一样（但当然会被囚禁在那个应用程序上）。为此，您必须执行一个额外[的步骤：修补 APK](https://github.com/sensepost/objection/wiki/Patching-Android-Applications#patching---patching-an-apk)以包含[Frida 小工具](https://www.frida.re/docs/gadget/)库。
 
@@ -585,7 +585,7 @@ tcp        0      0 192.168.1.17:38481      sc-in-f100.1e100.:https ESTABLISHED 
 - `Recv-Q`and `Send-Q`：与接收和发送队列相关的统计信息。指示连接的使用活跃程度。
 - `State`：套接字的状态，例如，如果套接字处于活动使用状态 ( `ESTABLISHED`) 或关闭状态 ( `CLOSED`)。
 
-#### 加载本机库[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#loaded-native-libraries)
+#### 加载Native库(NATIVE LIBRARIES)[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#loaded-native-libraries)
 
 该文件`/proc/<pid>/maps`包含当前映射的内存区域及其访问权限。使用此文件，我们可以获得进程中加载的库列表。
 
@@ -606,15 +606,15 @@ tcp        0      0 192.168.1.17:38481      sc-in-f100.1e100.:https ESTABLISHED 
 
 ### 调试[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#debugging)
 
-到目前为止，您一直在使用静态分析技术而不运行目标应用程序。在现实世界中，尤其是在逆向恶意软件或更复杂的应用程序时，纯静态分析非常困难。在运行时观察和操作应用程序可以更容易地破译其行为。接下来，我们将了解可帮助您做到这一点的动态分析方法。
+到目前为止，您一直在使用静态分析技术而不运行目标应用程序。在现实世界中，尤其是在逆向恶意软件或更复杂的应用程序时，纯静态分析非常困难。在Runtime(运行时)观察和操作应用程序可以更容易地破译其行为。接下来，我们将了解可帮助您做到这一点的动态分析方法。
 
-Android 应用程序支持两种不同类型的调试：使用 Java Debug Wire Protocol (JDWP) 在 Java 运行时级别进行调试，以及在本机层进行 Linux/Unix 风格的基于 ptrace 的调试，这两种调试对逆向工程师都很有价值.
+Android 应用程序支持两种不同类型的调试：使用 Java Debug Wire Protocol (JDWP) 在 Java Runtime(运行时)级别进行调试，以及在Native层进行 Linux/Unix 风格的基于 ptrace 的调试，这两种调试对逆向工程师都很有价值.
 
 #### 调试发布应用[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#debugging-release-apps)
 
-Dalvik 和 ART 支持 JDWP，这是一种用于在调试器和它调试的 Java 虚拟机 (VM) 之间进行通信的协议。JDWP 是一种标准调试协议，所有命令行工具和 Java IDE 都支持它，包括 jdb、JEB、IntelliJ 和 Eclipse。Android 的 JDWP 实现还包括用于支持由 Dalvik Debug Monitor Server (DDMS) 实现的额外功能的挂钩。
+Dalvik 和 ART 支持 JDWP，这是一种用于在调试器和它调试的 Java 虚拟机 (VM) 之间进行通信的协议。JDWP 是一种标准调试协议，所有命令行工具和 Java IDE 都支持它，包括 jdb、JEB、IntelliJ 和 Eclipse。Android 的 JDWP 实现还包括用于支持由 Dalvik Debug Monitor Server (DDMS) 实现的额外功能的Hook。
 
-JDWP 调试器允许您逐步执行 Java 代码、在 Java 方法上设置断点以及检查和修改局部变量和实例变量。大多数时候，您将使用 JDWP 调试器来调试“普通”Android 应用程序（即，不会多次调用本机库的应用程序）。
+JDWP 调试器允许您逐步执行 Java 代码、在 Java 方法上设置断点以及检查和修改局部变量和实例变量。大多数时候，您将使用 JDWP 调试器来调试“普通”Android 应用程序（即，不会多次调用Native库(NATIVE LIBRARIES)的应用程序）。
 
 下面我们将介绍如何单独使用jdb解决[UnCrackable App for Android Level 1 。](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-uncrackable-l1)请注意，这不是解决此 crackme的*有效方法。*实际上，您可以使用 Frida 和其他方法更快地完成此操作，我们将在本指南后面介绍。然而，这只是对 Java 调试器功能的介绍。
 
@@ -662,7 +662,7 @@ Initializing jdb ...
     }
 ```
 
-您可以通过一点运行时篡改来绕过它。在应用程序仍然暂停的情况下，设置方法断点`android.app.Dialog.setCancelable`并恢复应用程序。
+您可以通过一点Runtime(运行时)篡改来绕过它。在应用程序仍然暂停的情况下，设置方法断点`android.app.Dialog.setCancelable`并恢复应用程序。
 
 ```
 > stop in android.app.Dialog.setCancelable
@@ -781,7 +781,7 @@ main[1] cont
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/file_exists_false.png)
 
-这会破坏应用程序的第一个根检测控件。其余的防篡改和反调试控件可以用类似的方法攻破，这样你就可以最终达到秘密字符串验证功能。
+这会破坏应用程序的第一个Root检测控件。其余的防篡改和反调试控件可以用类似的方法攻破，这样你就可以最终达到秘密字符串验证功能。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/anti_debug_anti_tamper_defeated.png)
 
@@ -797,11 +797,11 @@ main[1] cont
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/success.png)
 
-#### 调试本机代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#debugging-native-code)
+#### 调试Native代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#debugging-native-code)
 
-Android 上的本机代码被打包到 ELF 共享库中，并像任何其他本机 Linux 程序一样运行。因此，您可以使用标准工具（包括 GDB 和内置 IDE 调试器，如 IDA Pro 和 JEB）对其进行调试，只要它们支持设备的处理器架构（大多数设备基于 ARM 芯片组，因此这通常不是问题).
+Android 上的Native代码被打包到 ELF 共享库中，并像任何其他Native Linux 程序一样运行。因此，您可以使用标准工具（包括 GDB 和内置 IDE 调试器，如 IDA Pro 和 JEB）对其进行调试，只要它们支持设备的处理器架构（大多数设备基于 ARM 芯片组，因此这通常不是问题).
 
-您现在将设置 JNI 演示应用程序 HelloWorld-JNI.apk 以进行调试。它与您在“静态分析本机代码”中下载的 APK 相同。用于`adb install`将其安装在您的设备或模拟器上。
+您现在将设置 JNI 演示应用程序 HelloWorld-JNI.apk 以进行调试。它与您在“静态分析Native代码”中下载的 APK 相同。用于`adb install`将其安装在您的设备或模拟器上。
 
 ```
 adb install HelloWorld-JNI.apk
@@ -845,7 +845,7 @@ Remote debugging using :1234
 
 您已成功附加到该进程！唯一的问题是您已经来不及调试 JNI 函数了`StringFromJNI`；它只在启动时运行一次。您可以通过激活“等待调试器”选项来解决此问题。转到**Developer Options** -> **Select debug app**并选择 HelloWorldJNI，然后激活**Wait for debugger**开关。然后终止并重新启动该应用程序。它应该自动暂停。
 
-`Java_sg_vantagepoint_helloworldjni_MainActivity_stringFromJNI`我们的目标是在恢复应用程序之前在本机函数的第一条指令处设置断点。不幸的是，这在执行的这一点上是不可能的，因为`libnative-lib.so`它还没有映射到进程内存中，它是在运行时动态加载的。要使其正常工作，您将首先使用 jdb 将进程轻轻地更改为所需状态。
+`Java_sg_vantagepoint_helloworldjni_MainActivity_stringFromJNI`我们的目标是在恢复应用程序之前在Native函数的第一条指令处设置断点。不幸的是，这在执行的这一点上是不可能的，因为`libnative-lib.so`它还没有映射到进程内存中，它是在Runtime(运行时)动态加载的。要使其正常工作，您将首先使用 jdb 将进程轻轻地更改为所需状态。
 
 首先，通过附加 jdb 恢复 Java VM 的执行。但是，您不希望进程立即恢复，因此将`suspend`命令通过管道传输到 jdb：
 
@@ -856,7 +856,7 @@ $ adb forward tcp:7777 jdwp:14342
 $ { echo "suspend"; cat; } | jdb -attach localhost:7777
 ```
 
-接下来，挂起 Java 运行时加载的进程`libnative-lib.so`。在jdb中，在`java.lang.System.loadLibrary`方法处设置断点并恢复进程。到达断点后，执行`step up`命令，该命令将恢复进程直到`loadLibrary`返回。此时，`libnative-lib.so`已经加载完毕。
+接下来，挂起 Java Runtime(运行时)加载的进程`libnative-lib.so`。在jdb中，在`java.lang.System.loadLibrary`方法处设置断点并恢复进程。到达断点后，执行`step up`命令，该命令将恢复进程直到`loadLibrary`返回。此时，`libnative-lib.so`已经加载完毕。
 
 ```
 > stop in java.lang.System.loadLibrary
@@ -950,23 +950,23 @@ echo 1 > /proc/sys/kernel/ftrace_enabled
 - current_tracer：此文件设置或显示当前跟踪器。
 - tracing_on：将“1”回显到此文件中以允许/开始更新环形缓冲区。回显“0”将阻止进一步写入环形缓冲区。
 
-##### K探针[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#kprobes)
+##### KPROBES[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#kprobes)
 
 KProbes 接口提供了一种更强大的检测内核的方法：它允许您将探测器插入内核内存中的（几乎）任意代码地址。KProbes 在指定地址插入断点指令。一旦到达断点，控制传递给 KProbes 系统，然后执行用户定义的处理函数和原始指令。除了非常适合功能跟踪之外，KProbes 还可以实现类似 rootkit 的功能，例如文件隐藏。
 
-Jprobes 和 Kretprobes 是其他基于 KProbes 的探测类型，它们允许挂钩函数入口和出口。
+Jprobes 和 Kretprobes 是其他基于 KProbes 的探测类型，它们允许Hook函数入口和出口。
 
-普通的 Android 内核没有可加载模块支持，这是一个问题，因为 Kprobes 通常作为内核模块部署。Android 内核编译时使用的严格内存保护是另一个问题，因为它会阻止对内核内存的某些部分进行修补。Elfmaster 的系统调用挂钩方法导致库存 Lollipop 和 Marshmallow 发生内核恐慌，因为 sys_call_table 是不可写的。但是，您可以通过编译自己的、更宽松的内核（稍后详细介绍）在沙箱中使用 KProbes。
+普通的 Android 内核没有可加载模块支持，这是一个问题，因为 Kprobes 通常作为内核模块部署。Android 内核编译时使用的严格内存保护是另一个问题，因为它会阻止对内核内存的某些部分进行修补。Elfmaster 的系统调用Hook方法导致库存 Lollipop 和 Marshmallow 发生内核恐慌，因为 sys_call_table 是不可写的。但是，您可以通过编译自己的、更宽松的内核（稍后详细介绍）在沙箱中使用 KProbes。
 
 #### 方法追踪[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#method-tracing)
 
 与告诉您调用方法的频率的方法分析不同，方法跟踪还可以帮助您确定其输入和输出值。在处理具有大型代码库和/或被混淆的应用程序时，这种技术可以证明是非常有用的。
 
-正如我们将在下一节中很快讨论的那样，`frida-trace`为 Android/iOS 本机代码跟踪和 iOS 高级方法跟踪提供开箱即用的支持。如果您更喜欢基于 GUI 的方法，您可以使用[RMS - Runtime Mobile Security](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#RMS-Runtime-Mobile-Security)等工具，它可以提供更直观的体验并包含多个方便的[跟踪选项](https://github.com/m0bilesecurity/RMS-Runtime-Mobile-Security#3-hook-on-the-fly-classesmethods-and-trace-their-args-and-return-values)。
+正如我们将在下一节中很快讨论的那样，`frida-trace`为 Android/iOS Native代码跟踪和 iOS 高级方法跟踪提供开箱即用的支持。如果您更喜欢基于 GUI 的方法，您可以使用[RMS - Runtime Mobile Security](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#RMS-Runtime-Mobile-Security)等工具，它可以提供更直观的体验并包含多个方便的[跟踪选项](https://github.com/m0bilesecurity/RMS-Runtime-Mobile-Security#3-hook-on-the-fly-classesmethods-and-trace-their-args-and-return-values)。
 
-#### 本机代码跟踪[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#native-code-tracing)
+#### Native代码跟踪[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#native-code-tracing)
 
-与 Java 方法跟踪相比，本机方法跟踪可以相对容易地执行。`frida-trace`是一个用于动态跟踪函数调用的 CLI 工具。它使跟踪本机函数变得微不足道，并且对于收集有关应用程序的信息非常有用。
+与 Java 方法跟踪相比，Native方法跟踪可以相对容易地执行。`frida-trace`是一个用于动态跟踪函数调用的 CLI 工具。它使跟踪Native函数变得微不足道，并且对于收集有关应用程序的信息非常有用。
 
 为了使用`frida-trace`，Frida 服务器应该在设备上运行。下面演示了使用跟踪 libc`open`函数的示例，其中连接到 USB 设备并指定要包含在跟踪中的函数。`frida-trace``-U``-i`
 
@@ -1027,7 +1027,7 @@ Frida 12.10 引入了一种新的有用语法来查询 Java 类和方法，以�
 
 #### JNI 跟踪[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#jni-tracing)
 
-如[审查反汇编本机代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)部分中所述，传递给每个 JNI 函数的第一个参数是 JNI 接口指针。该指针包含一个函数表，允许本机代码访问 Android 运行时。识别对这些函数的调用有助于理解库功能，例如创建了哪些字符串或调用了 Java 方法。
+如[审查反汇编Native代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)部分中所述，传递给每个 JNI 函数的第一个参数是 JNI 接口指针。该指针包含一个函数表，允许Native代码访问 Android Runtime(运行时)。识别对这些函数的调用有助于理解库功能，例如创建了哪些字符串或调用了 Java 方法。
 
 [jnitrace](https://github.com/chame1eon/jnitrace)是一个类似于 frida-trace 的基于 Frida 的工具，它专门针对本地库对 Android 的 JNI API 的使用，提供了一种获取 JNI 方法跟踪（包括参数和返回值）的便捷方式。
 
@@ -1041,9 +1041,9 @@ jnitrace -l libnative-lib.so sg.vantagepoint.helloworldjni
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/jni_tracing_helloworldjni.png)
 
-在输出中，您可以看到`NewStringUTF`从本机代码调用的跟踪（它的返回值然后返回给 Java 代码，请参阅“[审查反汇编的本机代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分了解更多详细信息）。请注意与 frida-trace 的相似之处，输出是彩色的，有助于在视觉上区分不同的线程。
+在输出中，您可以看到`NewStringUTF`从Native代码调用的跟踪（它的返回值然后返回给 Java 代码，请参阅“[审查反汇编的Native代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分了解更多详细信息）。请注意与 frida-trace 的相似之处，输出是彩色的，有助于在视觉上区分不同的线程。
 
-跟踪 JNI API 调用时，您可以在顶部看到线程 ID，然后是 JNI 方法调用，包括方法名称、输入参数和返回值。在从本机代码调用 Java 方法的情况下，还将提供 Java 方法参数。最后，jnitrace 将尝试使用 Frida 回溯库来显示 JNI 调用的来源。
+跟踪 JNI API 调用时，您可以在顶部看到线程 ID，然后是 JNI 方法调用，包括方法名称、输入参数和返回值。在从Native代码调用 Java 方法的情况下，还将提供 Java 方法参数。最后，jnitrace 将尝试使用 Frida 回溯库来显示 JNI 调用的来源。
 
 要了解有关高级用法的所有选项的更多信息，请查看[jnitrace GitHub 页面上的文档](https://github.com/chame1eon/jnitrace)。
 
@@ -1057,7 +1057,7 @@ Android 模拟器基于 QEMU，一个通用的开源机器模拟器。QEMU 通�
 emulator -show-kernel -avd Nexus_4_API_19 -snapshot default-boot -no-snapshot-save -qemu -d in_asm,cpu 2>/tmp/qemu.log
 ```
 
-不幸的是，使用 QEMU 生成完整的客户指令跟踪是不可能的，因为代码块仅在它们被翻译时写入日志，而不是在它们从缓存中取出时写入日志。例如，如果一个块在循环中重复执行，则只有第一次迭代会打印到日志中。没有办法在 QEMU 中禁用 TB 缓存（除了破解源代码）。尽管如此，该功能足以完成基本任务，例如重建本机执行的密码算法的反汇编。
+不幸的是，使用 QEMU 生成完整的客户指令跟踪是不可能的，因为代码块仅在它们被翻译时写入日志，而不是在它们从缓存中取出时写入日志。例如，如果一个块在循环中重复执行，则只有第一次迭代会打印到日志中。没有办法在 QEMU 中禁用 TB 缓存（除了破解源代码）。尽管如此，该功能足以完成基本任务，例如重建Native执行的密码算法的反汇编。
 
 ### 二进制分析[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#binary-analysis)
 
@@ -1067,7 +1067,7 @@ emulator -show-kernel -avd Nexus_4_API_19 -snapshot default-boot -no-snapshot-sa
 
 符号执行是工具箱中非常有用的技术，尤其是在处理需要找到正确输入以到达特定代码块的问题时。在本节中，我们将使用[Angr](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#angr)二进制分析框架作为我们的符号执行引擎来解决一个简单的 Android crackme。
 
-目标 crackme 是一个简单的[Android License Validator](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-license-validator)可执行文件。正如我们很快就会观察到的那样，crackme 中的关键验证逻辑是用本机代码实现的。人们普遍认为，分析已编译的本机代码比分析等效的已编译 Java 代码更难，因此，关键业务逻辑通常是用本机编写的。当前的示例应用程序可能不代表现实世界的问题，但它有助于获得一些关于符号执行的基本概念，您可以在实际情况中使用这些概念。您可以在带有混淆本机库的 Android 应用程序上使用相同的技术（事实上，混淆代码通常专门放入本机库中，以增加去混淆的难度）。
+目标 crackme 是一个简单的[Android License Validator](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-license-validator)可执行文件。正如我们很快就会观察到的那样，crackme 中的关键验证逻辑是用Native代码实现的。人们普遍认为，分析已编译的Native代码比分析等效的已编译 Java 代码更难，因此，关键业务逻辑通常是用Native编写的。当前的示例应用程序可能不代表现实世界的问题，但它有助于获得一些关于符号执行的基本概念，您可以在实际情况中使用这些概念。您可以在带有混淆Native库(NATIVE LIBRARIES)的 Android 应用程序上使用相同的技术（事实上，混淆代码通常专门放入Native库(NATIVE LIBRARIES)中，以增加去混淆的难度）。
 
 crackme 由单个 ELF 可执行文件组成，可以按照以下说明在任何 Android 设备上执行：
 
@@ -1084,7 +1084,7 @@ $ adb shell /data/local/tmp/validate 12345
 Incorrect serial (wrong format).
 ```
 
-到目前为止一切顺利，但我们对有效的许可证密钥是什么样子一无所知。首先，在 Cutter 等反汇编程序中打开 ELF 可执行文件。主要功能位于`0x00001874`反汇编中的偏移处。重要的是要注意这个二进制文件启用了 PIE，并且 Cutter 选择加载二进制文件`0x0`作为图像基地址。
+到目前为止一切顺利，但我们对有效的Licenses（许可证）密钥是什么样子一无所知。首先，在 Cutter 等反汇编程序中打开 ELF 可执行文件。主要功能位于`0x00001874`反汇编中的偏移处。重要的是要注意这个二进制文件启用了 PIE，并且 Cutter 选择加载二进制文件`0x0`作为图像基地址。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/disass_main_1874.png)
 
@@ -1092,7 +1092,7 @@ Incorrect serial (wrong format).
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/graph_1874.png)
 
-`strlen`在 offset 处调用`0x000018a8`，并将返回值与 offset 处的 0x10 进行比较`0x000018b0`。紧接着，输入字符串被传递到 offset 处的 Base32 解码函数`0x00001340`。这为我们提供了有价值的信息，即输入的许可证密钥是一个 Base32 编码的 16 个字符的字符串（原始总计 10 个字节）。然后将解码的输入传递给 offset 处的函数，该函数`0x00001760`验证许可证密钥。该函数的反汇编如下所示。
+`strlen`在 offset 处调用`0x000018a8`，并将返回值与 offset 处的 0x10 进行比较`0x000018b0`。紧接着，输入字符串被传递到 offset 处的 Base32 解码函数`0x00001340`。这为我们提供了有价值的信息，即输入的Licenses（许可证）密钥是一个 Base32 编码的 16 个字符的字符串（原始总计 10 个字节）。然后将解码的输入传递给 offset 处的函数，该函数`0x00001760`验证Licenses（许可证）密钥。该函数的反汇编如下所示。
 
 我们现在可以使用有关预期输入的信息进一步研究 处的验证函数`0x00001760`。
 
@@ -1194,11 +1194,11 @@ XOR 是一种非常常用的*加密*信息的技术，其中混淆是目标而�
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/values_compare_17dc.png)
 
-显然这个功能并不复杂，可以手动分析，但仍然是一项繁琐的工作。尤其是在大型代码库上工作时，时间可能是一个主要限制因素，因此希望能够自动执行此类分析。动态符号执行正是在这些情况下很有帮助。在上面的 crackme 中，符号执行引擎可以通过映射许可证检查的第一条指令 (at `0x00001760`) 和打印“产品激活通过”消息的代码(at `0x00001840`)之间的路径来确定输入字符串的每个字节的约束条件.
+显然这个功能并不复杂，可以手动分析，但仍然是一项繁琐的工作。尤其是在大型代码库上工作时，时间可能是一个主要限制因素，因此希望能够自动执行此类分析。动态符号执行正是在这些情况下很有帮助。在上面的 crackme 中，符号执行引擎可以通过映射Licenses（许可证）检查的第一条指令 (at `0x00001760`) 和打印“产品激活通过”消息的代码(at `0x00001840`)之间的路径来确定输入字符串的每个字节的约束条件.
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/graph_ifelse_1760.png)
 
-从上述步骤获得的约束被传递给求解器引擎，该引擎找到满足它们的输入 - 有效的许可证密钥。
+从上述步骤获得的约束被传递给求解器引擎，该引擎找到满足它们的输入 - 有效的Licenses（许可证）密钥。
 
 您需要执行几个步骤来初始化 Angr 的符号执行引擎：
 
@@ -1245,7 +1245,7 @@ print(base64.b32encode(solution))
 
 正如之前在“[动态二进制](https://mas.owasp.org/MASTG/General/0x04c-Tampering-and-Reverse-Engineering/#static-and-dynamic-binary-analysis)检测”部分中讨论的那样，符号执行引擎为给定的程序输入构建一个操作的二叉树，并为可能采用的每个可能路径生成一个数学方程式。在内部，Angr 探索我们指定的两点之间的所有路径，并将相应的数学方程传递给求解器以返回有意义的具体结果。我们可以通过`simulation_manager.found`列表访问这些解决方案，其中包含满足我们指定搜索条件的 Angr 探索的所有可能路径。
 
-仔细查看正在检索最终解决方案字符串的脚本的后半部分。字符串的地址是从 address 中获得的`r11 - 0x20`。这乍一看似乎很神奇，但仔细分析 处的函数可以`0x00001760`找到线索，因为它确定给定的输入字符串是否是有效的许可证密钥。在上面的反汇编中，您可以看到函数的输入字符串（在寄存器 R0 中）是如何存储到局部堆栈变量中的`0x0000176c str r0, [var_20h]`。因此，我们决定使用此值来检索脚本中的最终解决方案。使用`found.solver.eval`你可以问求解器问题，比如“给定这个操作序列的输出（ 中的当前状态`found`），输入（`addr`）必须是什么？”）。
+仔细查看正在检索最终解决方案字符串的脚本的后半部分。字符串的地址是从 address 中获得的`r11 - 0x20`。这乍一看似乎很神奇，但仔细分析 处的函数可以`0x00001760`找到线索，因为它确定给定的输入字符串是否是有效的Licenses（许可证）密钥。在上面的反汇编中，您可以看到函数的输入字符串（在寄存器 R0 中）是如何存储到局部堆栈变量中的`0x0000176c str r0, [var_20h]`。因此，我们决定使用此值来检索脚本中的最终解决方案。使用`found.solver.eval`你可以问求解器问题，比如“给定这个操作序列的输出（ 中的当前状态`found`），输入（`addr`）必须是什么？”）。
 
 > 在 ARMv7 中，R11 称为 fp（*函数指针*），因此`R11 - 0x20`等同于`fp-0x20`：`var int32_t var_20h @ fp-0x20`
 
@@ -1264,13 +1264,13 @@ b'JACE6ACIARNAAIIA'
 
 现在您可以在您的 Android 设备中运行验证二进制文件来验证[此处](https://mas.owasp.org/MASTG/Android/Crackmes/README.md#android-license-validator)所示的解决方案。
 
-> 您可能会使用脚本获得不同的解决方案，因为可能有多个有效的许可证密钥。
+> 您可能会使用脚本获得不同的解决方案，因为可能有多个有效的Licenses（许可证）密钥。
 
 总而言之，学习符号执行一开始可能看起来有点吓人，因为它需要深刻的理解和广泛的实践。然而，考虑到与手动分析复杂的反汇编指令相比可以节省宝贵的时间，这种努力是合理的。通常您会使用混合技术，如上例所示，我们对反汇编代码进行手动分析，为符号执行引擎提供正确的标准。有关 Angr 用法的更多示例，请参阅 iOS 章节。
 
-## 篡改和运行时检测[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#tampering-and-runtime-instrumentation)
+## 篡改和Runtime(运行时)检测[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#tampering-and-runtime-instrumentation)
 
-首先，我们将了解一些修改和检测移动应用程序的简单方法。*篡改*意味着对应用程序进行补丁或运行时更改以影响其行为。例如，您可能想要停用阻碍测试过程的 SSL 固定或二进制保护。*Runtime Instrumentation*包括添加挂钩和运行时补丁以观察应用程序的行为。然而，在移动应用程序安全性中，该术语泛指各种运行时操作，包括覆盖方法以更改行为。
+首先，我们将了解一些修改和检测移动应用程序的简单方法。*篡改*意味着对应用程序进行补丁或Runtime(运行时)更改以影响其行为。例如，您可能想要停用阻碍测试过程的 SSL 固定或二进制保护。*Runtime Instrumentation*包括添加Hook和Runtime(运行时)补丁以观察应用程序的行为。然而，在移动应用程序安全性中，该术语泛指各种Runtime(运行时)操作，包括覆盖方法以更改行为。
 
 ### 修补、重新打包和重新签名[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#patching-repackaging-and-re-signing)
 
@@ -1324,7 +1324,7 @@ apktool d target_apk.apk
 
 每个启用调试器的进程都运行一个额外的线程来处理 JDWP 协议数据包。此线程仅针对`android:debuggable="true"`在其清单文件`<application>`元素中设置了标志的应用程序启动。这是交付给最终用户的 Android 设备的典型配置。
 
-在对应用程序进行逆向工程时，您通常只能访问目标应用程序的发布版本。发布版本并不意味着要调试，这就是*调试版本*的目的。如果系统属性`ro.debuggable`设置为“0”，Android 将不允许发布版本的 JDWP 和本机调试。虽然这很容易绕过，但您仍然可能会遇到限制，例如缺少行断点。*尽管如此，即使是一个不完美的调试器仍然是一个非常*宝贵的工具，能够检查程序的运行时状态使得理解程序变得容易得多。
+在对应用程序进行逆向工程时，您通常只能访问目标应用程序的发布版本。发布版本并不意味着要调试，这就是*调试版本*的目的。如果系统属性`ro.debuggable`设置为“0”，Android 将不允许发布版本的 JDWP 和Native调试。虽然这很容易绕过，但您仍然可能会遇到限制，例如缺少行断点。*尽管如此，即使是一个不完美的调试器仍然是一个非常*宝贵的工具，能够检查程序的Runtime(运行时)状态使得理解程序变得容易得多。
 
 要将发布版本*转换*为可调试版本，您需要修改 Android 清单文件 (AndroidManifest.xml) 中的标志。解压应用程序（例如`apktool d --no-src UnCrackable-Level1.apk`）并解码 Android Manifest 后，`android:debuggable="true"`使用文本编辑器将其添加：
 
@@ -1413,10 +1413,10 @@ adb install UnCrackable-Repackaged.apk
 - 执行进程内省（例如，列出类、跟踪方法调用、监视访问的文件、监视网络访问、获取直接内存访问）。
 - 用您自己的实现支持或替换现有代码（例如，替换应提供随机数的函数）。
 - 向现有应用程序引入新功能。
-- 在您没有原始源代码的代码上调试和修复难以捉摸的运行时错误。
+- 在您没有原始源代码的代码上调试和修复难以捉摸的Runtime(运行时)错误。
 - 在非 root 设备上启用动态测试（例如使用 Frida）。
 
-在本节中，我们将了解在 Android 上执行库注入的技术，主要包括修补应用程序代码（smali 或本机）或使用`LD_PRELOAD`操作系统加载程序本身提供的功能。
+在本节中，我们将了解在 Android 上执行库注入的技术，主要包括修补应用程序代码（smali 或Native）或使用`LD_PRELOAD`操作系统加载程序本身提供的功能。
 
 ##### 修补应用程序的 SMALI 代码[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#patching-the-applications-smali-code)
 
@@ -1431,9 +1431,9 @@ invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V
 
 这种技术的一个众所周知的用例是将 Frida 小工具加载到应用程序，特别是在非 root 设备上工作时（这[`objection patchapk`](https://github.com/sensepost/objection/wiki/Patching-Android-Applications)基本上是这样做的）。
 
-##### 修补应用程序的本机库[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#patching-applications-native-library)
+##### 修补应用程序的Native库(NATIVE LIBRARIES)[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#patching-applications-native-library)
 
-出于各种性能和安全原因，许多 Android 应用程序除了使用 Java 代码外还使用本机代码。本机代码以 ELF 共享库的形式存在。ELF 可执行文件包含一个共享库（依赖项）列表，这些共享库链接到可执行文件以使其发挥最佳功能。可以修改此列表以插入要注入到进程中的附加库。
+出于各种性能和安全原因，许多 Android 应用程序除了使用 Java 代码外还使用Native代码。Native代码以 ELF 共享库的形式存在。ELF 可执行文件包含一个共享库（依赖项）列表，这些共享库链接到可执行文件以使其发挥最佳功能。可以修改此列表以插入要注入到进程中的附加库。
 
 手动修改 ELF 文件结构以注入库可能很麻烦且容易出错。[但是，可以使用LIEF](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#LIEF)（库到仪器可执行格式）相对轻松地执行此任务。使用它只需要几行 Python 代码，如下所示：
 
@@ -1445,7 +1445,7 @@ libnative.add_library("libinject.so") # Injection!
 libnative.write("libnative.so")
 ```
 
-在上面的示例中，libinject.so 库作为本机库 (libnative.so) 的依赖项被注入，应用程序默认情况下已加载该库。可以使用这种方法将 Frida 小工具注入到应用程序中，如[LIEF 文档](https://lief.quarkslab.com/doc/latest/tutorials/09_frida_lief.html)中的详细说明。与上一节一样，重要的是要记住将库添加到`lib`APK 中的相应体系结构文件夹，最后重新签署应用程序。
+在上面的示例中，libinject.so 库作为Native库(NATIVE LIBRARIES) (libnative.so) 的依赖项被注入，应用程序默认情况下已加载该库。可以使用这种方法将 Frida 小工具注入到应用程序中，如[LIEF 文档](https://lief.quarkslab.com/doc/latest/tutorials/09_frida_lief.html)中的详细说明。与上一节一样，重要的是要记住将库添加到`lib`APK 中的相应体系结构文件夹，最后重新签署应用程序。
 
 ##### 预加载符号[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#preloading-symbols)
 
@@ -1469,7 +1469,7 @@ setprop wrap.com.foo.bar LD_PRELOAD=/data/local/tmp/libpreload.so
 
 ##### 获取加载的类及其方法[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#getting-loaded-classes-and-their-methods)
 
-您可以使用`Java`Frida CLI 中的命令来访问 Java 运行时并从正在运行的应用程序中检索信息。请记住，与适用于 iOS 的 Frida 不同，在 Android 中，您需要将代码包装在一个`Java.perform`函数中。因此，使用 Frida 脚本更方便，例如获取加载的 Java 类列表及其相应的方法和字段，或者更复杂的信息收集或检测。下面列出了一个这样的脚本。[Github](https://github.com/frida/frida-java-bridge/issues/44)上提供了列出下面使用的类方法的脚本。
+您可以使用`Java`Frida CLI 中的命令来访问 Java Runtime(运行时)并从正在运行的应用程序中检索信息。请记住，与适用于 iOS 的 Frida 不同，在 Android 中，您需要将代码包装在一个`Java.perform`函数中。因此，使用 Frida 脚本更方便，例如获取加载的 Java 类列表及其相应的方法和字段，或者更复杂的信息收集或检测。下面列出了一个这样的脚本。[Github](https://github.com/frida/frida-java-bridge/issues/44)上提供了列出下面使用的类方法的脚本。
 
 ```
 // Get list of loaded Java classes and methods
@@ -1554,7 +1554,7 @@ com.scottyab.rootbeer.sample.MainActivity
 ...
 ```
 
-#### 方法挂钩[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#method-hooking)
+#### 方法Hook[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#method-hooking)
 
 ##### XPOSED[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#xposed)
 
@@ -1583,7 +1583,7 @@ public static boolean c() {
 }
 ```
 
-此方法遍历目录列表，如果在其中任何目录中找到二进制文件，则返回`true`（设备已根目录） 。`su`像这样的检查很容易停用所有你需要做的就是用返回“false”的东西替换代码。使用 Xposed 模块挂钩方法是一种方法（有关 Xposed 安装和基础知识的更多详细信息，请参阅“Android 基本安全测试”）。
+此方法遍历目录列表，如果在其中任何目录中找到二进制文件，则返回`true`（设备已根目录） 。`su`像这样的检查很容易停用所有你需要做的就是用返回“false”的东西替换代码。使用 Xposed 模块Hook方法是一种方法（有关 Xposed 安装和基础知识的更多详细信息，请参阅“Android 基本安全测试”）。
 
 该方法 `XposedHelpers.findAndHookMethod`允许您覆盖现有的类方法。通过查看反编译后的源码，可以发现执行检查的方法是`c`. 此方法位于类中`com.example.a.b`。下面是一个 Xposed 模块，它覆盖了函数，因此它总是返回 false：
 
@@ -1617,7 +1617,7 @@ public class DisableRootCheck implements IXposedHookLoadPackage {
 
 就像常规的 Android 应用程序一样，Xposed 模块是使用 Android Studio 开发和部署的。Xposed模块的编写、编译、安装等更多细节，可参考其作者[rovo89](https://www.xda-developers.com/rovo89-updates-on-the-situation-regarding-xposed-for-nougat/)提供的教程。
 
-##### 弗里达[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#frida)
+##### Frida[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#frida)
 
 我们将使用 Frida 解决[UnCrackable App for Android Level 1](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#android-uncrackable-l1)，并演示我们如何轻松绕过 root 检测并从应用程序中提取秘密数据。
 
@@ -1696,7 +1696,7 @@ extends Activity {
 }
 ```
 
-请注意方法中的“Root detected”消息`onCreate`和前面语句中调用的各种方法`if`（执行实际的根检查）。还要注意来自类的第一个方法的“这是不可接受的...”消息`private void a`。显然，这个方法显示对话框。方法调用中有一个`alertDialog.onClickListener`回调集，它在成功检测`setButton`到根后关闭应用程序。使用 Frida，您可以通过挂钩方法或其中的回调`System.exit`来防止应用程序退出。`MainActivity.a`下面的示例显示了如何挂钩`MainActivity.a`并防止它结束应用程序。
+请注意方法中的“Root detected”消息`onCreate`和前面语句中调用的各种方法`if`（执行实际的根检查）。还要注意来自类的第一个方法的“这是不可接受的...”消息`private void a`。显然，这个方法显示对话框。方法调用中有一个`alertDialog.onClickListener`回调集，它在成功检测`setButton`到根后关闭应用程序。使用 Frida，您可以通过Hook方法或其中的回调`System.exit`来防止应用程序退出。`MainActivity.a`下面的示例显示了如何Hook`MainActivity.a`并防止它结束应用程序。
 
 ```
 setImmediate(function() { //prevent timeout
@@ -1713,7 +1713,7 @@ setImmediate(function() { //prevent timeout
 });
 ```
 
-将您的代码包装在函数`setImmediate`中以防止超时（您可能需要也可能不需要这样做），然后调用`Java.perform`以使用 Frida 的方法来处理 Java。然后检索类的包装器`MainActivity`并覆盖其`a`方法。与原始版本不同，新版本`a`仅写入控制台输出并且不会退出应用程序。另一种解决方案是挂钩接口`onClick`的方法`OnClickListener`。您可以覆盖该`onClick`方法并防止它通过`System.exit`调用结束应用程序。如果您想注入自己的 Frida 脚本，它应该`AlertDialog`完全禁用或更改该`onClick`方法的行为，以便在您单击“确定”时应用程序不会退出。
+将您的代码包装在函数`setImmediate`中以防止超时（您可能需要也可能不需要这样做），然后调用`Java.perform`以使用 Frida 的方法来处理 Java。然后检索类的包装器`MainActivity`并覆盖其`a`方法。与原始版本不同，新版本`a`仅写入控制台输出并且不会退出应用程序。另一种解决方案是Hook接口`onClick`的方法`OnClickListener`。您可以覆盖该`onClick`方法并防止它通过`System.exit`调用结束应用程序。如果您想注入自己的 Frida 脚本，它应该`AlertDialog`完全禁用或更改该`onClick`方法的行为，以便在您单击“确定”时应用程序不会退出。
 
 将上面的脚本另存为`uncrackable1.js`并加载它：
 
@@ -1764,7 +1764,7 @@ public class a {
 
 查看方法`string.equals`末尾的比较和上面块`a`中字符串的创建`arrby`。是函数的返回值。comparison 将您的输入与 进行比较。所以我们想要的返回值`try``arrby``sg.vantagepoint.a.a.a``string.equals``arrby``sg.vantagepoint.a.a.a.`
 
-无需逆向解密例程来重建密钥，您可以简单地忽略应用程序中的所有解密逻辑并挂钩`sg.vantagepoint.a.a.a`函数以捕获其返回值。这是防止在 root 上退出并拦截秘密字符串解密的完整脚本：
+无需逆向解密例程来重建密钥，您可以简单地忽略应用程序中的所有解密逻辑并Hook`sg.vantagepoint.a.a.a`函数以捕获其返回值。这是防止在 root 上退出并拦截秘密字符串解密的完整脚本：
 
 ```
 setImmediate(function() { //prevent timeout
@@ -1813,17 +1813,17 @@ $ frida -U -f owasp.mstg.uncrackable1 -l uncrackable1.js --no-pause
 
 #### 过程探索[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#process-exploration)
 
-在测试应用程序时，进程探索可以让测试人员深入了解应用程序进程内存。它可以通过运行时检测来实现，并允许执行以下任务：
+在测试应用程序时，进程探索可以让测试人员深入了解应用程序进程内存。它可以通过Runtime(运行时)检测来实现，并允许执行以下任务：
 
 - 检索内存映射和加载的库。
 - 搜索特定数据的出现。
 - 经过查找，得到内存映射中某个偏移量的位置。
 - 执行内存转储并*离线*检查或反向工程二进制数据。
-- 在运行时对本机库进行逆向工程。
+- 在Runtime(运行时)对Native库(NATIVE LIBRARIES)进行逆向工程。
 
-如您所见，这些被动任务帮助我们收集信息。此信息通常用于其他技术，例如方法挂钩。
+如您所见，这些被动任务帮助我们收集信息。此信息通常用于其他技术，例如方法Hook。
 
-在以下部分中，您将使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)直接从应用程序运行时检索信息。请参考[r2frida官方安装说明](https://github.com/nowsecure/r2frida/blob/master/README.md#installation)。首先打开一个 r2frida 会话到目标应用程序（例如[HelloWorld JNI](https://github.com/OWASP/owasp-mastg/raw/master/Samples/Android/01_HelloWorld-JNI/HelloWord-JNI.apk) APK），该应用程序应该在您的 Android 手机上运行（通过 USB 连接）。使用以下命令：
+在以下部分中，您将使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)直接从应用程序Runtime(运行时)检索信息。请参考[r2frida官方安装说明](https://github.com/nowsecure/r2frida/blob/master/README.md#installation)。首先打开一个 r2frida 会话到目标应用程序（例如[HelloWorld JNI](https://github.com/OWASP/owasp-mastg/raw/master/Samples/Android/01_HelloWorld-JNI/HelloWord-JNI.apk) APK），该应用程序应该在您的 Android 手机上运行（通过 USB 连接）。使用以下命令：
 
 ```
 r2 frida://usb//sg.vantagepoint.helloworldjni
@@ -1879,9 +1879,9 @@ r2 frida://usb//sg.vantagepoint.helloworldjni
 0x0000007dc065f000 linker64
 ```
 
-如您所料，您可以将库的地址与内存映射相关联：例如，应用程序的本机库位于 ，`0x0000007d1c499000`优化的 dex (base.odex) 位于`0x0000007d10dd0000`。
+如您所料，您可以将库的地址与内存映射相关联：例如，应用程序的Native库(NATIVE LIBRARIES)位于 ，`0x0000007d1c499000`优化的 dex (base.odex) 位于`0x0000007d10dd0000`。
 
-您也可以使用异议来显示相同的信息。
+您也可以使用objection来显示相同的信息。
 
 ```
 $ objection --gadget sg.vantagepoint.helloworldjni explore
@@ -1927,7 +1927,7 @@ e search.in=perm:r--
 e search.quiet=false
 ```
 
-现在，我们将继续使用默认值并专注于字符串搜索。这个应用程序实际上非常简单，它从其本机库中加载字符串“Hello from C++”并将其显示给我们。您可以从搜索“Hello”开始，然后查看 r2frida 找到的内容：
+现在，我们将继续使用默认值并专注于字符串搜索。这个应用程序实际上非常简单，它从其Native库(NATIVE LIBRARIES)中加载字符串“Hello from C++”并将其显示给我们。您可以从搜索“Hello”开始，然后查看 r2frida 找到的内容：
 
 ```
 [0x00000000]> \/ Hello
@@ -2056,9 +2056,9 @@ Binary file dump//strings.txt matches
 
 “owasp-mstg”字符串可以在其中一个转储文件以及已处理的字符串文件中找到。
 
-##### 运行时逆向工程[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#runtime-reverse-engineering)
+##### Runtime(运行时)逆向工程[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#runtime-reverse-engineering)
 
-运行时逆向工程可以看作是实时版本的逆向工程，您没有主机的二进制数据。相反，您将直接从应用程序的内存中分析它。
+Runtime(运行时)逆向工程可以看作是实时版本的逆向工程，您没有主机的二进制数据。相反，您将直接从应用程序的内存中分析它。
 
 我们将继续使用 HelloWorld JNI 应用程序，使用 r2frida 打开一个会话，`r2 frida://usb//sg.vantagepoint.helloworldjni`您可以使用以下`\i`命令显示目标二进制信息：
 
@@ -2362,9 +2362,9 @@ fastboot boot zImage-dtb initrd.img --base 0 --kernel-offset 0x8000 --ramdisk-of
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/custom_kernel.jpg)
 
-### 使用内核模块挂钩系统调用[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#system-call-hooking-with-kernel-modules)
+### 使用内核模块Hook系统调用[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#system-call-hooking-with-kernel-modules)
 
-系统调用挂钩允许您攻击任何依赖于内核提供的功能的反逆向防御。自定义内核就位后，您现在可以使用 LKM 将其他代码加载到内核中。您还可以访问 /dev/kmem 接口，您可以使用该接口即时修补内核内存。这是一种经典的 Linux rootkit 技术，由 Dong-Hoon You 在 Phrack Magazine - “Android platform based linux kernel rootkit”2011 年 4 月 4 日针对 Android 进行了描述。
+系统调用Hook允许您攻击任何依赖于内核提供的功能的反逆向防御。自定义内核就位后，您现在可以使用 LKM 将其他代码加载到内核中。您还可以访问 /dev/kmem 接口，您可以使用该接口即时修补内核内存。这是一种经典的 Linux rootkit 技术，由 Dong-Hoon You 在 Phrack Magazine - “Android platform based linux kernel rootkit”2011 年 4 月 4 日针对 Android 进行了描述。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x05c/syscall_hooking.jpg)
 
@@ -2388,7 +2388,7 @@ $ adb shell cat /data/local/tmp/nowyouseeme
 ABCD
 ```
 
-是时候编写内核模块了。对于文件隐藏，您需要挂钩用于打开（或检查文件是否存在）的系统调用之一。其中有很多：`open`, `openat`, `access`, `accessat`, `facessat`, `stat`,`fstat`等。现在，您将只挂钩`openat`系统调用。这是 /bin/cat 程序在访问文件时使用的系统调用，因此该调用应该适合演示。
+是时候编写内核模块了。对于文件隐藏，您需要Hook用于打开（或检查文件是否存在）的系统调用之一。其中有很多：`open`, `openat`, `access`, `accessat`, `facessat`, `stat`,`fstat`等。现在，您将只Hook`openat`系统调用。这是 /bin/cat 程序在访问文件时使用的系统调用，因此该调用应该适合演示。
 
 您可以在内核头文件 arch/arm/include/asm/unistd.h 中找到所有系统调用的函数原型。使用以下代码创建一个名为 kernel_hook.c 的文件：
 
@@ -2560,13 +2560,13 @@ $ adb shell su -c cat /data/local/tmp/nowyouseeme
 tmp-mksh: cat: /data/local/tmp/nowyouseeme: No such file or directory
 ```
 
-瞧！文件“nowyouseeme”现在对所有*用户模式*进程有点隐藏。请注意，可以使用其他系统调用轻松找到该文件，并且您需要执行更多操作才能正确隐藏文件，包括挂钩`stat`、`access`和其他系统调用。
+瞧！文件“nowyouseeme”现在对所有*用户模式*进程有点隐藏。请注意，可以使用其他系统调用轻松找到该文件，并且您需要执行更多操作才能正确隐藏文件，包括Hook`stat`、`access`和其他系统调用。
 
-文件隐藏当然只是冰山一角：您可以使用内核模块完成很多工作，包括绕过许多根检测措施、完整性检查和反调试措施。您可以在 Bernhard Mueller 的 Hacking Soft Tokens 论文 [#mueller] 的“案例研究”部分找到更多示例。
+文件隐藏当然只是冰山一角：您可以使用内核模块完成很多工作，包括绕过许多Root检测措施、完整性检查和反调试措施。您可以在 Bernhard Mueller 的 Hacking Soft Tokens 论文 [#mueller] 的“案例研究”部分找到更多示例。
 
 ## 参考[¶](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#references)
 
-- 仿生 - https://github.com/android/platform_bionic
+- Bionic - https://github.com/android/platform_bionic
 - 使用调试器攻击 Android 应用程序（2015 年 1 月 19 日）- https://blog.netspi.com/attacking-android-applications-with-debuggers/
 - [#josse] Sébastien Josse，动态恶意软件重新编译（2014 年 1 月 6 日）- http://ieeexplore.ieee.org/document/6759227/
 - Xposed for Nougat 开发更新 - https://www.xda-developers.com/rovo89-updates-on-the-situation-regarding-xposed-for-nougat/

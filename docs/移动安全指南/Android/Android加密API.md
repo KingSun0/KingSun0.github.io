@@ -4,11 +4,11 @@
 
 我们可以识别 Android 中密码系统的关键组件：
 
-- [安全供应商](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#security-provider)
+- [Security Provider](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#security-provider)
 - KeyStore - 请参阅“测试数据存储”一章中的[KeyStore部分](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#keystore)
 - KeyChain - 请参阅“测试数据存储”一章中的[KeyChain部分](https://mas.owasp.org/MASTG/Android/0x05d-Testing-Data-Storage/#keychain)
 
-Android 加密 API 基于 Java 加密架构 (JCA)。JCA 将接口和实现分开，使得包含多个可以实现加密算法集的[安全提供程序成为可能。](https://developer.android.com/reference/java/security/Provider.html)大多数 JCA 接口和类都在`java.security.*`和`javax.crypto.*`包中定义。此外，还有 Android 特定的包`android.security.*`和`android.security.keystore.*`.
+Android 加密 API 基于 Java 加密架构 (JCA)。JCA 将接口和实现分开，使得包含多个可以实现加密算法集的[security providers成为可能。](https://developer.android.com/reference/java/security/Provider.html)大多数 JCA 接口和类都在`java.security.*`和`javax.crypto.*`包中定义。此外，还有 Android 特定的包`android.security.*`和`android.security.keystore.*`.
 
 KeyStore 和 KeyChain 提供了用于存储和使用密钥的 API（在后台，KeyChain API 使用 KeyStore 系统）。这些系统允许管理加密密钥的整个生命周期。可以在[密钥管理备忘单](https://cheatsheetseries.owasp.org/cheatsheets/Key_Management_Cheat_Sheet.html)中找到实施加密密钥管理的要求和指南。我们可以确定以下阶段：
 
@@ -29,7 +29,7 @@ KeyStore 和 KeyChain 提供了用于存储和使用密钥的 API（在后台，
 针对现代 API 级别的应用经历了以下变化：
 
 - 对于 Android 7.0（API 级别 24）及更高[版本，Android 开发者博客显示](https://android-developers.googleblog.com/2016/06/security-crypto-provider-deprecated-in.html)：
-- 建议停止指定安全提供程序。相反，始终使用[打过补丁的安全提供程序](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#updating-provider)。
+- 建议停止指定security providers。相反，始终使用[打过补丁的security providers](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#updating-provider)。
 - 对提供者的支持`Crypto`已经下降，提供者已被弃用。这同样适用于它`SHA1PRNG`的安全随机数。
 - 对于 Android 8.1（API 级别 27）及更高版本，[开发者文档](https://developer.android.com/about/versions/oreo/android-8.1)显示：
 - Conscrypt，称为`AndroidOpenSSL`，比使用 Bouncy Castle 更受欢迎，它有新的实现：`AlgorithmParameters:GCM`, `KeyGenerator:AES`, `KeyGenerator:DESEDE`, `KeyGenerator:HMACMD5`, `KeyGenerator:HMACSHA1`, `KeyGenerator:HMACSHA224`, `KeyGenerator:HMACSHA256`, `KeyGenerator:HMACSHA384`, `KeyGenerator:HMACSHA512`, `SecretKeyFactory:DESEDE`, 和`Signature:NONEWITHECDSA`.
@@ -39,7 +39,7 @@ KeyStore 和 KeyChain 提供了用于存储和使用密钥的 API（在后台，
 - 您需要有足够大的数组作为输入字节以生成密钥，否则将`InvalidKeySpecException`抛出 an。
 - 如果 Socket 读取被中断，你会得到一个`SocketException`.
 - 对于 Android 9（API 级别 28）及更高版本，[Android 开发者博客](https://android-developers.googleblog.com/2018/03/cryptography-changes-in-android-p.html)显示了更多变化：
-- 如果您仍然使用该`getInstance`方法指定安全提供程序并且您将任何低于 28 的 API 作为目标，您将收到警告。如果您将目标设为 Android 9（API 级别 28）或更高版本，则会收到错误消息。
+- 如果您仍然使用该`getInstance`方法指定security providers并且您将任何低于 28 的 API 作为目标，您将收到警告。如果您将目标设为 Android 9（API 级别 28）或更高版本，则会收到错误消息。
 - 安全提供`Crypto`程序现已删除。调用它会产生一个`NoSuchProviderException`.
 - 对于 Android 10（API 级别 29），[开发者文档](https://developer.android.com/about/versions/10/behavior-changes-all#security)列出了所有网络安全更改。
 
@@ -48,20 +48,20 @@ KeyStore 和 KeyChain 提供了用于存储和使用密钥的 API（在后台，
 在应用检查期间应考虑以下建议列表：
 
 - 您应该确保遵循“[移动应用程序加密](https://mas.owasp.org/MASTG/General/0x04g-Testing-Cryptography/)”一章中概述的最佳实践。
-- 您应该确保安全提供程序具有最新的更新 -[更新安全提供程序](https://developer.android.com/training/articles/security-gms-provider)。
-- 您应该停止指定安全提供程序并使用默认实现（AndroidOpenSSL、Conscrypt）。
-- 您应该停止使用加密安全提供程序及其`SHA1PRNG`已弃用的内容。
-- 您应该仅为 Android Keystore 系统指定安全提供程序。
+- 您应该确保security providers具有最新的更新 -[更新security providers](https://developer.android.com/training/articles/security-gms-provider)。
+- 您应该停止指定security providers并使用默认实现（AndroidOpenSSL、Conscrypt）。
+- 您应该停止使用加密security providers及其`SHA1PRNG`已弃用的内容。
+- 您应该仅为 Android Keystore 系统指定security providers。
 - 您应该停止使用没有 IV 的基于密码的加密密码。
 - 您应该使用 KeyGenParameterSpec 而不是 KeyPairGeneratorSpec。
 
-### 安全供应商[¶](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#security-provider)
+### Security Provider[¶](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#security-provider)
 
 Android 依赖于`provider`实现 Java 安全服务。这对于确保安全的网络通信和保护依赖于密码学的其他功能至关重要。
 
-Android 中包含的安全提供程序列表因 Android 版本和特定于 OEM 的构建而异。现在已知旧版本中的某些安全提供程序实现不太安全或易受攻击。因此，Android 应用程序不仅应该选择正确的算法并提供良好的配置，在某些情况下，它们还应该注意遗留安全提供程序中实现的强度。
+Android 中包含的security providers列表因 Android 版本和特定于 OEM 的构建而异。现在已知旧版本中的某些security providers实现不太安全或易受攻击。因此，Android 应用程序不仅应该选择正确的算法并提供良好的配置，在某些情况下，它们还应该注意遗留security providers中实现的强度。
 
-您可以使用以下代码列出现有安全提供程序集：
+您可以使用以下代码列出现有security providers集：
 
 ```
 StringBuilder builder = new StringBuilder();
@@ -78,7 +78,7 @@ String providers = builder.toString();
 //now display the string on the screen or in the logs for debugging.
 ```
 
-您可以在下面找到在带有 Google Play API 的模拟器中运行 Android 4.4（API 级别 19）的输出，安全提供程序已修补后：
+您可以在下面找到在带有 Google Play API 的模拟器中运行 Android 4.4（API 级别 19）的输出，security providers已修补后：
 
 ```
 provider: GmsCore_OpenSSL1.0 (Android's OpenSSL-backed security provider)
@@ -102,9 +102,9 @@ provider: HarmonyJSSE 1.0(Harmony JSSE Provider)
 provider: AndroidKeyStore 1.0(Android KeyStore security provider)
 ```
 
-#### 更新安全提供程序[¶](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#updating-security-provider)
+#### 更新security providers[¶](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#updating-security-provider)
 
-保持最新和打补丁的组件是安全原则之一。这同样适用于`provider`. 应用程序应检查使用的安全提供程序是否是最新的，如果不是，则[更新它](https://developer.android.com/training/articles/security-gms-provider)。它与[检查第三方库中的弱点 (MSTG-CODE-5) 有关](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#checking-for-weaknesses-in-third-party-libraries)。
+保持最新和打补丁的组件是安全原则之一。这同样适用于`provider`. 应用程序应检查使用的security providers是否是最新的，如果不是，则[更新它](https://developer.android.com/training/articles/security-gms-provider)。它与[检查第三方库中的弱点 (MSTG-CODE-5) 有关](https://mas.owasp.org/MASTG/Android/0x05i-Testing-Code-Quality-and-Build-Settings/#checking-for-weaknesses-in-third-party-libraries)。
 
 #### 较旧的 Android 版本[¶](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#older-android-versions)
 
@@ -133,7 +133,7 @@ keyGenerator.init(keyGenParameterSpec);
 SecretKey secretKey = keyGenerator.generateKey();
 ```
 
-表示该`KeyGenParameterSpec`密钥可用于加密和解密，但不能用于其他目的，如签名或验证。它进一步指定块模式 (CBC)、填充 (PKCS #7)，并明确指定需要随机加密（这是默认设置）。`"AndroidKeyStore"`是本示例中使用的安全提供程序的名称。这将自动确保密钥存储在`AndroidKeyStore`保护密钥的受益人中。
+表示该`KeyGenParameterSpec`密钥可用于加密和解密，但不能用于其他目的，如签名或验证。它进一步指定块模式 (CBC)、填充 (PKCS #7)，并明确指定需要随机加密（这是默认设置）。`"AndroidKeyStore"`是本示例中使用的security providers的名称。这将自动确保密钥存储在`AndroidKeyStore`保护密钥的受益人中。
 
 GCM 是另一种 AES 块模式，与其他较旧的模式相比，它提供了额外的安全优势。除了在密码学上更安全之外，它还提供身份验证。使用 CBC（和其他模式）时，需要使用 HMAC 单独执行身份验证（请参阅“ [Android 上的篡改和逆向工程](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/)”一章）。请注意，GCM 是唯一[不支持填充](https://developer.android.com/training/articles/keystore.html#SupportedCiphers)的 AES 模式。
 
@@ -226,7 +226,7 @@ public static SecretKey generateStrongAESKey(char[] password, int keyLength)
 
 > 请注意，如果您将获得 root 权限的设备或打过补丁（例如重新打包）的应用程序视为对数据的威胁，最好使用放置在`AndroidKeystore`. 基于密码的加密 (PBE) 密钥是使用推荐的`PBKDF2WithHmacSHA1`算法生成的，直到 Android 8.0（API 级别 26）。对于更高的 API 级别，最好使用`PBKDF2withHmacSHA256`，这将以更长的哈希值结束。
 
-注意：人们普遍错误地认为 NDK 应该用于隐藏加密操作和硬编码密钥。然而，使用这种机制并不有效。攻击者仍然可以使用工具找到所使用的机制并将密钥转储到内存中。接下来，可以使用例如 radare2 分析控制流，并借助 Frida 或两者的组合提取密钥：[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)（参见“[反汇编本机代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#disassembling-native-code)”、“[内存转储](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#memory-dump)”和“[内存中搜索”部分](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#in-memory-search)”在“Android 上的篡改和逆向工程”一章了解更多详情）。从 Android 7.0（API 级别 24）开始，不允许使用私有 API，而是：需要调用公共 API，这进一步影响了有效性按照[Android 开发者博客](https://android-developers.googleblog.com/2016/06/android-changes-for-ndk-developers.html)中的描述将其隐藏起来
+注意：人们普遍错误地认为 NDK 应该用于隐藏加密操作和硬编码密钥。然而，使用这种机制并不有效。攻击者仍然可以使用工具找到所使用的机制并将密钥转储到内存中。接下来，可以使用例如 radare2 分析控制流，并借助 Frida 或两者的组合提取密钥：[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)（参见“[反汇编Native代码](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#disassembling-native-code)”、“[内存转储](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#memory-dump)”和“[内存中搜索”部分](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#in-memory-search)”在“Android 上的篡改和逆向工程”一章了解更多详情）。从 Android 7.0（API 级别 24）开始，不允许使用私有 API，而是：需要调用公共 API，这进一步影响了有效性按照[Android 开发者博客](https://android-developers.googleblog.com/2016/06/android-changes-for-ndk-developers.html)中的描述将其隐藏起来
 
 ### 随机数生成[¶](https://mas.owasp.org/MASTG/Android/0x05e-Testing-Cryptography/#random-number-generation)
 

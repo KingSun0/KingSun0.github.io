@@ -77,7 +77,7 @@ UDID 是一个 40 位的唯一字母和数字序列，用于识别 iOS 设备。
 
 iOS 越狱通常与 Android 越狱相提并论，但过程实际上大不相同。为了解释差异，我们将首先回顾一下 Android 上“root”和“刷机”的概念。
 
-- **生根**：这通常涉及`su`在系统上安装二进制文件或用已生根的自定义 ROM 替换整个系统。只要可以访问引导加载程序，就不需要利用漏洞来获得根访问权限。
+- **Root**：这通常涉及`su`在系统上安装二进制文件或用已Root的自定义 ROM 替换整个系统。只要可以访问引导加载程序，就不需要利用漏洞来获得根访问权限。
 - **闪烁自定义 ROM**：这允许您在解锁引导加载程序后替换设备上运行的操作系统。引导加载程序可能需要利用漏洞来解锁它。
 
 在 iOS 设备上，刷入自定义 ROM 是不可能的，因为 iOS 引导加载程序只允许引导和刷入 Apple 签名的映像。这就是为什么如果没有 Apple 签名，即使官方 iOS 映像也无法安装，并且只有在以前的 iOS 版本仍然签名的情况下，iOS 才能降级。
@@ -95,7 +95,7 @@ iOS 越狱通常与 Android 越狱相提并论，但过程实际上大不相同�
 - 对文件系统的根访问权限。
 - 可以执行未经 Apple 签名的应用程序（其中包括许多安全工具）。
 - 不受限制的调试和动态分析。
-- 访问 Objective-C 或 Swift 运行时。
+- 访问 Objective-C 或 Swift Runtime(运行时)。
 
 ##### 越狱类型[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#jailbreak-types)
 
@@ -123,21 +123,21 @@ iOS 升级基于挑战-响应过程（结果生成所谓的 SHSH blob）。仅�
 iOS 越狱场景发展如此迅速，以至于很难提供最新的说明。但是，我们可以为您指出一些目前可靠的来源。
 
 - [苹果数据库](https://appledb.dev/)
-- [iPhone 维基](https://www.theiphonewiki.com/)
-- [雷蒙德派](https://www.redmondpie.com/)
+- [The iPhone Wiki](https://www.theiphonewiki.com/)
+- [Redmond Pie](https://www.redmondpie.com/)
 - [越狱](https://www.reddit.com/r/jailbreak/)
 
 > 请注意，您对设备所做的任何修改均由您自行承担风险。虽然越狱通常是安全的，但也可能出现问题，最终可能导致设备变砖。除您本人外，任何其他方均不对任何损害负责。
 
 ## 基本测试操作[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#basic-testing-operations)
 
-### 访问设备外壳[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#accessing-the-device-shell)
+### 访问设备Shell[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#accessing-the-device-shell)
 
-测试应用程序时最常做的事情之一是访问设备外壳。在本节中，我们将了解如何使用/不使用 USB 电缆从主机远程访问 iOS shell，以及如何从设备本身本地访问 iOS shell。
+测试应用程序时最常做的事情之一是访问设备Shell。在本节中，我们将了解如何使用/不使用 USB 电缆从主机远程访问 iOS shell，以及如何从设备本身本地访问 iOS shell。
 
-#### 远程外壳[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#remote-shell)
+#### 远程Shell[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#remote-shell)
 
-与您可以使用 adb 工具轻松访问设备 shell 的 Android 相比，在 iOS 上您只能选择通过 SSH 访问远程 shell。这也意味着您的 iOS 设备必须越狱才能从主机连接到其外壳。对于本节，我们假设您已正确越狱您的设备并安装了[Cydia](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#cydia)（请参见下面的屏幕截图）或[Sileo](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#sileo)。在本指南的其余部分，我们将参考 Cydia，但 Sileo 中应该可以使用相同的软件包。
+与您可以使用 adb 工具轻松访问设备 shell 的 Android 相比，在 iOS 上您只能选择通过 SSH 访问远程 shell。这也意味着您的 iOS 设备必须越狱才能从主机连接到其Shell。对于本节，我们假设您已正确越狱您的设备并安装了[Cydia](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#cydia)（请参见下面的屏幕截图）或[Sileo](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#sileo)。在本指南的其余部分，我们将参考 Cydia，但 Sileo 中应该可以使用相同的软件包。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06b/cydia.png)
 
@@ -197,7 +197,7 @@ iPhone:~ root#
 
 > 关于 iDevice USB 的小提示：在 iOS 设备上，处于锁定状态 1 小时后，您将无法再进行数据连接，除非您由于 iOS 11.4.1 引入的 USB 限制模式而再次解锁它
 
-#### 设备上的外壳应用程序[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#on-device-shell-app)
+#### 设备上的Shell应用程序[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#on-device-shell-app)
 
 虽然与远程 shell 相比，通常使用设备上的 shell（终端仿真器）可能非常乏味，但事实证明它可以方便地进行调试，例如在出现网络问题或检查某些配置时。例如，您可以为此目的通过 Cydia 安装[NewTerm 2](https://repo.chariz.io/package/ws.hbang.newterm2/)（在撰写本文时它支持 iOS 6.0 到 12.1.2）。
 
@@ -247,9 +247,9 @@ $ scp -P 2222 root@localhost:/tmp/data.tgz .
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06b/passionfruit_file_download.png)
 
-#### 异议[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#objection)
+#### objection[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#objection)
 
-当您开始异议时，您会在 Bundle 目录中找到提示。
+当您开始objection时，您会在 Bundle 目录中找到提示。
 
 ```
 org.owasp.MSTG on (iPhone: 10.3.3) [usb] # pwd print
@@ -343,7 +343,7 @@ $ class-dump Telegram
 //
 ```
 
-为了检索未加密的版本，您可以使用[frida-ios-dump](https://github.com/AloneMonkey/frida-ios-dump)（所有 iOS 版本）或[Clutch](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#clutch)（仅限 iOS 11；对于 iOS 12 及更高版本，需要补丁）等工具。当应用程序在设备上运行时，两者都会从内存中提取未加密的版本。Clutch 和 frida-ios-dump 的稳定性可能会因您的 iOS 版本和越狱方法而异，因此使用多种方式提取二进制文件很有用。
+为了检索未加密的版本，您可以使用[frida-ios-dump](https://github.com/AloneMonkey/frida-ios-dump)（所有 iOS 版本）或[Clutch](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#clutch)（仅限 iOS 11；对于 iOS 12 及更高版本，需要补丁）等工具。当应用程序在设备上Runtime(运行时)，两者都会从内存中提取未加密的版本。Clutch 和 frida-ios-dump 的稳定性可能会因您的 iOS 版本和越狱方法而异，因此使用多种方式提取二进制文件很有用。
 
 > **重要说明：**在美国，数字千年版权法 17 USC 1201 或 DMCA 规定规避某些类型的 DRM 是非法的并且可以采取行动。但是，DMCA 也提供豁免，例如某些类型的安全研究。合格的律师可以帮助您确定您的研究是否符合 DMCA 豁免条件。（来源：[Corellium](https://support.corellium.com/en/articles/6181345-testing-third-party-ios-apps)）
 
@@ -479,7 +479,7 @@ ios-deploy --bundle Payload/my-app.app -W -d
 
 #### 自由移动设备[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#libimobiledevice)
 
-在 Linux 和 macOS 上，您可以选择使用[libimobiledevice](https://www.libimobiledevice.org/)，这是一个跨平台软件协议库和一组用于与 iOS 设备进行本机通信的工具。这允许您通过执行 ideviceinstaller 通过 USB 连接安装应用程序。该连接是通过 USB 多路复用守护程序[usbmuxd](https://www.theiphonewiki.com/wiki/Usbmux)实现的，它提供了一个基于 USB 的 TCP 隧道。
+在 Linux 和 macOS 上，您可以选择使用[libimobiledevice](https://www.libimobiledevice.org/)，这是一个跨平台软件协议库和一组用于与 iOS 设备进行Native通信的工具。这允许您通过执行 ideviceinstaller 通过 USB 连接安装应用程序。该连接是通过 USB 多路复用守护程序[usbmuxd](https://www.theiphonewiki.com/wiki/Usbmux)实现的，它提供了一个基于 USB 的 TCP 隧道。
 
 libimobiledevice 的包将在您的 Linux 包管理器中可用。在 macOS 上，您可以通过 brew 安装 libimobiledevice：
 
@@ -637,7 +637,7 @@ iGoat-Swift
 
 - `Info.plist`包含应用程序的配置信息，例如它的包 ID、版本号和显示名称。
 - `_CodeSignature/`包含一个 plist 文件，该文件对捆绑包中的所有文件进行签名。
-- `Frameworks/`包含应用程序本机库作为 .dylib 或 .framework 文件。
+- `Frameworks/`包含应用程序Native库(NATIVE LIBRARIES)作为 .dylib 或 .framework 文件。
 - `PlugIns/`可能包含应用扩展作为 .appex 文件（示例中不存在）。
 - [iGoat-Swift](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#igoat-swift)是包含应用程序代码的应用程序二进制文件。它的名称与捆绑包的名称相同，只是减去 .app 扩展名。
 - 各种资源，例如图像/图标、`*.nib`文件（存储 iOS 应用程序的用户界面）、本地化内容 ( `<language>.lproj`)、文本文件、音频文件等。
@@ -676,7 +676,7 @@ iOS 应用程序二进制文件是胖二进制文件（它们可以部署在所�
 
 [有关详细信息，请参阅iOS 上](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/)的篡改和逆向工程一章。
 
-##### 本机库[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#native-libraries)
+##### Native库(NATIVE LIBRARIES)[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#native-libraries)
 
 iOS 应用程序可以通过使用不同的元素使其代码库模块化。在 MASTG 中，我们将它们都称为本地库，但它们可以有不同的形式：
 
@@ -687,7 +687,7 @@ iOS 应用程序可以通过使用不同的元素使其代码库模块化。在 
 - [Binary Frameworks ( `XCFrameworks`)](https://developer.apple.com/videos/play/wwdc2019/416/)：Xcode 11 支持使用这种`XCFrameworks`格式分发二进制库，这是一种捆绑框架的多个变体的新方法，例如，对于 Xcode 支持的任何平台（包括模拟器和设备）。他们还可以捆绑静态库（及其相应的标头）并支持 Swift 和基于 C 的代码的二进制分发。`XCFrameworks`可以[作为 Swift Packages 分发](https://developer.apple.com/documentation/swift_packages/distributing_binary_frameworks_as_swift_packages)。
 - [Swift 包](https://developer.apple.com/documentation/swift_packages)：Xcode 11 添加了对 Swift 包的支持，Swift 包是 Swift、Objective-C、Objective-C++、C 或 C++ 代码的可重用组件，开发人员可以在其项目中使用并作为源代码分发。从 Xcode 12 开始，它们还可以[捆绑资源](https://developer.apple.com/videos/play/wwdc2020/10169/)，例如图像、故事板和其他文件。由于包库[默认是静态的](https://developer.apple.com/videos/play/wwdc2019/408/?time=739)。Xcode 编译它们以及它们所依赖的包，然后将所有内容链接并组合到应用程序中。
 
-您可以通过单击“模块”在 Passionfruit 中可视化本机库：
+您可以通过单击“模块”在 Passionfruit 中可视化Native库(NATIVE LIBRARIES)：
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06b/passionfruit_modules.png)
 
@@ -705,7 +705,7 @@ libswiftCoreData.dylib
 libswiftCoreFoundation.dylib
 ```
 
-或者来自有异议的设备（当然还有 SSH）：
+或者来自有objection的设备（当然还有 SSH）：
 
 ```
 OWASP.iGoat-Swift on (iPhone: 11.1.2) [usb] # ls
@@ -718,7 +718,7 @@ Regular           420  None                ...  libswiftCoreFoundation.dylib
 ...
 ```
 
-请注意，这可能不是应用程序使用的本机代码元素的完整列表，因为有些可能是源代码的一部分，这意味着它们将在应用程序二进制文件中编译，因此无法作为独立的库或框架找到在`Frameworks`文件夹中。
+请注意，这可能不是应用程序使用的Native代码元素的完整列表，因为有些可能是源代码的一部分，这意味着它们将在应用程序二进制文件中编译，因此无法作为独立的库或框架找到在`Frameworks`文件夹中。
 
 目前，这就是您可以获得的有关框架的所有信息，除非您开始对它们进行逆向工程。有关如何对框架进行逆向工程的更多信息，请参阅[iOS 上的篡改和逆向工程](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/)一章。
 
@@ -752,7 +752,7 @@ Application: /private/var/containers/Bundle/Application/3ADAF47D-A734-49FA-B274-
 Data: /private/var/mobile/Containers/Data/Application/8C8E7EB0-BC9B-435B-8EF8-8F5560EB0693
 ```
 
-使用 objection 的命令`env`还会向您显示该应用程序的所有目录信息。连接到带有异议的应用程序在“[推荐工具 - 异议](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#using-objection)”部分中有描述。
+使用 objection 的命令`env`还会向您显示该应用程序的所有目录信息。连接到带有objection的应用程序在“[推荐工具 - objection](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#using-objection)”部分中有描述。
 
 ```
 OWASP.iGoat-Swift on (iPhone: 11.1.2) [usb] # env
@@ -787,20 +787,20 @@ LibraryDirectory   /var/mobile/Containers/Data/Application/8C8E7EB0-BC9B-435B-8E
 - 对用户可见，用户可以写入。
 - 该目录中的内容已备份。
 - 该应用程序可以通过设置禁用路径`NSURLIsExcludedFromBackupKey`。
-- **图书馆/**
+- **库（Libraries）/**
 - 包含非特定于用户的所有文件，例如缓存、首选项、cookie 和属性列表 (plist) 配置文件。
 - iOS 应用程序通常使用`Application Support`和`Caches`子目录，但应用程序可以创建自定义子目录。
-- **图书馆/缓存/**
+- **库（Libraries）/缓存/**
 - 包含半持久缓存文件。
 - 对用户不可见，用户不能写入。
 - 此目录中的内容未备份。
 - 当应用程序未运行且存储空间不足时，操作系统可能会自动删除该目录的文件。
-- **图书馆/应用支持/**
+- **库（Libraries）/应用支持/**
 - 包含运行应用程序所需的持久文件。
 - 对用户不可见，用户不能写入。
 - 该目录中的内容已备份。
 - 该应用程序可以通过设置禁用路径`NSURLIsExcludedFromBackupKey`。
-- **图书馆/首选项/**
+- **库（Libraries）/首选项/**
 - 用于存储即使在应用程序重新启动后也可以保留的属性。
 - 信息以未加密的方式保存在应用程序沙箱中名为 [BUNDLE_ID].plist 的 plist 文件中。
 - 所有使用存储的键/值对`NSUserDefaults`都可以在这个文件中找到。
@@ -882,7 +882,7 @@ Regular           493  None                ...  iGoat-Swift
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06b/device_console.png)
 
-您还可以按照[访问](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#accessing-the-device-shell)设备外壳中的说明连接到设备外壳，通过 apt-get 安装 socat 并运行以下命令：
+您还可以按照[访问](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#accessing-the-device-shell)设备Shell中的说明连接到设备Shell，通过 apt-get 安装 socat 并运行以下命令：
 
 ```
 iPhone:~ root# socat - UNIX-CONNECT:/var/run/lockdown/syslog.sock
@@ -907,9 +907,9 @@ Jun  7 13:42:14 iPhone touch[9708] <Notice>: MS:Notice: Injecting: (null) [touch
 
 可以使用多种工具转储 KeyChain 数据，但并非所有工具都适用于任何 iOS 版本。通常情况下，请尝试不同的工具或查找其文档以获取有关最新支持版本的信息。
 
-##### 异议（越狱/非越狱）[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#objection-jailbroken-non-jailbroken)
+##### objection（越狱/非越狱）[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#objection-jailbroken-non-jailbroken)
 
-使用 Objection 可以轻松查看 KeyChain 数据。首先，如“推荐工具 - 异议”中所述，将异议连接到应用程序。然后，使用`ios keychain dump`命令来获取钥匙串的概览：
+使用 Objection 可以轻松查看 KeyChain 数据。首先，如“推荐工具 - objection”中所述，将objection连接到应用程序。然后，使用`ios keychain dump`命令来获取钥匙串的概览：
 
 ```
 $ objection --gadget="iGoat-Swift" explore
@@ -1003,7 +1003,7 @@ PortSwigger 提供了一个[关于设置 iOS 设备以使用 Burp 的很好的�
 
 #### 在越狱设备上通过 USB 使用 Burp[¶](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#using-burp-via-usb-on-a-jailbroken-device)
 
-在[访问设备外壳](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#accessing-the-device-shell)一节中，我们已经了解了如何使用[iproxy](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#iproxy)通过 USB 使用 SSH。在进行动态分析时，使用 SSH 连接将流量路由到计算机上运行的 Burp 很有趣。让我们开始吧：
+在[访问设备Shell](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#accessing-the-device-shell)一节中，我们已经了解了如何使用[iproxy](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#iproxy)通过 USB 使用 SSH。在进行动态分析时，使用 SSH 连接将流量路由到计算机上运行的 Burp 很有趣。让我们开始吧：
 
 首先，我们需要使用 iproxy 使 iOS 的 SSH 在本地主机上可用。
 
@@ -1084,8 +1084,8 @@ ios sslpinning disable
 - limera1n 漏洞 - https://www.theiphonewiki.com/wiki/Limera1n
 - IPSW 下载网站 - [https://ipsw.me](https://ipsw.me/)
 - 我可以越狱吗？- https://canijailbreak.com/
-- iPhone 维基 - https://www.theiphonewiki.com/
-- 雷蒙德派 - https://www.redmondpie.com/
+- The iPhone Wiki - https://www.theiphonewiki.com/
+- Redmond Pie - https://www.redmondpie.com/
 - Reddit 越狱 - https://www.reddit.com/r/jailbreak/
 - 信息属性列表 - https://developer.apple.com/documentation/bundleresources/information_property_list?language=objc
 - UIDeviceFamily - https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/iPhoneOSKeys.html#//apple_ref/doc/uid/TP40009252-SW11

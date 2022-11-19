@@ -2,13 +2,13 @@
 
 ## 逆向工程[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reverse-engineering)
 
-iOS 逆向工程是一个混合包。一方面，使用 Objective-C 和 Swift 编写的应用程序可以很好地反汇编。在 Objective-C 中，对象方法是通过称为“选择器”的动态函数指针调用的，这些指针在运行时按名称解析。运行时名称解析的优点是这些名称需要在最终二进制文件中保持完整，从而使反汇编更具可读性。不幸的是，这也意味着在反汇编程序中方法之间没有直接的交叉引用可用，并且构建流程图具有挑战性。
+iOS 逆向工程是一个混合包。一方面，使用 Objective-C 和 Swift 编写的应用程序可以很好地反汇编。在 Objective-C 中，对象方法是通过称为“选择器”的动态函数指针调用的，这些指针在Runtime(运行时)按名称解析。Runtime(运行时)名称解析的优点是这些名称需要在最终二进制文件中保持完整，从而使反汇编更具可读性。不幸的是，这也意味着在反汇编程序中方法之间没有直接的交叉引用可用，并且构建流程图具有挑战性。
 
 在本指南中，我们将介绍静态和动态分析及检测。在本章中，我们参考了[OWASP UnCrackable Apps for iOS](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#ios-crackmes)，所以如果您打算按照示例进行操作，请从 MASTG 存储库下载它们。
 
 ### 反汇编和反编译[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#disassembling-and-decompiling)
 
-由于 Objective-C 和 Swift 根本不同，编写应用程序的编程语言会影响对其进行逆向工程的可能性。例如，Objective-C 允许在运行时更改方法调用。这使得连接到其他应用程序功能（[Cycript](http://www.cycript.org/)和其他逆向工程工具大量使用的技术）变得容易。这种“方法调配”在 Swift 中的实现方式不同，这种差异使得该技术在 Swift 中比在 Objective-C 中更难执行。
+由于 Objective-C 和 Swift 根本不同，编写应用程序的编程语言会影响对其进行逆向工程的可能性。例如，Objective-C 允许在Runtime(运行时)更改方法调用。这使得连接到其他应用程序功能（[Cycript](http://www.cycript.org/)和其他逆向工程工具大量使用的技术）变得容易。这种“方法调配”在 Swift 中的实现方式不同，这种差异使得该技术在 Swift 中比在 Objective-C 中更难执行。
 
 在 iOS 上，所有应用程序代码（包括 Swift 和 Objective-C）都被编译为机器代码（例如 ARM）。因此，要分析 iOS 应用程序，需要反汇编程序。
 
@@ -18,7 +18,7 @@ iOS 逆向工程是一个混合包。一方面，使用 Objective-C 和 Swift �
 
 #### 使用 IDA Pro 反汇编[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#disassembling-with-ida-pro)
 
-如果你有 IDA Pro 的许可证，你也可以使用 IDA Pro 分析应用程序二进制文件。
+如果你有 IDA Pro 的Licenses（许可证），你也可以使用 IDA Pro 分析应用程序二进制文件。
 
 > 不幸的是，IDA 的免费版本不支持 ARM 处理器类型。
 
@@ -30,9 +30,9 @@ iOS 逆向工程是一个混合包。一方面，使用 Objective-C 和 Swift �
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06c/ida_main_window.png)
 
-默认情况下，常规 IDA Pro 许可证不包含反编译器，并且需要额外的 Hex-Rays 反编译器许可证，这很昂贵。相比之下，Ghidra 带有一个非常强大的免费内置反编译器，使其成为逆向工程的一个引人注目的替代方案。
+默认情况下，常规 IDA Pro Licenses（许可证）不包含反编译器，并且需要额外的 Hex-Rays 反编译器Licenses（许可证），这很昂贵。相比之下，Ghidra 带有一个非常强大的免费内置反编译器，使其成为逆向工程的一个引人注目的替代方案。
 
-如果您有常规的 IDA Pro 许可证并且不想购买 Hex-Rays 反编译器，您可以通过安装IDA Pro的[GhIDA 插件来使用 Ghidra 的反编译器。](https://github.com/Cisco-Talos/GhIDA/)
+如果您有常规的 IDA Pro Licenses（许可证）并且不想购买 Hex-Rays 反编译器，您可以通过安装IDA Pro的[GhIDA 插件来使用 Ghidra 的反编译器。](https://github.com/Cisco-Talos/GhIDA/)
 
 本章的大部分内容适用于用 Objective-C 编写或具有桥接类型的应用程序，这些类型与 Swift 和 Objective-C 兼容。大多数与 Objective-C 配合良好的工具的 Swift 兼容性正在得到改进。例如，Frida 支持[Swift 绑定](https://github.com/frida/frida-swift)。
 
@@ -144,9 +144,9 @@ iOS 平台为应用程序中的常用功能提供了许多内置库，例如加�
 
 > 无论用于分析的工具如何，本节中讨论的技术都是通用的和适用的。
 
-##### 目标-C[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#objective-c)
+##### Objective-C[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#objective-c)
 
-除了在“[反汇编和反编译](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#disassembling-and-decompiling)”部分中学到的技术外，对于本部分，您还需要对[Objective-C 运行时](https://developer.apple.com/documentation/objectivec/objective-c_runtime)有一些了解。例如，像`_objc_msgSend`或这样的函数`_objc_release`对于 Objective-C 运行时特别有意义。
+除了在“[反汇编和反编译](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#disassembling-and-decompiling)”部分中学到的技术外，对于本部分，您还需要对[Objective-C Runtime(运行时)](https://developer.apple.com/documentation/objectivec/objective-c_runtime)有一些了解。例如，像`_objc_msgSend`或这样的函数`_objc_release`对于 Objective-C Runtime(运行时)特别有意义。
 
 我们将使用[UnCrackable App for iOS Level 1](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#ios-uncrackable-l1)，它的简单目标是找到隐藏在二进制文件中某处的*秘密字符串。*该应用程序只有一个主屏幕，用户可以通过在提供的文本字段中输入自定义字符串进行交互。
 
@@ -160,7 +160,7 @@ iOS 平台为应用程序中的常用功能提供了许多内置库，例如加�
 
 > 对于本节中的静态分析，我们将使用 Ghidra 9.0.4。Ghidra 9.1_beta 自动分析有一个错误，不显示 Objective-C 类。
 
-我们可以通过在 Ghidra 中打开它来检查二进制文件中存在的字符串。列出的字符串一开始可能让人不知所措，但是通过一些逆向 Objective-C 代码的经验，您将学习如何*过滤*和丢弃没有真正帮助或相关的字符串。例如，下面屏幕截图中显示的是为 Objective-C 运行时生成的。其他字符串在某些情况下可能会有帮助，例如那些包含符号（函数名称、类名称等）的字符串，我们将在执行静态分析时使用它们来检查是否正在使用某些特定函数。
+我们可以通过在 Ghidra 中打开它来检查二进制文件中存在的字符串。列出的字符串一开始可能让人不知所措，但是通过一些逆向 Objective-C 代码的经验，您将学习如何*过滤*和丢弃没有真正帮助或相关的字符串。例如，下面屏幕截图中显示的是为 Objective-C Runtime(运行时)生成的。其他字符串在某些情况下可能会有帮助，例如那些包含符号（函数名称、类名称等）的字符串，我们将在执行静态分析时使用它们来检查是否正在使用某些特定函数。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06c/manual_reversing_ghidra_objc_runtime_strings.png)
 
@@ -170,7 +170,7 @@ iOS 平台为应用程序中的常用功能提供了许多内置库，例如加�
 
 展望未来，我们有两条路可走。我们可以开始分析`buttonClick`上述步骤中确定的功能，或者从各个入口点开始分析应用程序。在现实世界的情况下，大多数时候你会选择第一种路径，但从学习的角度来看，在本节中我们将选择后一种路径。
 
-iOS 应用程序根据其在[应用程序生命周期](https://developer.apple.com/documentation/uikit/app_and_environment/managing_your_app_s_life_cycle)中的状态调用 iOS 运行时提供的不同预定义函数。这些功能被称为应用程序的入口点。例如：
+iOS 应用程序根据其在[应用程序生命周期](https://developer.apple.com/documentation/uikit/app_and_environment/managing_your_app_s_life_cycle)中的状态调用 iOS Runtime(运行时)提供的不同预定义函数。这些功能被称为应用程序的入口点。例如：
 
 - `[AppDelegate application:didFinishLaunchingWithOptions:]`当应用程序第一次启动时被调用。
 - `[AppDelegate applicationDidBecomeActive:]`当应用程序从非活动状态移动到活动状态时调用。
@@ -189,11 +189,11 @@ iOS 应用程序根据其在[应用程序生命周期](https://developer.apple.c
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06c/manual_reversing_ghidra_buttonclick_decompiled.png)
 
-现在我们已经了解了完整的流程并获得了有关申请流程的所有信息。我们还得出结论，隐藏标志存在于文本标签中，为了确定标签的值，我们需要重新访问`viewDidLoad`函数，并了解所识别的本机函数中发生了什么。本机函数的分析在“[审查反汇编的本机代码](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”中讨论。
+现在我们已经了解了完整的流程并获得了有关申请流程的所有信息。我们还得出结论，隐藏标志存在于文本标签中，为了确定标签的值，我们需要重新访问`viewDidLoad`函数，并了解所识别的Native函数中发生了什么。Native函数的分析在“[审查反汇编的Native代码](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”中讨论。
 
-#### 查看反汇编的本机代码[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)
+#### 查看反汇编的Native代码[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)
 
-分析反汇编的本机代码需要很好地理解底层平台使用的调用约定和指令。在本节中，我们将研究原生代码的 ARM64 反汇编。Azeria Labs Tutorials[的 ARM Assembly Basics Introduction to ARM Assembly Basics](https://azeria-labs.com/writing-arm-assembly-part-1/)是了解 ARM 体系结构的一个很好的起点。这是我们将在本节中使用的内容的快速摘要：
+分析反汇编的Native代码需要很好地理解底层平台使用的调用约定和指令。在本节中，我们将研究原生代码的 ARM64 反汇编。Azeria Labs Tutorials[的 ARM Assembly Basics Introduction to ARM Assembly Basics](https://azeria-labs.com/writing-arm-assembly-part-1/)是了解 ARM 体系结构的一个很好的起点。这是我们将在本节中使用的内容的快速摘要：
 
 - 在 ARM64 中，寄存器的大小为 64 位，称为 Xn，其中 n 是从 0 到 31 的数字。如果使用寄存器的低 (LSB) 32 位，则称为 Wn。
 - 函数的输入参数在 X0-X7 寄存器中传递。
@@ -201,11 +201,11 @@ iOS 应用程序根据其在[应用程序生命周期](https://developer.apple.c
 - 加载 (LDR) 和存储 (STR) 指令用于从寄存器读取或写入内存。
 - B、BL、BLX是用于调用函数的分支指令。
 
-同样如上所述，Objective-C 代码也被编译为原生二进制代码，但分析 C/C++ 原生代码可能更具挑战性。在 Objective-C 的情况下，存在各种符号（尤其是函数名称），这简化了代码的理解。在上面的部分中，我们了解到像`setText`,这样的函数名称的存在`isEqualStrings`可以帮助我们快速理解代码的语义。如果是 C/C++ 本机代码，如果所有二进制文件都被剥离，则可能会出现很少或没有符号来帮助我们对其进行分析。
+同样如上所述，Objective-C 代码也被编译为原生二进制代码，但分析 C/C++ 原生代码可能更具挑战性。在 Objective-C 的情况下，存在各种符号（尤其是函数名称），这简化了代码的理解。在上面的部分中，我们了解到像`setText`,这样的函数名称的存在`isEqualStrings`可以帮助我们快速理解代码的语义。如果是 C/C++ Native代码，如果所有二进制文件都被剥离，则可能会出现很少或没有符号来帮助我们对其进行分析。
 
-反编译器可以帮助我们分析本地代码，但应谨慎使用。现代反编译器非常复杂，在它们用来反编译代码的许多技术中，有一些是基于启发式的。基于启发式的技术可能并不总能给出正确的结果，其中一种情况是确定给定本机函数的输入参数的数量。拥有分析反汇编代码的知识，在反编译器的协助下，可以使分析本机代码更不容易出错。
+反编译器可以帮助我们分析本地代码，但应谨慎使用。现代反编译器非常复杂，在它们用来反编译代码的许多技术中，有一些是基于启发式的。基于启发式的技术可能并不总能给出正确的结果，其中一种情况是确定给定Native函数的输入参数的数量。拥有分析反汇编代码的知识，在反编译器的协助下，可以使分析Native代码更不容易出错。
 
-我们将分析`viewDidLoad`上一节中在函数中标识的本机函数。该函数位于偏移量 0x1000080d4 处。此函数的返回值用于`setText`标签的函数调用。此文本用于与用户输入进行比较。因此，我们可以确定这个函数将返回一个字符串或等价物。
+我们将分析`viewDidLoad`上一节中在函数中标识的Native函数。该函数位于偏移量 0x1000080d4 处。此函数的返回值用于`setText`标签的函数调用。此文本用于与用户输入进行比较。因此，我们可以确定这个函数将返回一个字符串或等价物。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06c/manual_reversing_ghidra_native_disassembly.png)
 
@@ -228,7 +228,7 @@ iOS 应用程序根据其在[应用程序生命周期](https://developer.apple.c
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06c/manual_reversing_ghidra_function_graph.png)
 
-完全手动分析所有本机函数将非常耗时，而且可能不是最明智的方法。在这种情况下，强烈建议使用动态分析方法。例如，通过使用挂钩或简单地调试应用程序等技术，我们可以轻松确定返回值。通常，使用动态分析方法然后回退到手动分析反馈循环中的函数是个好主意。这样您就可以同时受益于这两种方法，同时节省时间和减少工作量。动态分析技术在“[动态分析](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#dynamic-analysis)”部分讨论。
+完全手动分析所有Native函数将非常耗时，而且可能不是最明智的方法。在这种情况下，强烈建议使用动态分析方法。例如，通过使用Hook或简单地调试应用程序等技术，我们可以轻松确定返回值。通常，使用动态分析方法然后回退到手动分析反馈循环中的函数是个好主意。这样您就可以同时受益于这两种方法，同时节省时间和减少工作量。动态分析技术在“[动态分析](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#dynamic-analysis)”部分讨论。
 
 ### 自动静态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#automated-static-analysis)
 
@@ -238,7 +238,7 @@ iOS 应用程序根据其在[应用程序生命周期](https://developer.apple.c
 
 ## 动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#dynamic-analysis)
 
-越狱设备让生活变得轻松：您不仅可以轻松获得对设备的特权访问权限，而且由于没有代码签名，您可以使用更强大的动态分析技术。在 iOS 上，大多数动态分析工具都基于 Cydia Substrate（一种用于开发运行时补丁的框架）或 Frida（一种动态内省工具）。对于基本的 API 监控，您可以在不知道 Substrate 或 Frida 工作原理的所有细节的情况下逃脱——您可以简单地使用现有的 API 监控工具。
+越狱设备让生活变得轻松：您不仅可以轻松获得对设备的特权访问权限，而且由于没有代码签名，您可以使用更强大的动态分析技术。在 iOS 上，大多数动态分析工具都基于 Cydia Substrate（一种用于开发Runtime(运行时)补丁的框架）或 Frida（一种动态内省工具）。对于基本的 API 监控，您可以在不知道 Substrate 或 Frida 工作原理的所有细节的情况下逃脱——您可以简单地使用现有的 API 监控工具。
 
 ### 非越狱设备动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#dynamic-analysis-on-non-jailbroken-devices)
 
@@ -335,7 +335,7 @@ iOweApp 2828 mobile  txt    REG    1,2   664848 234595 /usr/lib/dyld
 ...
 ```
 
-#### 加载本机库[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#loaded-native-libraries)
+#### 加载Native库(NATIVE LIBRARIES)[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#loaded-native-libraries)
 
 您可以使用`list_frameworks`命令 in [objection](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#objection)列出所有代表框架的应用程序包。
 
@@ -559,7 +559,7 @@ Apple 官方推荐使用 LLDB 进行调试，但 GDB 也可以在 iOS 上使用�
 
 在以下示例中，我们假设您正在使用越狱设备。如果不是这种情况，您首先需要按照重新打包[和重新签名](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#repackaging-and-re-signing)部分中概述的步骤重新打包 Safari 应用程序。
 
-Frida 附带了`frida-trace`一个函数跟踪工具。通过标志`frida-trace`接受 Objective-C 方法。`-m`您可以将通配符传递给它 well-given `-[NSURL *]`，例如，将自动在所有类选择器`frida-trace`上安装挂钩。`NSURL`我们将使用它来大致了解当用户打开 URL 时 Safari 调用哪些库函数。
+Frida 附带了`frida-trace`一个函数跟踪工具。通过标志`frida-trace`接受 Objective-C 方法。`-m`您可以将通配符传递给它 well-given `-[NSURL *]`，例如，将自动在所有类选择器`frida-trace`上安装Hook。`NSURL`我们将使用它来大致了解当用户打开 URL 时 Safari 调用哪些库函数。
 
 在设备上运行 Safari 并确保设备已通过 USB 连接。然后开始`frida-trace`如下：
 
@@ -583,15 +583,15 @@ Started tracing 248 functions. Press Ctrl+C to stop.
  21324 ms     | -[NSURLRequest initWithURL:0x106388b00 cachePolicy:0x0 timeoutInterval:0x106388b80
 ```
 
-#### 本机库跟踪[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#native-libraries-tracing)
+#### Native库(NATIVE LIBRARIES)跟踪[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#native-libraries-tracing)
 
-如本章前面所述，iOS 应用程序还可以包含本机代码（C/C++ 代码），也可以使用`frida-trace`CLI 对其进行跟踪。例如，您可以`open`通过运行以下命令来跟踪对该函数的调用：
+如本章前面所述，iOS 应用程序还可以包含Native代码（C/C++ 代码），也可以使用`frida-trace`CLI 对其进行跟踪。例如，您可以`open`通过运行以下命令来跟踪对该函数的调用：
 
 ```
 frida-trace -U -i "open" sg.vp.UnCrackable1
 ```
 
-使用 Frida 跟踪本机代码的总体方法和进一步改进与 Android“[跟踪](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#tracing)”部分中讨论的方法类似。
+使用 Frida 跟踪Native代码的总体方法和进一步改进与 Android“[跟踪](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-Engineering-and-Tampering/#tracing)”部分中讨论的方法类似。
 
 不幸的是，没有诸如`strace`或`ftrace`可用于跟踪 iOS 应用程序的系统调用或函数调用的工具。Only `DTrace`Exists，这是一个非常强大且用途广泛的跟踪工具，但它仅适用于 MacOS，不适用于 iOS。
 
@@ -605,9 +605,9 @@ Apple 在 Xcode 中提供了一个模拟器应用程序，它为 iPhone、iPad �
 
 #### Corellium[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#corellium)
 
-Corellium 是一种商业工具，它提供运行实际 iOS 固件的虚拟 iOS 设备，是有史以来唯一公开可用的 iOS 模拟器。由于它是专有产品，因此关于实现的信息不多。Corellium 没有可用的社区许可证，因此我们不会详细介绍它的使用。
+Corellium 是一种商业工具，它提供运行实际 iOS 固件的虚拟 iOS 设备，是有史以来唯一公开可用的 iOS 模拟器。由于它是专有产品，因此关于实现的信息不多。Corellium 没有可用的社区Licenses（许可证），因此我们不会详细介绍它的使用。
 
-Corellium 允许您启动一个设备（越狱与否）的多个实例，这些实例可以作为本地设备访问（使用简单的 VPN 配置）。它能够拍摄和恢复设备状态的快照，还为设备提供了一个方便的基于 Web 的外壳。最后也是最重要的是，由于其“模拟器”特性，您可以执行从 Apple App Store 下载的应用程序，从而实现您从真实 iOS（越狱）设备上了解到的任何类型的应用程序分析。
+Corellium 允许您启动一个设备（越狱与否）的多个实例，这些实例可以作为本地设备访问（使用简单的 VPN 配置）。它能够拍摄和恢复设备状态的快照，还为设备提供了一个方便的基于 Web 的Shell。最后也是最重要的是，由于其“模拟器”特性，您可以执行从 Apple App Store 下载的应用程序，从而实现您从真实 iOS（越狱）设备上了解到的任何类型的应用程序分析。
 
 请注意，为了在 Corellium 设备上安装 IPA，它必须未加密并使用有效的 Apple 开发人员证书签名。[在此处](https://support.corellium.com/en/articles/6181345-testing-third-party-ios-apps)查看更多信息。
 
@@ -623,7 +623,7 @@ Android的“[动态分析](https://mas.owasp.org/MASTG/Android/0x05c-Reverse-En
 
 要使用 Unicorn 的*全部功能*，我们需要实现所有必要的基础设施，这些基础设施通常可以从操作系统中轻松获得，例如二进制加载器、链接器和其他依赖项，或者使用另一个更高级别的框架，例如利用 Unicorn 模拟 CPU 指令的[Qiling](https://qiling.io/)，但了解操作系统上下文。然而，这对于这个非常本地化的挑战来说是多余的，因为只执行二进制文件的一小部分就足够了。
 
-在“[查看反汇编本机代码](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分进行手动分析时，我们确定地址 0x1000080d4 处的函数负责动态生成秘密字符串。正如我们即将看到的，所有必要的代码几乎都包含在二进制文件中，这使得这是使用像 Unicorn 这样的 CPU 模拟器的完美场景。
+在“[查看反汇编Native代码](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分进行手动分析时，我们确定地址 0x1000080d4 处的函数负责动态生成秘密字符串。正如我们即将看到的，所有必要的代码几乎都包含在二进制文件中，这使得这是使用像 Unicorn 这样的 CPU 模拟器的完美场景。
 
 ![img](https://mas.owasp.org/assets/Images/Chapters/0x06c/manual_reversing_ghidra_native_disassembly.png)
 
@@ -700,21 +700,21 @@ print(emu.mem_read(ret_value, 11))
 
 > 您可能会注意到在地址 0x0 处有一个额外的内存分配，这是一个简单的 hack around`stack_chk_guard`检查。没有这个，就会出现无效的内存读取错误，无法执行二进制文件。通过这个 hack，程序将访问 0x0 处的值并将其用于`stack_chk_guard`检查。
 
-总而言之，使用 Unicorn 确实需要在执行二进制文件之前进行一些额外的设置，但是一旦完成，此工具可以帮助深入了解二进制文件。它提供了执行完整二进制文件或其中有限部分的灵活性。Unicorn 还公开了 API 以将挂钩附加到执行中。使用这些钩子，您可以在执行期间的任何时刻观察程序的状态，甚至可以操纵寄存器或变量值，并强制探索程序中的其他执行分支。在 Unicorn 中运行二进制文件的另一个优点是您无需担心各种检查，例如 root/越狱检测或调试器检测等。
+总而言之，使用 Unicorn 确实需要在执行二进制文件之前进行一些额外的设置，但是一旦完成，此工具可以帮助深入了解二进制文件。它提供了执行完整二进制文件或其中有限部分的灵活性。Unicorn 还公开了 API 以将Hook附加到执行中。使用这些钩子，您可以在执行期间的任何时刻观察程序的状态，甚至可以操纵寄存器或变量值，并强制探索程序中的其他执行分支。在 Unicorn 中运行二进制文件的另一个优点是您无需担心各种检查，例如 root/越狱检测或调试器检测等。
 
-### 愤怒[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#angr)
+### Angr[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#angr)
 
 [Angr](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#angr)是一个非常通用的工具，提供多种技术来促进二进制分析，同时支持各种文件格式和硬件指令集。
 
 > Angr 中的 Mach-O 后端没有得到很好的支持，但它非常适合我们的案例。
 
-在手动分析“[查看反汇编本机代码](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分中的代码时，我们发现执行进一步的手动分析很麻烦。偏移处的函数`0x1000080d4`被确定为包含秘密字符串的最终目标。
+在手动分析“[查看反汇编Native代码](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#reviewing-disassembled-native-code)”部分中的代码时，我们发现执行进一步的手动分析很麻烦。偏移处的函数`0x1000080d4`被确定为包含秘密字符串的最终目标。
 
 如果我们重新访问该函数，我们可以看到它涉及多个子函数调用，有趣的是，这些函数都不依赖于其他库调用或系统调用。这是使用 Angr 的具体执行引擎的完美案例。请按照以下步骤解决此挑战：
 
 - 通过运行获取 ARM64 版本的二进制文件`lipo -thin arm64 <app_binary> -output uncrackable.arm64`（也可以使用 ARMv7）。
 - `Project`通过加载上述二进制文件创建一个 Angr 。
-- `callable`通过传递要执行的函数的地址来获取一个对象。来自 Angr 文档：“Callable 是二进制文件中函数的表示，可以像本机 python 函数一样与之交互。”。
+- `callable`通过传递要执行的函数的地址来获取一个对象。来自 Angr 文档：“Callable 是二进制文件中函数的表示，可以像Native python 函数一样与之交互。”。
 - 将上述`callable`对象传递给具体的执行引擎，在本例中为`claripy.backends.concrete`.
 - 访问内存，从上述函数返回的指针中提取字符串。
 
@@ -743,7 +743,7 @@ solve()
 
 上面，Angr 在其具体执行引擎之一提供的执行环境中执行了 ARM64 代码。结果是从内存中访问的，就好像程序是在真实设备上执行的一样。这个案例是一个很好的例子，二进制分析框架使我们能够对二进制文件进行全面分析，即使在没有运行它所需的专用设备的情况下也是如此。
 
-## 篡改和运行时检测[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#tampering-and-runtime-instrumentation)
+## 篡改和Runtime(运行时)检测[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#tampering-and-runtime-instrumentation)
 
 ### 修补、重新打包和重新签名[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#patching-repackaging-and-re-signing)
 
@@ -862,7 +862,7 @@ PID  Name
 
 #### 获取加载的类及其方法[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#getting-loaded-classes-and-their-methods)
 
-在 Frida REPL Objective-C 运行时中，该`ObjC`命令可用于访问正在运行的应用程序中的信息。在`ObjC`命令中，该函数`enumerateLoadedClasses`列出了给定应用程序的加载类。
+在 Frida REPL Objective-C Runtime(运行时)中，该`ObjC`命令可用于访问正在运行的应用程序中的信息。在`ObjC`命令中，该函数`enumerateLoadedClasses`列出了给定应用程序的加载类。
 
 ```
 $ frida -U -f com.iOweApp
@@ -953,9 +953,9 @@ Process.enumerateThreads()
 
 该`Process`命令公开了可以根据需要探索的多个功能。一些有用的函数是`findModuleByAddress`，除此之外。`findModuleByName``enumerateRanges`
 
-#### 方法挂钩[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#method-hooking)
+#### 方法Hook[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#method-hooking)
 
-##### 弗里达[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#frida)
+##### Frida[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#frida)
 
 在[“执行跟踪”](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#execution-tracing)一节中，我们在 Safari 中导航到网站时使用了 frida-trace，发现该`initWithURL:`方法被调用以初始化新的 URL 请求对象。[我们可以在苹果开发者网站](https://developer.apple.com/documentation/foundation/nsbundle/1409352-initwithurl?language=objc)上查看这个方法的声明：
 
@@ -1024,17 +1024,17 @@ sys.stdin.read()
 
 #### 过程探索[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#process-exploration)
 
-在测试应用程序时，进程探索可以让测试人员深入了解应用程序进程内存。它可以通过运行时检测来实现，并允许执行以下任务：
+在测试应用程序时，进程探索可以让测试人员深入了解应用程序进程内存。它可以通过Runtime(运行时)检测来实现，并允许执行以下任务：
 
 - 检索内存映射和加载的库。
 - 搜索特定数据的出现。
 - 经过查找，得到内存映射中某个偏移量的位置。
 - 执行内存转储并*离线*检查或反向工程二进制数据。
-- 在运行时对二进制文件或框架进行逆向工程。
+- 在Runtime(运行时)对二进制文件或框架进行逆向工程。
 
-如您所见，这些任务相当支持和/或被动，它们将帮助我们收集支持其他技术的数据和信息。因此，它们通常与方法挂钩等其他技术结合使用。
+如您所见，这些任务相当支持和/或被动，它们将帮助我们收集支持其他技术的数据和信息。因此，它们通常与方法Hook等其他技术结合使用。
 
-在以下部分中，您将使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)直接从应用程序运行时检索信息。首先打开一个 r2frida 会话到目标应用程序（例如[iGoat-Swift](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#igoat-swift)），它应该在你的 iPhone 上运行（通过 USB 连接）。使用以下命令：
+在以下部分中，您将使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)直接从应用程序Runtime(运行时)检索信息。首先打开一个 r2frida 会话到目标应用程序（例如[iGoat-Swift](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#igoat-swift)），它应该在你的 iPhone 上运行（通过 USB 连接）。使用以下命令：
 
 ```
 r2 frida://usb//iGoat-Swift
@@ -1081,7 +1081,7 @@ r2 frida://usb//iGoat-Swift
 
 如您所料，您可以将库的地址与内存映射相关联：例如，主应用程序二进制文件[iGoat-Swift](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#igoat-swift)位于 ，`0x0000000100b7c000`而 Realm Framework 位于`0x0000000100f60000`。
 
-您也可以使用异议来显示相同的信息。
+您也可以使用objection来显示相同的信息。
 
 ```
 $ objection --gadget OWASP.iGoat-Swift explore
@@ -1262,9 +1262,9 @@ $ strings -e l memory_ios | grep owasp-mstg
 owasp-mstg
 ```
 
-##### 运行时逆向工程[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#runtime-reverse-engineering)
+##### Runtime(运行时)逆向工程[¶](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#runtime-reverse-engineering)
 
-运行时逆向工程可以看作是实时版本的逆向工程，您没有主机的二进制数据。相反，您将直接从应用程序的内存中分析它。
+Runtime(运行时)逆向工程可以看作是实时版本的逆向工程，您没有主机的二进制数据。相反，您将直接从应用程序的内存中分析它。
 
 我们将继续使用[iGoat-Swift](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#igoat-swift)应用程序，使用 r2frida 打开一个会话，`r2 frida://usb//iGoat-Swift`您可以使用以下`\i`命令显示目标二进制信息：
 

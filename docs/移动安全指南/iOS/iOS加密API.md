@@ -64,7 +64,7 @@ print(textHash) // Print hash text
 
 #### CommonCrypto、SecKey 和 Wrapper 库[¶](https://mas.owasp.org/MASTG/iOS/0x06e-Testing-Cryptography/#commoncrypto-seckey-and-wrapper-libraries)
 
-最常用于加密操作的类是 CommonCrypto，它包含在 iOS 运行时中。[通过查看头文件](https://opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h.auto.html)的源代码，可以最好地剖析 CommonCrypto 对象提供的功能：
+最常用于加密操作的类是 CommonCrypto，它包含在 iOS Runtime(运行时)中。[通过查看头文件](https://opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h.auto.html)的源代码，可以最好地剖析 CommonCrypto 对象提供的功能：
 
 - `Commoncryptor.h`给出了对称加密操作的参数。
 - `CommonDigest.h`给出了散列算法的参数。
@@ -190,7 +190,7 @@ func testKeyDerivation() {
 
 KeyChain 支持两种类型的存储机制：密钥要么由存储在安全飞地中的加密密钥保护，要么密钥本身在安全飞地内。后者仅在您使用 ECDH 签名密钥时成立。有关其实现的更多详细信息，请参阅[Apple 文档](https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_secure_enclave)。
 
-最后三个选项包括在源代码中使用硬编码加密密钥，具有基于稳定属性的可预测密钥派生函数，以及将生成的密钥存储在与其他应用程序共享的位置。使用硬编码加密密钥显然不是可行的方法，因为这意味着应用程序的每个实例都使用相同的加密密钥。攻击者只需执行一次工作即可从源代码中提取密钥（无论是存储在本机还是在 Objective-C/Swift 中）。因此，攻击者可以解密应用程序加密的任何其他数据。接下来，当您具有基于标识符的可预测密钥派生函数时，其他应用程序可以访问该函数，攻击者只需找到 KDF 并将其应用于设备即可找到密钥。最后，
+最后三个选项包括在源代码中使用硬编码加密密钥，具有基于稳定属性的可预测密钥派生函数，以及将生成的密钥存储在与其他应用程序共享的位置。使用硬编码加密密钥显然不是可行的方法，因为这意味着应用程序的每个实例都使用相同的加密密钥。攻击者只需执行一次工作即可从源代码中提取密钥（无论是存储在Native还是在 Objective-C/Swift 中）。因此，攻击者可以解密应用程序加密的任何其他数据。接下来，当您具有基于标识符的可预测密钥派生函数时，其他应用程序可以访问该函数，攻击者只需找到 KDF 并将其应用于设备即可找到密钥。最后，
 
 当涉及到密码学时，你不应该忘记另外两个概念：
 
@@ -218,7 +218,7 @@ KeyChain 支持两种类型的存储机制：密钥要么由存储在安全飞�
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06e-Testing-Cryptography/#dynamic-analysis)
 
-挂钩加密方法并分析正在使用的密钥。在执行加密操作时监控文件系统访问，以评估密钥材料写入或读取的位置。
+Hook加密方法并分析正在使用的密钥。在执行加密操作时监控文件系统访问，以评估密钥材料写入或读取的位置。
 
 ## 测试随机数生成 (MSTG-CRYPTO-6)[¶](https://mas.owasp.org/MASTG/iOS/0x06e-Testing-Cryptography/#testing-random-number-generation-mstg-crypto-6)
 
@@ -289,7 +289,7 @@ int result = SecRandomCopyBytes(kSecRandomDefault, 16, randomBytes);
 - OpenSSL - https://www.openssl.org/
 - LibSodiums 文档 - https://download.libsodium.org/doc/installation
 - 谷歌 Tink - https://security.googleblog.com/2018/08/introducing-tink-cryptographic-software.html
-- 忒弥斯 - https://github.com/cossacklabs/themis
+- Themis - https://github.com/cossacklabs/themis
 - cartfile - https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile
 - Podfile - https://guides.cocoapods.org/syntax/podfile.html
 

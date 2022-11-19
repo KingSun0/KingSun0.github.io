@@ -4,7 +4,7 @@
 
 ## 测试本地数据存储（MSTG-STORAGE-1 和 MSTG-STORAGE-2）[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#testing-local-data-storage-mstg-storage-1-and-mstg-storage-2)
 
-应将尽可能少的敏感数据保存在永久本地存储中。然而，在大多数实际场景中，至少必须存储一些用户数据。幸运的是，iOS 提供了安全存储 API，允许开发人员使用每台 iOS 设备上可用的加密硬件。如果正确使用这些 API，敏感数据和文件可以通过硬件支持的 256 位 AES 加密来保护。
+应将尽可能少的敏感数据保存在永久本地存储中。然而，在大多数实际场景中，至少必须存储一些用户数据。幸运的是，iOS 提供了安全存储 API，允许开发人员使用每台 iOS 设备上可用的加密硬件。如果正确使用这些 API，敏感数据和文件可以通过硬件支持的 256 位 AES Crypto来保护。
 
 ### 数据保护API[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#data-protection-api)
 
@@ -65,7 +65,7 @@ iOS Keychain 可用于安全地存储简短、敏感的数据位，例如加密�
 
 如果您想使用这些机制，建议测试密码是否已设置。在 iOS 8 中，您需要检查是否可以从受`kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly`属性保护的钥匙串中的项目读取/写入。从 iOS 9 开始，您可以检查是否设置了锁定屏幕，使用`LAContext`：
 
-迅速：
+Swift:
 
 ```
 public func devicePasscodeEnabled() -> Bool {
@@ -73,7 +73,7 @@ public func devicePasscodeEnabled() -> Bool {
 }
 ```
 
-目标-C：
+Objective-C：
 
 ```
 -(BOOL)devicePasscodeEnabled:(LAContex)context{
@@ -89,7 +89,7 @@ public func devicePasscodeEnabled() -> Bool {
 
 在 iOS 上，当应用程序被卸载时，应用程序使用的 Keychain 数据会保留在设备中，这与应用程序沙箱存储的数据被擦除不同。如果用户在未执行恢复出厂设置的情况下出售其设备，设备的购买者可能能够通过重新安装先前用户使用的相同应用程序来访问先前用户的应用程序帐户和数据。这不需要技术能力来执行。
 
-在评估 iOS 应用程序时，您应该寻找钥匙串数据持久性。这通常是通过使用应用程序生成可能存储在 Keychain 中的示例数据、卸载应用程序、然后重新安装应用程序以查看数据是否在应用程序安装之间保留。使用反对运行时移动探索工具包转储钥匙串数据。以下`objection`命令演示了此过程：
+在评估 iOS 应用程序时，您应该寻找钥匙串数据持久性。这通常是通过使用应用程序生成可能存储在 Keychain 中的示例数据、卸载应用程序、然后重新安装应用程序以查看数据是否在应用程序安装之间保留。使用反对Runtime(运行时)移动探索工具包转储钥匙串数据。以下`objection`命令演示了此过程：
 
 ```
 ...itudehacks.DVIAswiftv2.develop on (iPhone: 13.2.3) [usb] # ios keychain dump
@@ -187,7 +187,7 @@ if status != errSecSuccess {
 
 以下示例显示如何使用该类创建`complete`加密文件。`FileManager`您可以在 Apple 开发人员文档[“加密您的应用程序的文件”中找到更多信息](https://developer.apple.com/documentation/uikit/protecting_the_user_s_privacy/encrypting_your_app_s_files)
 
-迅速：
+Swift:
 
 ```
 FileManager.default.createFile(
@@ -197,7 +197,7 @@ FileManager.default.createFile(
 )
 ```
 
-目标-C：
+Objective-C：
 
 ```
 [[NSFileManager defaultManager] createFileAtPath:[self filePath]
@@ -234,7 +234,7 @@ https://\<firebaseProjectName\>.firebaseio.com/.json
 python FirebaseScanner.py -f <commaSeparatedFirebaseProjectNames>
 ```
 
-#### 领域数据库[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#realm-databases)
+#### Realm Databases[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#realm-databases)
 
 [Apple 不提供Realm Objective-C](https://realm.io/docs/objc/latest/)和[Realm Swift](https://realm.io/docs/swift/latest/)，但它们仍然值得注意。它们存储所有未加密的内容，除非配置启用了加密。
 
@@ -254,7 +254,7 @@ do {
 
 #### Couchbase Lite 数据库[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#couchbase-lite-databases)
 
-[Couchbase Lite](https://github.com/couchbase/couchbase-lite-ios)是一个轻量级、嵌入式、面向文档 (NoSQL) 的数据库引擎，可以同步。它为 iOS 和 macOS 本机编译。
+[Couchbase Lite](https://github.com/couchbase/couchbase-lite-ios)是一个轻量级、嵌入式、面向文档 (NoSQL) 的数据库引擎，可以同步。它为 iOS 和 macOS Native编译。
 
 #### Yap数据库[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#yapdatabase)
 
@@ -262,7 +262,7 @@ do {
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#dynamic-analysis)
 
-在不利用本机 iOS 功能的情况下确定敏感信息（如凭据和密钥）是否存储不安全的一种方法是分析应用程序的数据目录。在分析数据之前触发所有应用程序功能很重要，因为应用程序可能仅在触发特定功能后才存储敏感数据。然后，您可以根据通用关键字和特定于应用程序的数据对数据转储进行静态分析。
+在不利用Native iOS 功能的情况下确定敏感信息（如凭据和密钥）是否存储不安全的一种方法是分析应用程序的数据目录。在分析数据之前触发所有应用程序功能很重要，因为应用程序可能仅在触发特定功能后才存储敏感数据。然后，您可以根据通用关键字和特定于应用程序的数据对数据转储进行静态分析。
 
 以下步骤可用于确定应用程序如何在越狱的 iOS 设备上本地存储数据：
 
@@ -279,7 +279,7 @@ do {
 4. 导航到输出目录并找到`$APP_NAME.imazing`. 将其重命名为`$APP_NAME.zip`.
 5. 解压缩 ZIP 文件。然后您可以分析应用程序数据。
 
-> 请注意，像 iMazing 这样的工具不会直接从设备复制数据。他们试图从他们创建的备份中提取数据。因此，获取存储在 iOS 设备上的所有应用程序数据是不可能的：并非所有文件夹都包含在备份中。使用越狱设备或使用 Frida 重新打包应用程序，并使用异议等工具访问所有数据和文件。
+> 请注意，像 iMazing 这样的工具不会直接从设备复制数据。他们试图从他们创建的备份中提取数据。因此，获取存储在 iOS 设备上的所有应用程序数据是不可能的：并非所有文件夹都包含在备份中。使用越狱设备或使用 Frida 重新打包应用程序，并使用objection等工具访问所有数据和文件。
 
 如果您将 Frida 库添加到应用程序并按照“非越狱设备上的动态分析”（来自“iOS 上的篡改和逆向工程”一章）中的描述重新打包，您可以使用[反对](https://github.com/sensepost/objection)直接从应用程序的数据传输文件目录或[读取反对文件，](https://github.com/sensepost/objection/wiki/Using-objection#getting-started-ios-edition)如“iOS 上的基本安全测试”一章“[主机设备数据传输](https://mas.owasp.org/MASTG/iOS/0x06b-Basic-Security-Testing/#host-device-data-transfer)”一节中所述。
 
@@ -315,9 +315,9 @@ grep -iRn keyword .
 
 然后，您可以监视和验证应用程序文件系统的变化，并调查在使用该应用程序时文件中是否存储了任何敏感信息。
 
-#### 有异议的动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#dynamic-analysis-with-objection)
+#### 有objection的动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#dynamic-analysis-with-objection)
 
-您可以使用[反对](https://github.com/sensepost/objection)运行时移动探索工具包来查找由应用程序的数据存储机制引起的漏洞。可以在没有越狱设备的情况下使用 Objection，但它需要[修补 iOS 应用程序](https://github.com/sensepost/objection/wiki/Patching-iOS-Applications)。
+您可以使用[反对](https://github.com/sensepost/objection)Runtime(运行时)移动探索工具包来查找由应用程序的数据存储机制引起的漏洞。可以在没有越狱设备的情况下使用 Objection，但它需要[修补 iOS 应用程序](https://github.com/sensepost/objection/wiki/Patching-iOS-Applications)。
 
 ##### 阅读钥匙串[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#reading-the-keychain)
 
@@ -840,7 +840,7 @@ Binary file ./13/135416dd5f251f9251e0f07206277586b7eac6f6 matches
 
 以下是`overlayImage.png`在应用程序处于后台时使用默认背景图像 ( ) 覆盖当前视图的示例实现：
 
-迅速：
+Swift:
 
 ```
 private var backgroundImage: UIImageView?
@@ -857,7 +857,7 @@ func applicationWillEnterForeground(_ application: UIApplication) {
 }
 ```
 
-目标-C：
+Objective-C：
 
 ```
 @property (UIImageView *)backgroundImage;
@@ -982,9 +982,9 @@ Usage: /[!bf] [arg]  Search stuff (see 'e??search' for options)
 ...
 ```
 
-#### 运行时内存分析[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#runtime-memory-analysis)
+#### Runtime(运行时)内存分析[¶](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/#runtime-memory-analysis)
 
-通过使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)，您可以在运行时分析和检查应用程序的内存，而无需转储它。例如，您可以从 r2frida 运行之前的搜索命令并在内存中搜索字符串、十六进制值等。执行此操作时，请记住`\`在启动会话后在搜索命令（以及任何其他 r2frida 特定命令）前面加上反斜杠与`r2 frida://usb//<name_of_your_app>`。
+通过使用[r2frida](https://mas.owasp.org/MASTG/Tools/0x08a-Testing-Tools/#r2frida)，您可以在Runtime(运行时)分析和检查应用程序的内存，而无需转储它。例如，您可以从 r2frida 运行之前的搜索命令并在内存中搜索字符串、十六进制值等。执行此操作时，请记住`\`在启动会话后在搜索命令（以及任何其他 r2frida 特定命令）前面加上反斜杠与`r2 frida://usb//<name_of_your_app>`。
 
 有关更多信息、选项和方法，请参阅“ iOS 上的篡改和逆向工程”一章中的“[内存中搜索](https://mas.owasp.org/MASTG/iOS/0x06c-Reverse-Engineering-and-Tampering/#in-memory-search)”部分。
 

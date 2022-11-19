@@ -66,7 +66,7 @@ App Store 使用设备功能来确保只列出兼容的设备，因此允许下�
 
 根据[Apple 的 iOS 安全指南](https://www.apple.com/business/site/docs/iOS_Security_Guide.pdf)：
 
-> 权利是登录到应用程序并允许超出运行时因素（如 UNIX 用户 ID）的身份验证的键值对。由于权利是经过数字签名的，因此无法更改。系统应用程序和守护进程广泛使用权利来执行特定的特权操作，否则这些操作将需要进程以 root 身份运行。这大大降低了受感染的系统应用程序或守护程序进行权限升级的可能性。
+> 权利是登录到应用程序并允许超出Runtime(运行时)因素（如 UNIX 用户 ID）的身份验证的键值对。由于权利是经过数字签名的，因此无法更改。系统应用程序和守护进程广泛使用权利来执行特定的特权操作，否则这些操作将需要进程以 root 身份运行。这大大降低了受感染的系统应用程序或守护程序进行权限升级的可能性。
 
 许多权利可以使用 Xcode 目标编辑器的“摘要”选项卡进行设置。其他权利需要编辑目标的权利属性列表文件或从用于运行应用程序的 iOS 配置文件继承。
 
@@ -657,7 +657,7 @@ $ rabin2 -zq Telegram\ X.app/Telegram\ X | grep openURL
 
 > 请注意，单击和长按之间存在差异。一旦我们长按一个链接并选择一个选项，例如“在 Safari 中打开”，这将成为所有未来点击的默认选项，直到我们再次长按并选择另一个选项。
 
-如果我们通过挂钩或跟踪在方法上重复该过程`application:continueUserActivity: restorationHandler:`，我们将在打开允许的通用链接后立即看到它是如何被调用的。为此，您可以使用例如`frida-trace`：
+如果我们通过Hook或跟踪在方法上重复该过程`application:continueUserActivity: restorationHandler:`，我们将在打开允许的通用链接后立即看到它是如何被调用的。为此，您可以使用例如`frida-trace`：
 
 ```
 frida-trace -U "Apple Store" -m "*[* *restorationHandler*]"
@@ -868,7 +868,7 @@ dismissInput: () -> ()) -> ()
 
 您现在可以继续并尝试跟踪和验证数据是如何验证的。例如，如果您有两个通过通用链接*进行通信*的应用程序，您可以使用它通过在接收应用程序中挂接这些方法来查看发送应用程序是否正在泄漏敏感数据。这在您没有源代码时特别有用，因为您将能够检索您不会以其他方式看到的完整 URL，因为它可能是单击某个按钮或触发某些功能的结果。
 
-在某些情况下，您可能会在`userInfo`对象`NSUserActivity`中找到数据。在前一种情况下，没有数据被传输，但其他情况可能是这种情况。要看到这一点，请务必挂钩`userInfo`属性或直接从`continueUserActivity`挂钩中的对象访问它（例如，通过添加像这样的一行`log("userInfo:" + ObjC.Object(args[3]).userInfo().toString());`）。
+在某些情况下，您可能会在`userInfo`对象`NSUserActivity`中找到数据。在前一种情况下，没有数据被传输，但其他情况可能是这种情况。要看到这一点，请务必Hook`userInfo`属性或直接从`continueUserActivity`Hook中的对象访问它（例如，通过添加像这样的一行`log("userInfo:" + ObjC.Object(args[3]).userInfo().toString());`）。
 
 ##### 关于通用链接和切换的最后说明[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#final-notes-about-universal-links-and-handoff)
 
@@ -884,7 +884,7 @@ application:continueUserActivity:restorationHandler:
 
 [实际上，“Checking How the Links Are Opened”中的前面示例与“Handoff Programming Guide”](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/Handoff/AdoptingHandoff/AdoptingHandoff.html#//apple_ref/doc/uid/TP40014338-CH2-SW10)中描述的“Web Browser-to-Native App Handoff”场景非常相似：
 
-> 如果用户在原始设备上使用 Web 浏览器，并且接收设备是带有声明该属性的域部分的本机应用程序的 iOS 设备`webpageURL`，则 iOS 会启动本机应用程序并向其`NSUserActivity`发送`activityType`值为`NSUserActivityTypeBrowsingWeb`. 该`webpageURL`属性包含用户访问的 URL，而`userInfo`字典为空。
+> 如果用户在原始设备上使用 Web 浏览器，并且接收设备是带有声明该属性的域部分的Native应用程序的 iOS 设备`webpageURL`，则 iOS 会启动Native应用程序并向其`NSUserActivity`发送`activityType`值为`NSUserActivityTypeBrowsingWeb`. 该`webpageURL`属性包含用户访问的 URL，而`userInfo`字典为空。
 
 在上面的详细输出中，您可以看到`NSUserActivity`我们收到的对象完全符合上述几点：
 
@@ -964,7 +964,7 @@ $ rabin2 -zq Telegram\ X.app/Telegram\ X | grep -i activityItems
 
 [在 Stackoverflow 上](https://stackoverflow.com/questions/21937978/what-are-utimportedtypedeclarations-and-utexportedtypedeclarations-used-for-on-i)可以找到有关这些键的使用的非常完整的解释。
 
-让我们看一个真实世界的例子。我们将采用文件管理器应用程序并查看这些键。我们在这里使用了[异议](https://github.com/sensepost/objection)来读取`Info.plist`文件。
+让我们看一个真实世界的例子。我们将采用文件管理器应用程序并查看这些键。我们在这里使用了[objection](https://github.com/sensepost/objection)来读取`Info.plist`文件。
 
 ```
 objection --gadget SomeFileManager run ios plist cat Info.plist
@@ -1036,7 +1036,7 @@ CFBundleDocumentTypes =     (
 为此，您可以做两件事：
 
 - 钩住我们在静态分析中看到的方法（[`init(activityItems: applicationActivities:)`](https://developer.apple.com/documentation/uikit/uiactivityviewcontroller/1622019-init)）来获取`activityItems`和`applicationActivities`。
-- [`excludedActivityTypes`通过挂钩属性](https://developer.apple.com/documentation/uikit/uiactivityviewcontroller/1622009-excludedactivitytypes)找出排除的活动。
+- [`excludedActivityTypes`通过Hook属性](https://developer.apple.com/documentation/uikit/uiactivityviewcontroller/1622009-excludedactivitytypes)找出排除的活动。
 
 让我们看一个使用 Telegram 共享图片和文本文件的示例。首先准备好钩子，我们将使用 Frida REPL 并为此编写一个脚本：
 
@@ -1248,7 +1248,7 @@ RET: 0x1
 
 从安全的角度来看，重要的是要注意：
 
-- 应用程序扩展永远不会直接与其包含的应用程序通信（通常，它甚至不会在包含的应用程序扩展程序运行时运行）。
+- 应用程序扩展永远不会直接与其包含的应用程序通信（通常，它甚至不会在包含的应用程序扩展程序Runtime(运行时)运行）。
 - 应用程序扩展和宿主应用程序通过进程间通信进行通信。
 - 应用扩展的包含应用和宿主应用根本不通信。
 - `openURL:completionHandler:`Today 小部件（没有其他应用程序扩展类型）可以通过调用类的方法请求系统打开其包含的应用程序`NSExtensionContext`。
@@ -1357,7 +1357,7 @@ Directory         493  None                True    False     SiriIntents.appex
 
 ##### 检查共享的项目[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#inspecting-the-items-being-shared)
 
-为此，我们应该挂钩`NSExtensionContext - inputItems`数据源应用程序。
+为此，我们应该Hook`NSExtensionContext - inputItems`数据源应用程序。
 
 按照前面的 Telegram 示例，我们现在将使用文本文件（从聊天中收到）上的“共享”按钮在 Notes 应用程序中使用它创建一个笔记：
 
@@ -1392,7 +1392,7 @@ RET: (
 
 ##### 识别涉及的应用程序扩展[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#identifying-the-app-extensions-involved)
 
-您还可以通过挂钩找出哪个应用程序扩展正在处理您的请求和响应`NSExtension - _plugIn`：
+您还可以通过Hook找出哪个应用程序扩展正在处理您的请求和响应`NSExtension - _plugIn`：
 
 我们再次运行相同的示例：
 
@@ -1462,18 +1462,18 @@ systemwide **general pasteboard**可以通过使用获得[`generalPasteboard`](h
 
 ##### 检测持久性粘贴板使用情况[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#detect-persistent-pasteboard-usage)
 
-挂钩或跟踪已弃用的[`setPersistent:`](https://developer.apple.com/documentation/uikit/uipasteboard/1622096-setpersistent?language=objc)方法并验证它是否被调用。
+Hook或跟踪已弃用的[`setPersistent:`](https://developer.apple.com/documentation/uikit/uipasteboard/1622096-setpersistent?language=objc)方法并验证它是否被调用。
 
 ##### 监视和检查粘贴板项目[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#monitoring-and-inspecting-pasteboard-items)
 
 监视粘贴板时，可以动态检索几个详细信息：
 
-- 通过挂钩`pasteboardWithName:create:`并检查其输入参数或`pasteboardWithUniqueName`检查其返回值来获取粘贴板名称。
+- 通过Hook`pasteboardWithName:create:`并检查其输入参数或`pasteboardWithUniqueName`检查其返回值来获取粘贴板名称。
 - 获取第一个可用的粘贴板项目：例如，对于字符串使用`string`方法。[或者对标准数据类型](https://developer.apple.com/documentation/uikit/uipasteboard?language=objc#1654275)使用任何其他方法。
 - 获取带有 的项目数`numberOfItems`。
 - [使用便捷方法](https://developer.apple.com/documentation/uikit/uipasteboard?language=objc#2107142)检查是否存在标准数据类型，例如`hasImages`, `hasStrings`，`hasURLs`（从 iOS 10 开始）。
 - 使用 .检查其他数据类型（通常是 UTI）[`containsPasteboardTypes: inItemSet:`](https://developer.apple.com/documentation/uikit/uipasteboard/1622100-containspasteboardtypes?language=objc)。您可以检查更具体的数据类型，例如作为 public.png 和 public.tiff ( [UTI](https://web.archive.org/web/20190616231857/https://developer.apple.com/documentation/mobilecoreservices/uttype) ) 的图片，或检查自定义数据，例如 com.mycompany.myapp.mytype。请记住，在这种情况下，只有那些*声明知道*该类型的应用程序才能理解写入粘贴板的数据。这与我们在“ [UIActivity Sharing](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#uiactivity-sharing) ”部分中看到的相同。[`itemSetWithPasteboardTypes:`](https://developer.apple.com/documentation/uikit/uipasteboard/1622071-itemsetwithpasteboardtypes?language=objc)使用并设置相应的 UTI检索它们。
-- `setItems:options:`通过挂钩并检查其 or 选项来`UIPasteboardOptionLocalOnly`检查排除的或过期的项目`UIPasteboardOptionExpirationDate`。
+- `setItems:options:`通过Hook并检查其 or 选项来`UIPasteboardOptionLocalOnly`检查排除的或过期的项目`UIPasteboardOptionExpirationDate`。
 
 如果只查找字符串，您可能需要使用反对的命令`ios pasteboard monitor`：
 
@@ -1561,7 +1561,7 @@ setInterval(function () {
 
 作为开发人员，您应该在调用任何 URL 之前仔细验证它。您可以只允许某些可以通过已注册的协议处理程序打开的应用程序。提示用户确认 URL 调用的操作是另一个有用的控件。
 
-所有 URL 都会在启动时或应用程序运行时或在后台传递给应用程序委托。要处理传入的 URL，委托应实现以下方法：
+所有 URL 都会在启动时或应用程序Runtime(运行时)或在后台传递给应用程序委托。要处理传入的 URL，委托应实现以下方法：
 
 - 检索有关 URL 的信息并决定是否要打开它，
 - 打开 URL 指定的资源。
@@ -1830,7 +1830,7 @@ $ rabin2 -zzq Telegram\ X.app/Telegram\ X | grep -i "openurl"
 确定应用已注册的自定义 URL 方案后，您可以使用多种方法对其进行测试：
 
 - 执行 URL 请求
-- 识别和挂钩 URL 处理程序方法
+- 识别和Hook URL 处理程序方法
 - 测试 URL 方案源验证
 - 模糊 URL 方案
 
@@ -1846,7 +1846,7 @@ $ rabin2 -zzq Telegram\ X.app/Telegram\ X | grep -i "openurl"
 
 如“触发通用链接”中所述，您可以使用 Notes 应用程序并长按您编写的链接以测试自定义 URL 方案。请记住退出编辑模式以便能够打开它们。请注意，只有在安装了该应用程序后，您才能单击或长按包括自定义 URL 方案的链接，否则它们不会突出显示为*可单击链接*。
 
-##### 使用弗里达[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#using-frida)
+##### 使用Frida[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#using-frida)
 
 如果你只是想打开 URL scheme，你可以使用 Frida 来完成：
 
@@ -1874,7 +1874,7 @@ function openURL(url) {
 
 > 请注意，App Store 不允许使用非公共 API，这就是为什么我们甚至不测试这些 API，但允许我们使用它们进行动态分析。
 
-#### 识别和挂钩 URL 处理程序方法[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#identifying-and-hooking-the-url-handler-method)
+#### 识别和Hook URL 处理程序方法[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#identifying-and-hooking-the-url-handler-method)
 
 如果您无法查看原始源代码，您将不得不自己找出应用程序使用哪种方法来处理它收到的 URL 方案请求。您无法知道它是 Objective-C 方法还是 Swift 方法，或者即使应用程序使用的是已弃用的方法。
 
@@ -1989,7 +1989,7 @@ options: {
 RET: 0x1
 ```
 
-输出被截断以提高可读性。这次你看到它`UIApplicationOpenURLOptionsSourceApplicationKey`变成了`OWASP.iGoat-Swift`，这是有道理的。此外，调用了一长串类似`openURL`的方法。考虑到这些信息对于某些场景可能非常有用，因为它将帮助您决定下一步将是什么，例如，接下来您将挂钩或篡改哪种方法。
+输出被截断以提高可读性。这次你看到它`UIApplicationOpenURLOptionsSourceApplicationKey`变成了`OWASP.iGoat-Swift`，这是有道理的。此外，调用了一长串类似`openURL`的方法。考虑到这些信息对于某些场景可能非常有用，因为它将帮助您决定下一步将是什么，例如，接下来您将Hook或篡改哪种方法。
 
 ##### 通过导航到页面并让 SAFARI 打开它来打开链接[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#opening-a-link-by-navigating-to-a-page-and-letting-safari-open-it)
 
@@ -2027,7 +2027,7 @@ $ frida-trace -U Telegram -m "*[* *restorationHandler*]" -i "*open*Url*"
   },
   ```
 
-- 斯威夫特方法`$S10TelegramUI15openExternalUrl...`：
+- Swift方法`$S10TelegramUI15openExternalUrl...`：
 
   ```
   // __handlers__/TelegramUI/_S10TelegramUI15openExternalUrl7_b1a3234e.js
@@ -2120,7 +2120,7 @@ $ frida-trace -U Telegram -m "*[* *restorationHandler*]" -m "*[* *application*op
 
 #### 测试 URL 方案源验证[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#testing-url-schemes-source-validation)
 
-一种丢弃或确认验证的方法是挂钩可能用于该验证的典型方法。例如[`isEqualToString:`](https://developer.apple.com/documentation/foundation/nsstring/1407803-isequaltostring)：
+一种丢弃或确认验证的方法是Hook可能用于该验证的典型方法。例如[`isEqualToString:`](https://developer.apple.com/documentation/foundation/nsstring/1407803-isequaltostring)：
 
 ```
 // - (BOOL)isEqualToString:(NSString *)aString;
@@ -2168,7 +2168,7 @@ nil
 
 [FuzzDB](https://github.com/fuzzdb-project/fuzzdb)项目提供了可用作负载的模糊测试字典。
 
-##### 使用弗里达[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#using-frida_1)
+##### 使用Frida[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#using-frida_1)
 
 使用 Frida 执行此操作非常简单，您可以参考这篇[博](https://grepharder.github.io/blog/0x03_learning_about_universal_links_and_fuzzing_url_schemes_on_ios_with_frida.html)文以查看对[iGoat-Swift](https://mas.owasp.org/MASTG/Tools/0x08b-Reference-Apps/#igoat-swift)应用程序（在 iOS 11.1.2 上运行）进行模糊测试的示例。
 
@@ -2249,7 +2249,7 @@ WebView 是用于显示交互式 Web 内容的应用程序内浏览器组件。�
 - 该`hasOnlySecureContent`属性可用于验证 WebView 加载的资源是否通过加密连接检索。
 - `WKWebView`实现进程外渲染，因此内存损坏错误不会影响主应用程序进程。
 
-`WKWebView`使用s（和`UIWebView`s）时可以启用 JavaScript Bridge 。有关详细信息，请参阅下面的“[确定本机方法是否通过 WebView 公开](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#determining-whether-native-methods-are-exposed-through-webviews-mstg-platform-7)”部分。
+`WKWebView`使用s（和`UIWebView`s）时可以启用 JavaScript Bridge 。有关详细信息，请参阅下面的“[确定Native方法是否通过 WebView 公开](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#determining-whether-native-methods-are-exposed-through-webviews-mstg-platform-7)”部分。
 
 #### SFSafariViewController[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#sfsafariviewcontroller)
 
@@ -2272,7 +2272,7 @@ WebView 是用于显示交互式 Web 内容的应用程序内浏览器组件。�
 
 #### Safari Web 检查器[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#safari-web-inspector)
 
-在 iOS 上启用 Safari web 检查允许您从 macOS 设备远程检查 WebView 的内容，它不需要越狱的 iOS 设备。启用[Safari Web 检查器](https://developer.apple.com/library/archive/documentation/AppleApplications/Conceptual/Safari_Developer_Guide/GettingStarted/GettingStarted.html)对于使用 JavaScript 桥公开本机 API 的应用程序特别有趣，例如在混合应用程序中。
+在 iOS 上启用 Safari web 检查允许您从 macOS 设备远程检查 WebView 的内容，它不需要越狱的 iOS 设备。启用[Safari Web 检查器](https://developer.apple.com/library/archive/documentation/AppleApplications/Conceptual/Safari_Developer_Guide/GettingStarted/GettingStarted.html)对于使用 JavaScript 桥公开Native API 的应用程序特别有趣，例如在混合应用程序中。
 
 要激活网络检查，您必须执行以下步骤：
 
@@ -2386,7 +2386,7 @@ $ rabin2 -zz ./WheresMyBrowser | grep -i "hasonlysecurecontent"
 - 检查是否启用了 JavaScript
 - 验证是否只允许安全内容
 
-通过执行动态检测，可以识别 WebView 并在运行时获取它们的所有属性。当您没有原始源代码时，这非常有用。
+通过执行动态检测，可以识别 WebView 并在Runtime(运行时)获取它们的所有属性。当您没有原始源代码时，这非常有用。
 
 对于以下示例，我们将继续使用[“我的浏览器在哪里？” ](https://github.com/authenticationfailure/WheresMyBrowser.iOS/)应用程序和 Frida REPL。
 
@@ -2570,7 +2570,7 @@ do {
 } catch {}
 ```
 
-该页面使用 HTTP 从 Internet 加载资源，使潜在的 MITM 能够泄露包含在本地文件中的秘密，例如共享首选项中的秘密。
+该页面使用 HTTP 从 Internet 加载资源，使潜在的 MITM 能够泄露包含在本地文件中的秘密，例如Shared Preferences中的秘密。
 
 使用`WKWebView`s 时，Apple 建议使用[`loadHTMLString:baseURL:`](https://developer.apple.com/documentation/webkit/wkwebview/1415004-loadhtmlstring?language=objc)or[`loadData:MIMEType:textEncodingName:baseURL:`](https://developer.apple.com/documentation/webkit/wkwebview/1415011-loaddata?language=objc)加载本地 HTML 文件和`loadRequest:`Web 内容。通常，本地文件是结合方法加载的，其中包括：[`pathForResource:ofType:`](https://developer.apple.com/documentation/foundation/nsbundle/1410989-pathforresource),[`URLForResource:withExtension:`](https://developer.apple.com/documentation/foundation/nsbundle/1411540-urlforresource?language=objc)或[`init(contentsOf:encoding:)`](https://developer.apple.com/documentation/swift/string/3126736-init).
 
@@ -2655,13 +2655,13 @@ $ rabin2 -zz ./WheresMyBrowser | grep -i "loadFileURL"
 
 例如，可以通过这样做来设置**[未记录的属性：](https://github.com/WebKit/webkit/blob/master/Source/WebKit/UIProcess/API/Cocoa/WKPreferences.mm#L470)** `allowFileAccessFromFileURLs`
 
-目标-C：
+Objective-C：
 
 ```
 [webView.configuration.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
 ```
 
-迅速：
+Swift:
 
 ```
 webView.configuration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
@@ -2677,7 +2677,7 @@ webView.configuration.preferences.setValue(true, forKey: "allowFileAccessFromFil
 
 如果可以通过 WebView 加载本地文件，应用程序可能容易受到目录遍历攻击。这将允许访问沙箱内的所有文件，甚至可以通过对文件系统的完全访问来逃脱沙箱（如果设备已越狱）。因此，应该验证用户是否可以更改加载文件的文件名或路径，并且他们不应该能够编辑加载的文件。
 
-要模拟攻击，您可以使用拦截代理或简单地使用动态检测将您自己的 JavaScript 注入到 WebView 中。尝试访问本地存储以及可能暴露给 JavaScript 上下文的任何本机方法和属性。
+要模拟攻击，您可以使用拦截代理或简单地使用动态检测将您自己的 JavaScript 注入到 WebView 中。尝试访问本地存储以及可能暴露给 JavaScript 上下文的任何Native方法和属性。
 
 在现实世界中，JavaScript 只能通过永久后端跨站点脚本漏洞或 MITM 攻击来注入。有关详细信息，请参阅 OWASP [XSS 预防备忘单](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)和“ [iOS 网络通信](https://mas.owasp.org/MASTG/iOS/0x06g-Testing-Network-Communication/)”一章。
 
@@ -2765,26 +2765,26 @@ $ frida -U -f com.authenticationfailure.WheresMyBrowser -l webviews_inspector.js
 allowFileAccessFromFileURLs:  1
 ```
 
-## 确定本机方法是否通过 WebView 公开 (MSTG-PLATFORM-7)[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#determining-whether-native-methods-are-exposed-through-webviews-mstg-platform-7)
+## 确定Native方法是否通过 WebView 公开 (MSTG-PLATFORM-7)[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#determining-whether-native-methods-are-exposed-through-webviews-mstg-platform-7)
 
 ### 概述[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#overview_8)
 
-从 iOS 7 开始，Apple 引入了 API，允许 WebView 中的 JavaScript 运行时与本机 Swift 或 Objective-C 对象之间进行通信。如果不小心使用这些 API，重要的功能可能会暴露给设法将恶意脚本注入 WebView 的攻击者（例如，通过成功的跨站点脚本攻击）。
+从 iOS 7 开始，Apple 引入了 API，允许 WebView 中的 JavaScript Runtime(运行时)与Native Swift 或 Objective-C 对象之间进行通信。如果不小心使用这些 API，重要的功能可能会暴露给设法将恶意脚本注入 WebView 的攻击者（例如，通过成功的跨站点脚本攻击）。
 
 ### 静态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#static-analysis_8)
 
-`UIWebView`和都`WKWebView`提供了 WebView 和本机应用程序之间的通信方式。暴露给 WebView JavaScript 引擎的任何重要数据或本机功能也可以被在 WebView 中运行的流氓 JavaScript 访问。
+`UIWebView`和都`WKWebView`提供了 WebView 和Native应用程序之间的通信方式。暴露给 WebView JavaScript 引擎的任何重要数据或Native功能也可以被在 WebView 中运行的流氓 JavaScript 访问。
 
 #### 测试 UIWebView JavaScript 到原生桥[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#testing-uiwebview-javascript-to-native-bridges)
 
-本机代码和 JavaScript 如何通信有两种基本方式：
+Native代码和 JavaScript 如何通信有两种基本方式：
 
 - **JSContext**：当 Objective-C 或 Swift 块被分配给 a 中的标识符时`JSContext`，JavaScriptCore 会自动将块包装在 JavaScript 函数中。
-- **JSExport 协议**：在继承协议中声明的属性、实例方法和类方法`JSExport`被映射到可用于所有 JavaScript 代码的 JavaScript 对象。JavaScript 环境中对象的修改会反映在本机环境中。
+- **JSExport 协议**：在继承协议中声明的属性、实例方法和类方法`JSExport`被映射到可用于所有 JavaScript 代码的 JavaScript 对象。JavaScript 环境中对象的修改会反映在Native环境中。
 
 请注意，`JSExport`JavaScript 代码只能访问协议中定义的类成员。
 
-寻找将本机对象映射到`JSContext`与 WebView 关联的代码，并分析它公开的功能，例如，不应访问敏感数据并将其公开给 WebView。
+寻找将Native对象映射到`JSContext`与 WebView 关联的代码，并分析它公开的功能，例如，不应访问敏感数据并将其公开给 WebView。
 
 在 Objective-C 中，`JSContext`关联 a`UIWebView`的获取方式如下：
 
@@ -2794,9 +2794,9 @@ allowFileAccessFromFileURLs:  1
 
 #### 测试 WKWebView JavaScript 到原生桥[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#testing-wkwebview-javascript-to-native-bridges)
 
-a 中的 JavaScript 代码`WKWebView`仍然可以将消息发送回本机应用程序，但相比之下`UIWebView`，无法直接引用`JSContext`a 的`WKWebView`。相反，通信是使用消息系统和函数实现的`postMessage`，该函数会自动将 JavaScript 对象序列化为本机 Objective-C 或 Swift 对象。消息处理程序是使用方法配置的[`add(_ scriptMessageHandler:name:)`](https://developer.apple.com/documentation/webkit/wkusercontentcontroller/1537172-add)。
+a 中的 JavaScript 代码`WKWebView`仍然可以将消息发送回Native应用程序，但相比之下`UIWebView`，无法直接引用`JSContext`a 的`WKWebView`。相反，通信是使用消息系统和函数实现的`postMessage`，该函数会自动将 JavaScript 对象序列化为Native Objective-C 或 Swift 对象。消息处理程序是使用方法配置的[`add(_ scriptMessageHandler:name:)`](https://developer.apple.com/documentation/webkit/wkusercontentcontroller/1537172-add)。
 
-`WKScriptMessageHandler`通过搜索并检查所有公开的方法来验证是否存在 JavaScript 到本机的桥接。然后验证如何调用这些方法。
+`WKScriptMessageHandler`通过搜索并检查所有公开的方法来验证是否存在 JavaScript 到Native的桥接。然后验证如何调用这些方法。
 
 以下示例来自[“我的浏览器在哪里？” ](https://github.com/authenticationfailure/WheresMyBrowser.iOS/blob/b8d4abda4000aa509c7a5de79e5c90360d1d0849/WheresMyBrowser/WKWebViewPreferencesManager.swift#L98)证明了这一点。
 
@@ -2967,7 +2967,7 @@ struct CustomPointStruct:Codable {
 
 通过使用不同的第 3 方库，可以通过多种方式在 iOS 中编码和解码 JSON：
 
-- [地幔](https://github.com/Mantle/Mantle)
+- [Mantle](https://github.com/Mantle/Mantle)
 - [JSON模型库](https://github.com/jsonmodel/jsonmodel)
 - [SwiftyJSON 库](https://github.com/SwiftyJSON/SwiftyJSON)
 - [ObjectMapper 库](https://github.com/Hearst-DD/ObjectMapper)
@@ -3055,7 +3055,7 @@ struct CustomPointStruct: Codable {
 - [SwiftyXML 解析器](https://github.com/yahoojapan/SwiftyXMLParser)
 - [SWXML散列](https://github.com/drmohundro/SWXMLHash)
 
-它们在速度、内存使用、对象持久性和更重要的方面有所不同：在处理 XML 外部实体的方式上有所不同。以 Apple iOS Office查看器中的[XXE](https://nvd.nist.gov/vuln/detail/CVE-2015-3784)为例。因此，如果可能，禁用外部实体解析是关键。有关详细信息，请参阅[OWASP XXE 预防备忘](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)单。在图书馆旁边，您可以使用 Apple 的[`XMLParser`课程](https://developer.apple.com/documentation/foundation/xmlparser)
+它们在速度、内存使用、对象持久性和更重要的方面有所不同：在处理 XML 外部实体的方式上有所不同。以 Apple iOS Office查看器中的[XXE](https://nvd.nist.gov/vuln/detail/CVE-2015-3784)为例。因此，如果可能，禁用外部实体解析是关键。有关详细信息，请参阅[OWASP XXE 预防备忘](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)单。在库（Libraries）旁边，您可以使用 Apple 的[`XMLParser`课程](https://developer.apple.com/documentation/foundation/xmlparser)
 
 当不使用第三方库，而是使用 Apple 的库时，`XMLParser`一定要让`shouldResolveExternalEntities`return `false`。
 
@@ -3077,7 +3077,7 @@ Apple 自己提供，这在[Apple Developer Documentation](https://developer.app
 - 需要保证信息的完整性？使用 HMAC 机制或对存储的信息进行签名。在处理存储在对象中的实际信息之前，始终验证 HMAC/签名。
 - 确保上述两个概念中使用的密钥安全地存储在 KeyChain 中并受到良好保护。[有关详细信息，请参阅“ iOS 上](https://mas.owasp.org/MASTG/iOS/0x06d-Testing-Data-Storage/)的数据存储”一章。
 - 确保反序列化对象中的数据在被主动使用之前经过仔细验证（例如，不可能利用业务/应用程序逻辑）。
-- 不要使用使用[运行时引用](https://developer.apple.com/library/archive/#documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html)的持久化机制来序列化/反序列化高风险应用程序中的对象，因为攻击者可能能够通过这种机制操纵步骤来执行业务逻辑（更多信息请参见“ [iOS 反逆向防御](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/)”一章）细节）。
+- 不要使用使用[Runtime(运行时)引用](https://developer.apple.com/library/archive/#documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html)的持久化机制来序列化/反序列化高风险应用程序中的对象，因为攻击者可能能够通过这种机制操纵步骤来执行业务逻辑（更多信息请参见“ [iOS 反逆向防御](https://mas.owasp.org/MASTG/iOS/0x06j-Testing-Resiliency-Against-Reverse-Engineering/)”一章）细节）。
 - 请注意，在 Swift 2 及更高版本中，[Mirror](https://developer.apple.com/documentation/swift/mirror)可用于读取对象的一部分，但不能用于对对象进行写入。
 
 ### 动态分析[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#dynamic-analysis_9)
@@ -3115,7 +3115,7 @@ Apple 自己提供，这在[Apple Developer Documentation](https://developer.app
 - MSTG-PLATFORM-4：“该应用程序不会通过 IPC 设施导出敏感功能，除非这些机制得到适当保护。”
 - MSTG-PLATFORM-5：“除非明确要求，否则 JavaScript 在 WebView 中被禁用。”
 - MSTG-PLATFORM-6：“WebViews 配置为仅允许所需的最小协议处理程序集（理想情况下，仅支持 https）。禁用潜在危险的处理程序，例如文件、电话和应用程序 ID。”
-- MSTG-PLATFORM-7：“如果应用程序的本机方法暴露给 WebView，请验证 WebView 仅呈现应用程序包中包含的 JavaScript。”
+- MSTG-PLATFORM-7：“如果应用程序的Native方法暴露给 WebView，请验证 WebView 仅呈现应用程序包中包含的 JavaScript。”
 - MSTG-PLATFORM-8：“对象反序列化（如果有的话）是使用安全序列化 API 实现的。”
 
 ### 关于 iOS 中的对象持久化[¶](https://mas.owasp.org/MASTG/iOS/0x06h-Testing-Platform-Interaction/#regarding-object-persistence-in-ios)
