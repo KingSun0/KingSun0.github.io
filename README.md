@@ -96,13 +96,17 @@
             - [什么是风险](https://guide.996station.com/#/风控指南/什么是风险.md)
             - [安全从自身做起](https://guide.996station.com/#/风控指南/安全从自身做起.md)
             - [让风控贯穿产品](https://guide.996station.com/#/风控指南/让风控贯穿产品.md)
-            - [谈判技巧](https://github.com/WalterInSH/negotiation-skills)
+            - [风控业务谈判技巧](https://guide.996station.com/#/风控指南/风控业务谈判技巧（转载）.md)
 
         - 团队发展篇
             - [建设风控大数据团队](https://guide.996station.com/#/风控指南/建设风控大数据团队.md)
 
         - 案例篇
             - [爱奇艺业务风控系统](https://guide.996station.com/#/风控指南/爱奇艺业务风控系统.md)
+            - [风控系统构建经验-美团业务风控](https://guide.996station.com/#/风控指南/风控系统构建经验-美团业务风控（转载）.md)
+            - [风控引擎建设-美团高效的规则引擎](https://guide.996station.com/#/风控指南/风控引擎建设-美团高效的规则引擎.md)
+            - [在线风控系统架构-携程](https://guide.996station.com/#/风控指南/在线风控系统架构-携程（转载）.md)
+            - [风控计数服务是如何炼成的-饿了么](https://guide.996station.com/#/风控指南/风控计数服务是如何炼成的-饿了么（转载）.md)
 
         - 结束
             - [写在最后](https://guide.996station.com/#/风控指南/写在最后.md)
