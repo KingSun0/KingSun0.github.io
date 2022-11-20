@@ -15,7 +15,7 @@
 
 
 
-- [996station技术站](<https://www.996station.com>)
+
 
 [//]: # (- [Github移动安全指南]&#40;<https://github.com/KingSun0>&#41;)
 
@@ -25,6 +25,5 @@
 
 [//]: # (- [Github爬虫和反爬指南]&#40;<https://github.com/KingSun0>&#41;)
 
-
-[移动端阅读](_sidebar.md)
+[996station](<https://www.996station.com>)
 [开始阅读](README.md)
