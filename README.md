@@ -61,55 +61,50 @@
             - [影响量化评估的两个要素](https://guide.996station.com/#/风控指南/影响量化评估的两个要素.md)
         - [建设风控大数据团队](https://guide.996station.com/#/风控指南/建设风控大数据团队.md)
         - [案例：爱奇艺业务风控系统](https://guide.996station.com/#/风控指南/爱奇艺业务风控系统.md)
+    - 基础篇
+        - [利益](https://guide.996station.com/#/风控指南/利益.md)
+        - [异常发现](https://guide.996station.com/#/风控指南/异常发现.md)
+        - [多维度判断](https://guide.996station.com/#/风控指南/多维度判断.md)
+        - [限制频率](https://guide.996station.com/#/风控指南/限制频率.md)
+        - [IP风险识别](https://guide.996station.com/#/风控指南/IP风险识别.md)
+        - [手机号风险识别](https://guide.996station.com/#/风控指南/手机号风险识别.md)
+        - [设备风险识别](https://guide.996station.com/#/风控指南/设备风险识别.md)
+        - [用户业务行为习惯](https://guide.996station.com/#/风控指南/用户业务行为习惯.md)
+        - [阈值的选取](https://guide.996station.com/#/风控指南/阈值的选取.md)
+        - [高危名单](https://guide.996station.com/#/风控指南/高危名单.md)
+        - [规则和模型](https://guide.996station.com/#/风控指南/规则和模型.md)
+        - [验证手段](https://guide.996station.com/#/风控指南/验证手段.md)
 
-    - 目录
+    - 基础拓展篇
+        - [蜜罐](https://guide.996station.com/#/风控指南/蜜罐.md)
+        - [使用图技术进行管理分析](https://guide.996station.com/#/风控指南/使用图技术进行管理分析.md)
+        - [用户设备行为习惯(生物探针)](https://guide.996station.com/#/风控指南/用户设备行为习惯.md)
 
-        - 基础篇
-            - [利益](https://guide.996station.com/#/风控指南/利益.md)
-            - [异常发现](https://guide.996station.com/#/风控指南/异常发现.md)
-            - [多维度判断](https://guide.996station.com/#/风控指南/多维度判断.md)
-            - [限制频率](https://guide.996station.com/#/风控指南/限制频率.md)
-            - [IP风险识别](https://guide.996station.com/#/风控指南/IP风险识别.md)
-            - [手机号风险识别](https://guide.996station.com/#/风控指南/手机号风险识别.md)
-            - [设备风险识别](https://guide.996station.com/#/风控指南/设备风险识别.md)
-            - [用户业务行为习惯](https://guide.996station.com/#/风控指南/用户业务行为习惯.md)
-            - [阈值的选取](https://guide.996station.com/#/风控指南/阈值的选取.md)
-            - [高危名单](https://guide.996station.com/#/风控指南/高危名单.md)
-            - [规则和模型](https://guide.996station.com/#/风控指南/规则和模型.md)
-            - [验证手段](https://guide.996station.com/#/风控指南/验证手段.md)
+    - 运营篇
+        - [需求平衡迭代模型](https://guide.996station.com/#/风控指南/images/需求平衡迭代模型.jpg)
+        - [精细化运营](https://guide.996station.com/#/风控指南/精细化运营.md)
+            - [决策的第一步-看得见](https://guide.996station.com/#/风控指南/决策的第一步-看得见.md)
+            - [决策的第二步-看得清](https://guide.996station.com/#/风控指南/决策的第二步-看得清.md)
+    - 数据量化和效果评估
+        - [影响量化评估的两个要素](https://guide.996station.com/#/风控指南/影响量化评估的两个要素.md)
+        - [风控效果量化评估](https://guide.996station.com/#/风控指南/风控效果量化评估.md)
+        - [什么是风险](https://guide.996station.com/#/风控指南/什么是风险.md)
+        - [安全从自身做起](https://guide.996station.com/#/风控指南/安全从自身做起.md)
+        - [让风控贯穿产品](https://guide.996station.com/#/风控指南/让风控贯穿产品.md)
+        - [风控业务谈判技巧](https://guide.996station.com/#/风控指南/风控业务谈判技巧（转载）.md)
 
-        - 基础拓展篇
-            - [蜜罐](https://guide.996station.com/#/风控指南/蜜罐.md)
-            - [使用图技术进行管理分析](https://guide.996station.com/#/风控指南/使用图技术进行管理分析.md)
-            - [用户设备行为习惯(生物探针)](https://guide.996station.com/#/风控指南/用户设备行为习惯.md)
+    - 团队发展篇
+       - [建设风控大数据团队](https://guide.996station.com/#/风控指南/建设风控大数据团队.md)
 
-        - 运营篇
+    - 案例篇
+        - [爱奇艺业务风控系统](https://guide.996station.com/#/风控指南/爱奇艺业务风控系统.md)
+        - [风控系统构建经验-美团业务风控](https://guide.996station.com/#/风控指南/风控系统构建经验-美团业务风控（转载）.md)
+        - [风控引擎建设-美团高效的规则引擎](https://guide.996station.com/#/风控指南/风控引擎建设-美团高效的规则引擎.md)
+        - [在线风控系统架构-携程](https://guide.996station.com/#/风控指南/在线风控系统架构-携程（转载）.md)
+        - [风控计数服务是如何炼成的-饿了么](https://guide.996station.com/#/风控指南/风控计数服务是如何炼成的-饿了么（转载）.md)
 
-            - [需求平衡迭代模型](https://guide.996station.com/#/风控指南/images/需求平衡迭代模型.jpg)
-
-            - [精细化运营](https://guide.996station.com/#/风控指南/精细化运营.md)
-                - [决策的第一步-看得见](https://guide.996station.com/#/风控指南/决策的第一步-看得见.md)
-                - [决策的第二步-看得清](https://guide.996station.com/#/风控指南/决策的第二步-看得清.md)
-        - 数据量化和效果评估
-            - [影响量化评估的两个要素](https://guide.996station.com/#/风控指南/影响量化评估的两个要素.md)
-            - [风控效果量化评估](https://guide.996station.com/#/风控指南/风控效果量化评估.md)
-            - [什么是风险](https://guide.996station.com/#/风控指南/什么是风险.md)
-            - [安全从自身做起](https://guide.996station.com/#/风控指南/安全从自身做起.md)
-            - [让风控贯穿产品](https://guide.996station.com/#/风控指南/让风控贯穿产品.md)
-            - [风控业务谈判技巧](https://guide.996station.com/#/风控指南/风控业务谈判技巧（转载）.md)
-
-        - 团队发展篇
-            - [建设风控大数据团队](https://guide.996station.com/#/风控指南/建设风控大数据团队.md)
-
-        - 案例篇
-            - [爱奇艺业务风控系统](https://guide.996station.com/#/风控指南/爱奇艺业务风控系统.md)
-            - [风控系统构建经验-美团业务风控](https://guide.996station.com/#/风控指南/风控系统构建经验-美团业务风控（转载）.md)
-            - [风控引擎建设-美团高效的规则引擎](https://guide.996station.com/#/风控指南/风控引擎建设-美团高效的规则引擎.md)
-            - [在线风控系统架构-携程](https://guide.996station.com/#/风控指南/在线风控系统架构-携程（转载）.md)
-            - [风控计数服务是如何炼成的-饿了么](https://guide.996station.com/#/风控指南/风控计数服务是如何炼成的-饿了么（转载）.md)
-
-        - 结束
-            - [写在最后](https://guide.996station.com/#/风控指南/写在最后.md)
+    - 结束
+        - [写在最后](https://guide.996station.com/#/风控指南/写在最后.md)
 
 
 
