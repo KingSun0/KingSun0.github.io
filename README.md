@@ -79,6 +79,8 @@
         - [蜜罐](https://guide.996station.com/#/风控指南/蜜罐.md)
         - [使用图技术进行管理分析](https://guide.996station.com/#/风控指南/使用图技术进行管理分析.md)
         - [用户设备行为习惯(生物探针)](https://guide.996station.com/#/风控指南/用户设备行为习惯.md)
+    - 设备指纹
+        - [常见风控设备指纹知识问答](https://guide.996station.com/#/风控指南/常见风控设备指纹知识问答.md)
 
     - 运营篇
         - [需求平衡迭代模型](https://guide.996station.com/#/风控指南/images/需求平衡迭代模型.jpg)
