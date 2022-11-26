@@ -443,3 +443,12 @@ ip_vs_est.c: *https://elixir.bootlin.com/linux/v5.8/source/net/netfilter/ipvs/ip
 kpatch: *https://github.com/dynup/kpatch*[13]
 
 我需要内核的源代码: *https://wiki.centos.org/zh/HowTos/I_need_the_Kernel_Source*
+
+## 作者
+
+狄卫华，溪恒 深入浅出BPF
+
+## 原文链接
+
+https://mp.weixin.qq.com/s/dT3afS50qLS2GRpwj7X98g
+

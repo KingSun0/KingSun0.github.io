@@ -1,7 +1,8 @@
 - [**指南介绍**](README.md)
 - **eBPF指南**
    - eBPF基础
-     - [eBPF完全入门指南](ebpf-guide/eBPF入门/eBPF完全入门指南.md)
+     - [eBPF完全入门指南](ebpf-guide/eBPF基础/eBPF完全入门指南.md)
+   - eBPF应用
      - [eBPF快速定位网络抖动](ebpf-guide/eBPF应用/eBPF快速定位网络抖动.md)
 
 

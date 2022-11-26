@@ -1,5 +1,8 @@
+# eBPF完全入门指南
 
-![图片](../images/eBPF完全入门指南.png)
+
+
+![img](https://996station.com/wp-content/uploads/2022/11/20221126113432460.png?imageView2/0/format/webp/q/75)
 
 eBPF 源于 **BPF**[1]，本质上是处于内核中的一个高效与灵活的虚类虚拟机组件，以一种安全的方式在许多内核 hook 点执行字节码。BPF 最初的目的是用于高效网络报文过滤，经过重新设计，eBPF 不再局限于网络协议栈，已经成为内核顶级的子系统，演进为一个通用执行引擎。开发者可基于 eBPF 开发性能分析工具、软件定义网络、安全等诸多场景。本文将介绍 eBPF 的前世今生，并构建一个 eBPF 环境进行开发实践，文中所有的代码可以在我的 **Github**[2] 中找到。
 
@@ -9,22 +12,18 @@ eBPF 源于 **BPF**[1]，本质上是处于内核中的一个高效与灵活的�
 
 BPF，是类 Unix 系统上数据链路层的一种原始接口，提供原始链路层封包的收发。1992 年，Steven McCanne 和 Van Jacobson 写了一篇名为 **The BSD Packet Filter: A New Architecture for User-level Packet Capture**[3] 的论文。在文中，作者描述了他们如何在 Unix 内核实现网络数据包过滤，这种新的技术比当时最先进的数据包过滤技术快 20 倍。
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZD6BHgJsbzziaJX0FCzr16gQh2s2PE1qr3GLUFicRrRIhL1ILswZmiclEVQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114410510.png?imageView2/0/format/webp/q/75)
 
 BPF 在数据包过滤上引入了两大革新：
 
 - 一个新的虚拟机 (VM) 设计，可以有效地工作在基于寄存器结构的 CPU 之上
 - 应用程序使用缓存只复制与过滤数据包相关的数据，不会复制数据包的所有信息，这样可以最大程度地减少 BPF 处理的数据
 
-![img](http://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4Z1KpQSa8IH6icHMlcG2hq5AhMX1DJzRibTSdRsIFapMfnAGhdr6GF4e0PnAkPiaEk7HrDrndoWjxiciaA/0?wx_fmt=png)
-
 **云原生实验室**
 
 战略上藐视云原生，战术上重视云原生
 
 141篇原创内容
-
-
 
 公众号
 
@@ -54,7 +53,7 @@ $ tcpdump -d 'ip and tcp port 8080'
 eBPF 新的设计针对现代硬件进行了优化，所以 eBPF 生成的指令集比旧的 BPF 解释器生成的机器码执行得更快。扩展版本也增加了虚拟机中的寄存器数量，将原有的 2 个 32 位寄存器增加到 10 个 64 位寄存器。由于寄存器数量和宽度的增加，开发人员可以使用函数参数自由交换更多的信息，编写更复杂的程序。总之，这些改进使 eBPF 版本的速度比原来的 BPF 提高了 4 倍。
 
 | 维度           | cBPF                      | eBPF                                                         |
-| :------------- | :------------------------ | :----------------------------------------------------------- |
+| -------------- | ------------------------- | ------------------------------------------------------------ |
 | 内核版本       | Linux 2.1.75（1997 年）   | Linux 3.18（2014 年）[4.x for kprobe/uprobe/tracepoint/perf-event] |
 | 寄存器数目     | 2 个：A, X                | 10 个：R0–R9, 另外 R10 是一个只读的帧指针 - R0 eBPF 中内核函数的返回值和退出值 - R1 - R5 eBF 程序在内核中的参数值 - R6 - R9 内核函数将保存的被调用者 callee 保存的寄存器 - R10 一个只读的堆栈帧指针 |
 | 寄存器宽度     | 32 位                     | 64 位                                                        |
@@ -69,7 +68,7 @@ eBPF 新的设计针对现代硬件进行了优化，所以 eBPF 生成的指令
 对比 Web 的发展，eBPF 与内核的关系有点类似于 JavaScript 与浏览器内核的关系，eBPF 相比于直接修改内核和编写内核模块提供了一种新的内核可编程的选项。eBPF 程序架构强调安全性和稳定性，看上去更像内核模块，但与内核模块不同，eBPF 程序不需要重新编译内核，并且可以确保 eBPF 程序运行完成，而不会造成系统的崩溃。
 
 | 维度                | Linux 内核模块                       | eBPF                                           |
-| :------------------ | :----------------------------------- | :--------------------------------------------- |
+| ------------------- | ------------------------------------ | ---------------------------------------------- |
 | kprobes/tracepoints | 支持                                 | 支持                                           |
 | **安全性**          | 可能引入安全漏洞或导致内核 Panic     | 通过验证器进行检查，可以保障内核安全           |
 | 内核函数            | 可以调用内核函数                     | 只能通过 BPF Helper 函数调用                   |
@@ -91,19 +90,15 @@ eBPF 分为用户空间程序和内核程序两部分：
 
 eBPF 整体结构图如下：
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114345890.png?imageView2/0/format/webp/q/75)
 
 用户空间程序与内核中的 BPF 字节码交互的流程主要如下：
 
 1. 使用 LLVM 或者 GCC 工具将编写的 BPF 代码程序编译成 BPF 字节码
-
 2. 使用加载程序 Loader 将字节码加载至内核
-
 3. 内核使用验证器（Verfier） 组件保证执行字节码的安全性，以避免对内核造成灾难，在确认字节码安全后将其加载对应的内核模块执行
-
 4. 内核中运行的 BPF 字节码程序可以使用两种方式将数据回传至用户空间
-
-5. - **maps** 方式可用于将内核中实现的统计摘要信息（比如测量延迟、堆栈信息）等回传至用户空间；
+   - **maps** 方式可用于将内核中实现的统计摘要信息（比如测量延迟、堆栈信息）等回传至用户空间；
    - **perf-event** 用于将内核采集的事件实时发送至用户空间，用户空间程序实时读取分析；
 
 ### eBPF 限制
@@ -111,23 +106,10 @@ eBPF 整体结构图如下：
 eBPF 技术虽然强大，但是为了保证内核的处理安全和及时响应，内核中的 eBPF 技术也给予了诸多限制，当然随着技术的发展和演进，限制也在逐步放宽或者提供了对应的解决方案。
 
 - eBPF 程序不能调用任意的内核参数，只限于内核模块中列出的 BPF Helper 函数，函数支持列表也随着内核的演进在不断增加。
-
 - eBPF 程序不允许包含无法到达的指令，防止加载无效代码，延迟程序的终止。
-
 - eBPF 程序中循环次数限制且必须在有限时间内结束，这主要是用来防止在 kprobes 中插入任意的循环，导致锁住整个系统；解决办法包括展开循环，并为需要循环的常见用途添加辅助函数。Linux 5.3 在 BPF 中包含了对有界循环的支持，它有一个可验证的运行时间上限。
-
-- eBPF 堆栈大小被限制在 MAX_BPF_STACK，截止到内核 Linux 5.8 版本，被设置为 512；参见 **include/linux/filter.h**[4]，这个限制特别是在栈上存储多个字符串缓冲区时：一个 char[256]缓冲区会消耗这个栈的一半。目前没有计划增加这个限制，解决方法是改用 bpf 映射存储，它实际上是无限的。
-
-  ```
-  /* BPF program can access up to 512 bytes of stack space. */
-  #define MAX_BPF_STACK 512
-  ```
-
-- eBPF 字节码大小最初被限制为 4096 条指令，截止到内核 Linux 5.8 版本， 当前已将放宽至 100 万指令（ BPF_COMPLEXITY_LIMIT_INSNS），参见：**include/linux/bpf.h**[5]，对于无权限的 BPF 程序，仍然保留 4096 条限制 ( BPF_MAXINSNS )；新版本的 eBPF 也支持了多个 eBPF 程序级联调用，虽然传递信息存在某些限制，但是可以通过组合实现更加强大的功能。
-
-  ```
-  #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
-  ```
+- eBPF 堆栈大小被限制在 MAX_BPF_STACK，截止到内核 Linux 5.8 版本，被设置为 512；参见 **include/linux/filter.h**[4]，这个限制特别是在栈上存储多个字符串缓冲区时：一个 char[256]缓冲区会消耗这个栈的一半。目前没有计划增加这个限制，解决方法是改用 bpf 映射存储，它实际上是无限的。`*/\* BPF program can access up to 512 bytes of stack space. \*/*#define MAX_BPF_STACK 512`
+- eBPF 字节码大小最初被限制为 4096 条指令，截止到内核 Linux 5.8 版本， 当前已将放宽至 100 万指令（ BPF_COMPLEXITY_LIMIT_INSNS），参见：**include/linux/bpf.h**[5]，对于无权限的 BPF 程序，仍然保留 4096 条限制 ( BPF_MAXINSNS )；新版本的 eBPF 也支持了多个 eBPF 程序级联调用，虽然传递信息存在某些限制，但是可以通过组合实现更加强大的功能。`#define BPF_COMPLEXITY_LIMIT_INSNS   1000000 */\* yes. 1M insns \*/*`
 
 ## eBPF 实战
 
@@ -212,7 +194,9 @@ char _license[] SEC("license") = "GPL";
 
 #### 头文件
 
-##### `#include <linux/bpf.h>`
+```
+**#include <linux/bpf.h>**
+```
 
 这个头文件的来源是 kernel source header file 。它安装在 `/usr/include/linux/bpf.h`中。
 
@@ -224,7 +208,7 @@ char _license[] SEC("license") = "GPL";
 
 等等
 
-##### #include “bpf_helpers.h”
+**#include “bpf_helpers.h”**
 
 来自 libbpf ，需要自行安装。我们引用这个头文件是因为调用了 bpf_printk()。这是一个 kernel helper function。
 
@@ -335,11 +319,11 @@ static int load_and_attach(const char *event, struct bpf_insn *prog, int size)
 
 eBPF 程序都是事件驱动的，它们会在内核或者应用程序经过某个确定的 Hook 点的时候运行，这些 Hook 点都是提前定义的，包括系统调用、函数进入/退出、内核 `tracepoints`、网络事件等。
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZD6MNHibC2AYL9y6d4hGDDX2l6JKUKOly00uXzISOS1IyJHjXIR33Gh0A/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114319155.png?imageView2/0/format/webp/q/75)
 
 如果针对某个特定需求的 Hook 点不存在，可以通过 `kprobe` 或者 `uprobe` 来在内核或者用户程序的几乎所有地方挂载 eBPF 程序。
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZDib87GNHWic1WIMZLwnncLIlH0GLXVuzaRkQt7Qop4nX3Nrx3wocZ8ynQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114253887.png?imageView2/0/format/webp/q/75)
 
 ### Verification
 
@@ -347,9 +331,15 @@ eBPF 程序都是事件驱动的，它们会在内核或者应用程序经过某
 
 每一个 eBPF 程序加载到内核都要经过 `Verification`，用来保证 eBPF 程序的安全性，主要包括：
 
-- 要保证 加载 eBPF 程序的进程有必要的特权级，除非节点开启了 `unpriviledged` 特性，只有特权级的程序才能够加载 eBPF 程序
+- 要保证 加载 eBPF 程序的进程有必要的特权级，除非节点开启了 
 
-- - 内核提供了一个配置项 `/proc/sys/kernel/unprivileged_bpf_disabled` 来禁止非特权用户使用 `bpf(2)` 系统调用，可以通过 `sysctl` 命令修改
+  ```
+  unpriviledged
+  ```
+
+   特性，只有特权级的程序才能够加载 eBPF 程序
+
+  - 内核提供了一个配置项 `/proc/sys/kernel/unprivileged_bpf_disabled` 来禁止非特权用户使用 `bpf(2)` 系统调用，可以通过 `sysctl` 命令修改
   - 比较特殊的一点是，这个配置项特意设计为**一次性开关**（one-time kill switch）， 这意味着一旦将它设为 `1`，就没有办法再改为 `0` 了，除非重启内核
   - 一旦设置为 `1` 之后，只有初始命名空间中有 `CAP_SYS_ADMIN` 特权的进程才可以调用 `bpf(2)` 系统调用 。Cilium 启动后也会将这个配置项设为 1：
 
@@ -391,13 +381,13 @@ arch/sparc/Kconfig:     select HAVE_EBPF_JIT   if SPARC64
 arch/x86/Kconfig:       select HAVE_EBPF_JIT   if X86_64
 ```
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZDZxYEggXqhEfpwybQnzmJs36YFDBjRz2flUolBHaHicTicOM1Lh4ZFic2g/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114242884.png?imageView2/0/format/webp/q/75)
 
 ### Maps
 
 BPF Map 是**驻留在内核空间**中的高效 `Key/Value store`，包含多种类型的 Map，由内核实现其功能，具体实现可以参考 **我的这篇博文**[10]。
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZDKM4GuSNA8JPFmia8wbNeFsBdeibBn0FjBvdQLg94QCKcyLwCcAgUGnDg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114234449.png?imageView2/0/format/webp/q/75)
 
 BPF Map 的交互场景有以下几种：
 
@@ -408,7 +398,7 @@ BPF Map 的交互场景有以下几种：
 
 共享 map 的 BPF 程序不要求是相同的程序类型，例如 tracing 程序可以和网络程序共享 map，**单个 BPF 程序目前最多可直接访问 64 个不同 map**。
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZDPX6IG7leXmib7JicNhtktc4NFGic7dzxicXibhkMV5zcMXfiazCBDpBkgjOQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114224530.png?imageView2/0/format/webp/q/75)
 
 当前可用的 **通用 map** 有：
 
@@ -435,7 +425,7 @@ BPF Map 的交互场景有以下几种：
 
 eBPF 程序不能够随意调用内核函数，如果这么做的话会导致 eBPF 程序与特定的内核版本绑定，相反它内核定义的一系列 `Helper functions`。`Helper functions` 使得 BPF 能够通过一组内核定义的稳定的函数调用来从内核中查询数据，或者将数据推送到内核。**所有的 BPF 辅助函数都是核心内核的一部分，无法通过内核模块来扩展或添加**。**当前可用的 BPF 辅助函数已经有几十个，并且数量还在不断增加**，你可以在 **Linux Manual Page: bpf-helpers**[11] 看到当前 Linux 支持的 `Helper functions`。
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114216333.png?imageView2/0/format/webp/q/75)
 
 **不同类型的 BPF 程序能够使用的辅助函数可能是不同的**，例如:
 
@@ -486,7 +476,7 @@ const struct bpf_func_proto bpf_map_update_elem_proto = {
 - BPF 程序都是独立验证的，因此要传递状态，要么使用 per-CPU map 作为 scratch 缓冲区 ，要么如果是 tc 程序的话，还可以使用 `skb` 的某些字段（例如 `cb[]`）
 - **相同类型的程序才可以尾调用**，而且它们还要与 JIT 编译器相匹配，因此要么是 JIT 编译执行，要么是解释器执行（invoke interpreted programs），但不能同时使用两种方式
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114141523.png?imageView2/0/format/webp/q/75)
 
 ### BPF to BPF Calls
 
@@ -545,7 +535,7 @@ char __license[] __section("license") = "GPL";
 
 BPF 到 BPF 调用是一个重要的性能优化，极大减小了生成的 BPF 代码大小，因此 **对 CPU 指令缓存（instruction cache，i-cache）更友好**。
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZDmOiaLqStSdhhZwm0ugM52siaWXXZPY8MfRXuwjSibAD09hach9k290hJQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114130231.png?imageView2/0/format/webp/q/75)
 
 BPF 辅助函数的调用约定也适用于 BPF 函数间调用：
 
@@ -576,7 +566,7 @@ BPF JIT 编译器为每个函数体发射独立的镜像（emit separate images 
 - `BPF_OBJ_PIN`：钉住一个对象
 - `BPF_OBJ_GET`：获取一个被钉住的对象
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126114002844.png?imageView2/0/format/webp/q/75)
 
 ### Hardening
 
@@ -598,7 +588,7 @@ arch/x86/Kconfig:    select ARCH_HAS_SET_MEMORY
 
 #### Mitigation Against Spectre
 
-为了防御 👉Spectre v2 攻击，Linux 内核提供了 `CONFIG_BPF_JIT_ALWAYS_ON` 选项，打开这个开关后 BPF 解释器将会从内核中完全移除，永远启用 JIT 编译器：
+为了防御 ![👉](https://s.w.org/images/core/emoji/14.0.0/svg/1f449.svg)Spectre v2 攻击，Linux 内核提供了 `CONFIG_BPF_JIT_ALWAYS_ON` 选项，打开这个开关后 BPF 解释器将会从内核中完全移除，永远启用 JIT 编译器：
 
 - 如果应用在一个基于虚拟机的环境，客户机内核将不会复用内核的 BPF 解释器，因此可以避免某些相关的攻击
 - 如果是基于容器的环境，这个配置是可选的，如果 JIT 功能打开了，解释器仍然可能会在编译时被去掉，以降低内核的复杂度
@@ -669,7 +659,7 @@ BPF 网络程序，尤其是 tc 和 XDP BPF 程序在内核中都有一个 offlo
 
 当前，Netronome 公司的 `nfp` 驱动支持通过 JIT 编译器 offload BPF，它会将 BPF 指令翻译成网卡实现的指令集。另外，它还支持将 BPF maps offload 到网卡，因此 offloaded BPF 程序可以执行 map 查找、更新和删除操作。
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126113940930.png?imageView2/0/format/webp/q/75)
 
 ## eBPF 接口
 
@@ -1184,7 +1174,7 @@ BCC 是 BPF 的编译工具集合，前端提供 Python/Lua API，本身通过 C
 
 我们可以看到在运行时相比 BCC 版本，libbpf + BPF CO-RE 版本节约了近 9 倍的内存开销，这对于物理内存资源已经紧张的服务器来说会更友好。
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126113835921.png?imageView2/0/format/webp/q/75)
 
 关于 BCC 可以参考 **我的这篇文章介绍**[23]
 
@@ -1192,15 +1182,15 @@ BCC 是 BPF 的编译工具集合，前端提供 Python/Lua API，本身通过 C
 
 > bpftrace is a high-level tracing language for Linux eBPF and available in recent Linux kernels (4.x). bpftrace uses LLVM as a backend to compile scripts to eBPF bytecode and makes use of BCC for interacting with the Linux eBPF subsystem as well as existing Linux tracing capabilities: kernel dynamic tracing (kprobes), user-level dynamic tracing (uprobes), and tracepoints. The bpftrace language is inspired by awk, C and predecessor tracers such as DTrace and SystemTap.
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126113822257.png?imageView2/0/format/webp/q/75)
 
 ### eBPF Go Library
 
-
+![img](https://996station.com/wp-content/uploads/2022/11/20221126113803273.png?imageView2/0/format/webp/q/75)
 
 ### libbpf
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZDrcUy3RuNQjpHfjfT1AlspJ6tyoricN3ANGDBWWQ6nwZ3SCDZfYMSxWw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](https://996station.com/wp-content/uploads/2022/11/20221126113623645.png?imageView2/0/format/webp/q/75)
 
 ## 参考资料
 
@@ -1228,4 +1218,94 @@ BCC 是 BPF 的编译工具集合，前端提供 Python/Lua API，本身通过 C
 
 ### 引用链接
 
-[1]BPF: *https://en.wikipedia.org/wiki/Berkeley_Packet_Filter*[2]Github: *https://github.com/*[3]The BSD Packet Filter: A New Architecture for User-level Packet Capture: *http://www.tcpdump.org/papers/bpf-usenix93.pdf*[4]include/linux/filter.h: *https://github.com/torvalds/linux/blob/v5.8/include/linux/filter.h*[5]include/linux/bpf.h: *https://github.com/torvalds/linux/blob/v5.8/include/linux/bpf.h*[6]详见这里: *https://github.com/iovisor/bcc/blob/master/docs/reference_guide.md#1-bpf_trace_printk*[7]`read_trace_pipe`: *https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/bpf/trace_helpers.c#L120*[8]`bpf_load.c`: *https://elixir.bootlin.com/linux/v5.4/source/samples/bpf/bpf_load.c#L659*[9]`load_and_attach`: *https://elixir.bootlin.com/linux/v5.4/source/samples/bpf/bpf_load.c#L76*[10]我的这篇博文: *https://houmin.cc*[11]Linux Manual Page: bpf-helpers: *https://man7.org/linux/man-pages/man7/bpf-helpers.7.html*[12]include/linux/filter.h: *https://elixir.bootlin.com/linux/v5.4/source/include/linux/filter.h#L479*[13]`bpf_map_update_elem`: *https://elixir.bootlin.com/linux/v5.4/source/kernel/bpf/helpers.c#L41*[14]`bpf()`: *https://man7.org/linux/man-pages/man2/bpf.2.html*[15]`bpf_load_program`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L316*[16]`bpf_create_map`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L123*[17]`bpf_map_lookup_elem`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L371*[18]`bpf_map_update_elem`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L357*[19]`bpf_map_delete_elem`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L408*[20]`bpf_map_get_next_key`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L419*[21]Linux Manual Page: bpf-helpers: *https://man7.org/linux/man-pages/man7/bpf-helpers.7.html*[22]下面函数: *https://elixir.bootlin.com/linux/v5.17-rc8/source/kernel/bpf/syscall.c#L3137*[23]我的这篇文章介绍: *https://houmin.cc/posts/6a8748a1/*[24]The BSD Packet Filter: A New Architecture for User-level Packet Capture, Steven McCanne and Van Jacobso, December 19, 1992: *http://www.tcpdump.org/papers/bpf-usenix93.pdf*[25]eBPF Documentation: What is eBPF?: *https://ebpf.io/what-is-ebpf/*[26]LWN: A thorough introduction to eBPF: *https://lwn.net/Articles/740157/*[27]Cilium Documentation: BPF and XDP Reference Guide: *https://docs.cilium.io/en/stable/bpf/*[28]eBPF summit: The Future of eBPF based Networking and Security: *https://www.youtube.com/watch?v=slBAYUDABDA*[29]eBPF - The Future of Networking & Security: *https://cilium.io/blog/2020/11/10/ebpf-future-of-networking/*[30]eBPF - Rethinking the Linux Kernel: *https://www.youtube.com/watch?v=f-oTe-dmfyI*[31]Linux Manual Page: bpf(2): *https://man7.org/linux/man-pages/man2/bpf.2.html*[32]Linux Manual Page: bpf-helpers: *https://man7.org/linux/man-pages/man7/bpf-helpers.7.html*[33]Linux Kernel Documentation: Linux Socket Filtering aka Berkeley Packet Filter (BPF): *https://www.kernel.org/doc/Documentation/networking/filter.txt*[34]Dive into BPF: a list of reading material: *https://qmonnet.github.io/whirl-offload/2016/09/01/dive-into-bpf/*[35]LWN: eBPF materials: *https://lwn.net/Kernel/Index/#Berkeley_Packet_Filter*[36]基于 Ubuntu 20.04 的 eBPF 环境搭建: *https://www.ebpf.top/post/ebpf_c_env/*[37]eBPF 指令集: *https://houmin.cc/posts/5150fab3/*[38]eBPF tc 子系统: *https://houmin.cc/posts/28ca4f79/*[39]Linux Traffic Control: *https://houmin.cc/posts/8278f23c/*[40]网卡聚合 Bonding: *https://houmin.cc/posts/e9c4d3e9/*[41]Linux 网络包收发流程: *https://houmin.cc/posts/941301e/*
+[1]
+
+BPF: *https://en.wikipedia.org/wiki/Berkeley_Packet_Filter*[2]
+
+Github: *https://github.com/*[3]
+
+The BSD Packet Filter: A New Architecture for User-level Packet Capture: *http://www.tcpdump.org/papers/bpf-usenix93.pdf*[4]
+
+include/linux/filter.h: *https://github.com/torvalds/linux/blob/v5.8/include/linux/filter.h*[5]
+
+include/linux/bpf.h: *https://github.com/torvalds/linux/blob/v5.8/include/linux/bpf.h*[6]
+
+详见这里: *https://github.com/iovisor/bcc/blob/master/docs/reference_guide.md#1-bpf_trace_printk*[7]
+
+`read_trace_pipe`: *https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/bpf/trace_helpers.c#L120*[8]
+
+`bpf_load.c`: *https://elixir.bootlin.com/linux/v5.4/source/samples/bpf/bpf_load.c#L659*[9]
+
+`load_and_attach`: *https://elixir.bootlin.com/linux/v5.4/source/samples/bpf/bpf_load.c#L76*[10]
+
+我的这篇博文: *https://houmin.cc*[11]
+
+Linux Manual Page: bpf-helpers: *https://man7.org/linux/man-pages/man7/bpf-helpers.7.html*[12]
+
+include/linux/filter.h: *https://elixir.bootlin.com/linux/v5.4/source/include/linux/filter.h#L479*[13]
+
+`bpf_map_update_elem`: *https://elixir.bootlin.com/linux/v5.4/source/kernel/bpf/helpers.c#L41*[14]
+
+`bpf()`: *https://man7.org/linux/man-pages/man2/bpf.2.html*[15]
+
+`bpf_load_program`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L316*[16]
+
+`bpf_create_map`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L123*[17]
+
+`bpf_map_lookup_elem`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L371*[18]
+
+`bpf_map_update_elem`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L357*[19]
+
+`bpf_map_delete_elem`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L408*[20]
+
+`bpf_map_get_next_key`: *https://elixir.bootlin.com/linux/v5.4/source/tools/lib/bpf/bpf.c#L419*[21]
+
+Linux Manual Page: bpf-helpers: *https://man7.org/linux/man-pages/man7/bpf-helpers.7.html*[22]
+
+下面函数: *https://elixir.bootlin.com/linux/v5.17-rc8/source/kernel/bpf/syscall.c#L3137*[23]
+
+我的这篇文章介绍: *https://houmin.cc/posts/6a8748a1/*[24]
+
+The BSD Packet Filter: A New Architecture for User-level Packet Capture, Steven McCanne and Van Jacobso, December 19, 1992: *http://www.tcpdump.org/papers/bpf-usenix93.pdf*[25]
+
+eBPF Documentation: What is eBPF?: *https://ebpf.io/what-is-ebpf/*[26]
+
+LWN: A thorough introduction to eBPF: *https://lwn.net/Articles/740157/*[27]
+
+Cilium Documentation: BPF and XDP Reference Guide: *https://docs.cilium.io/en/stable/bpf/*[28]
+
+eBPF summit: The Future of eBPF based Networking and Security: *https://www.youtube.com/watch?v=slBAYUDABDA*[29]
+
+eBPF - The Future of Networking & Security: *https://cilium.io/blog/2020/11/10/ebpf-future-of-networking/*[30]
+
+eBPF - Rethinking the Linux Kernel: *https://www.youtube.com/watch?v=f-oTe-dmfyI*[31]
+
+Linux Manual Page: bpf(2): *https://man7.org/linux/man-pages/man2/bpf.2.html*[32]
+
+Linux Manual Page: bpf-helpers: *https://man7.org/linux/man-pages/man7/bpf-helpers.7.html*[33]
+
+Linux Kernel Documentation: Linux Socket Filtering aka Berkeley Packet Filter (BPF): *https://www.kernel.org/doc/Documentation/networking/filter.txt*[34]
+
+Dive into BPF: a list of reading material: *https://qmonnet.github.io/whirl-offload/2016/09/01/dive-into-bpf/*[35]
+
+LWN: eBPF materials: *https://lwn.net/Kernel/Index/#Berkeley_Packet_Filter*[36]
+
+基于 Ubuntu 20.04 的 eBPF 环境搭建: *https://www.ebpf.top/post/ebpf_c_env/*[37]
+
+eBPF 指令集: *https://houmin.cc/posts/5150fab3/*[38]
+
+eBPF tc 子系统: *https://houmin.cc/posts/28ca4f79/*[39]
+
+Linux Traffic Control: *https://houmin.cc/posts/8278f23c/*[40]
+
+网卡聚合 Bonding: *https://houmin.cc/posts/e9c4d3e9/*[41]
+
+Linux 网络包收发流程: *https://houmin.cc/posts/941301e/*
+
+## 作者
+
+云原生实验室
+
+## 原文链接
+
+https://mp.weixin.qq.com/s/zCjk5WmnwLD0J3J9gC4e0Q
