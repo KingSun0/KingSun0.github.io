@@ -1,4 +1,9 @@
 - [**指南介绍**](README.md)
+- **eBPF指南**
+   - eBPF基础
+     - [eBPF 完全入门指南](ebpf-guide/eBPF 完全入门指南.md)
+
+
 
 - **移动安全指南**
     - [TODO项目介绍](doc/文档/项目介绍.md)
