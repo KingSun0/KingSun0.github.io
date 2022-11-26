@@ -1,6 +1,5 @@
-![图片](https://mmbiz.qpic.cn/mmbiz_gif/qFG6mghhA4ZqeGxkjlgTHRnZLtjicHTotxUhnaef8O5kevrJ1Jo99yDrcp05MDvIJia5mSojeF3SL0iaIR2ic49otA/640?wx_fmt=gif&wxfrom=5&wx_lazy=1)
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/qFG6mghhA4YFdj6A709OqEMPnd8f2hZDWVhPrVoZUibVibKJMVFibIkgW4RAaZdCzsoyMmKH6NM7PXOm77vicFqGaA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![图片](../images/eBPF完全入门指南.png)
 
 eBPF 源于 **BPF**[1]，本质上是处于内核中的一个高效与灵活的虚类虚拟机组件，以一种安全的方式在许多内核 hook 点执行字节码。BPF 最初的目的是用于高效网络报文过滤，经过重新设计，eBPF 不再局限于网络协议栈，已经成为内核顶级的子系统，演进为一个通用执行引擎。开发者可基于 eBPF 开发性能分析工具、软件定义网络、安全等诸多场景。本文将介绍 eBPF 的前世今生，并构建一个 eBPF 环境进行开发实践，文中所有的代码可以在我的 **Github**[2] 中找到。
 
