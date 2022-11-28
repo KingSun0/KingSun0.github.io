@@ -28,7 +28,7 @@
         - [eBPF允许您在内核中编写自定义代码](ebpf-guide/eBPF高级/eBPF允许您在内核中编写自定义代码.md)
         - [eBPF是一个基于寄存器的虚拟机](ebpf-guide/eBPF高级/eBPF是一个基于寄存器的虚拟机.md)
         - [区分三种类型的eBPF重定向](ebpf-guide/eBPF高级/区分三种类型的eBPF重定向.md)
-    - eBPF应用
+    - eBPF实战应用
         - [eBPF实战](ebpf-guide/eBPF实战应用/eBPF实战.md)
         - [eBPF快速定位网络抖动](ebpf-guide/eBPF实战应用/eBPF快速定位网络抖动.md)
         - [eBPF技术的5G实现思路](ebpf-guide/eBPF实战应用/eBPF技术的5G实现思路)
